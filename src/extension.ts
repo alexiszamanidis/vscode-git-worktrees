@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-// import * as cp from "child_process";
+import gitWorktreeList from "./operations/worktree/list";
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand("git-worktrees.worktree.list", () => {
-        vscode.window.showInformationMessage("Hello World from Git Worktrees!");
+    let disposable = vscode.commands.registerCommand("git-worktrees.worktree.list", async () => {
+        await gitWorktreeList();
     });
 
     context.subscriptions.push(disposable);
