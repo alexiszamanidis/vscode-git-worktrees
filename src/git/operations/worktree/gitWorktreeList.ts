@@ -1,9 +1,8 @@
 import * as vscode from "vscode";
+import { removeFirstAndLastCharacter } from "../../../helpers/stringHelpers";
 import { showErrorMessage } from "../../../helpers/vsCodeHelpers";
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-
-const removeFirstAndLastCharacter = (str: string): string => str.slice(1, -1);
 
 const formatWorktrees = (
     splitWorktrees: Array<[string, string, string]>
