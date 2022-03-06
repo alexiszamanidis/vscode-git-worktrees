@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { showErrorMessage, showInformationMessage } from "../../helpers/vsCodeHelpers";
+import { showErrorMessage } from "../../../helpers/vsCodeHelpers";
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 

@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import gitWorktreeList from "./operations/worktree/list";
+import gitWorktreeList from "./git/operations/worktree/gitWorktreeList";
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand("git-worktrees.worktree.list", async () => {
