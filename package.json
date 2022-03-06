@@ -1,5 +1,6 @@
 {
     "name": "git-worktrees",
+    "publisher": "Alexis Zamanidis",
     "displayName": "Git Worktrees",
     "description": "Git Worktrees",
     "version": "0.0.1",
