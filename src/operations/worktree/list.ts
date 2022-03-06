@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { showErrorMessage, showInformationMessage } from "../../helpers/vsCodeHelpers";
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
@@ -62,8 +63,7 @@ const gitWorktreeList = async () => {
 
         await moveIntoWorktree(worktree);
     } catch (e: any) {
-        console.log(`gitWorktreeList - Error: ${e.message}`);
-        throw Error(e.message);
+        await showErrorMessage(e.message);
     }
 };
 
