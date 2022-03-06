@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { removeFirstAndLastCharacter } from "../../../helpers/stringHelpers";
 import { showErrorMessage } from "../../../helpers/vsCodeHelpers";
-const util = require("util");
+import * as util from "util";
+
 const exec = util.promisify(require("child_process").exec);
 
 const formatWorktrees = (
