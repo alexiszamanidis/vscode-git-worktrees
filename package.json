@@ -17,7 +17,7 @@
         "commands": [
             {
                 "command": "git-worktrees.worktree.list",
-                "title": "Git Worktree List"
+                "title": "Git Worktrees: Git Worktree List"
             }
         ]
     },
