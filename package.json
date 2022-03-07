@@ -3,7 +3,7 @@
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
     "description": "Git Worktrees",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "repository": {
         "type": "git",
         "url": "https://github.com/alexiszamanidis/vscode-git-worktrees"
