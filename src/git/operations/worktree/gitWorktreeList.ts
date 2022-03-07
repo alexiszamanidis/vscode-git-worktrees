@@ -5,18 +5,18 @@ import * as util from "util";
 
 const exec = util.promisify(require("child_process").exec);
 
-const formatWorktrees = (
-    splitWorktrees: Array<[string, string, string]>
-): Array<{ path: string; hash: string; worktree: string }> =>
+type Worktree = { path: string; hash: string; worktree: string };
+type WorktreeList = Array<Worktree>;
+type SelectedWorktree = { label: string; detail: string };
+
+const formatWorktrees = (splitWorktrees: Array<[string, string, string]>): WorktreeList =>
     splitWorktrees.map((worktree) => ({
         path: worktree[0],
         hash: worktree[1],
         worktree: removeFirstAndLastCharacter(worktree[2]),
     }));
 
-const getWorktreesList = (
-    stdout: string
-): Array<{ path: string; hash: string; worktree: string }> => {
+const getWorktreesList = (stdout: string): WorktreeList => {
     let splitWorktrees: Array<[string, string, string]> = [];
 
     stdout.split("\n").forEach((worktree: string) => {
@@ -32,7 +32,7 @@ const getWorktreesList = (
     return formatWorktrees(splitWorktrees);
 };
 
-const selectWorktree = async (worktrees: any[]) =>
+const selectWorktree = async (worktrees: WorktreeList): Promise<SelectedWorktree | undefined> =>
     await vscode.window.showQuickPick(
         worktrees.map((wt: any) => ({ label: wt.worktree, detail: wt.path })),
         {
@@ -40,12 +40,16 @@ const selectWorktree = async (worktrees: any[]) =>
         }
     );
 
-const moveIntoWorktree = async (worktree: any) =>
-    vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file((worktree as any).detail), {
-        forceNewWindow: false,
-    });
+const moveIntoWorktree = async (worktree: SelectedWorktree): Promise<void> =>
+    await vscode.commands.executeCommand(
+        "vscode.openFolder",
+        vscode.Uri.file((worktree as any).detail),
+        {
+            forceNewWindow: false,
+        }
+    );
 
-const gitWorktreeList = async () => {
+const gitWorktreeList = async (): Promise<void> => {
     const command = "git worktree list";
     const options = {
         cwd: vscode.workspace.rootPath,
