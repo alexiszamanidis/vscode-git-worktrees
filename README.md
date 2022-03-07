@@ -33,3 +33,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 -   Writing tests
 -   Sharing this project and recommending it to your friends
 -   Giving a star on this repository
+
+## License
+
+[MIT © Alexis Zamanidis](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/LICENSE)
