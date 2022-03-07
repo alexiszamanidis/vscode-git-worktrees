@@ -12,6 +12,20 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
     Display all worktrees and switch between them
 
+### Demo
+
+-   **Worktree Switch**
+
+![worktree-list](https://user-images.githubusercontent.com/48658768/157105330-6db6ecae-75b4-4b0b-9fe8-4762ef389931.gif)
+
+-   **Error**
+
+    If anything goes wrong a Popup will be shown at the bottom left of the screen
+
+    If you see anything weird, please open an [issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues)
+
+![error](https://user-images.githubusercontent.com/48658768/157106534-1b350ce4-426c-4fdc-9001-a2d2841d92be.gif)
+
 ## Contribution
 
 -   Reporting a bug
