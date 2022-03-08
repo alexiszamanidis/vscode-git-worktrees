@@ -2,6 +2,13 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [0.0.5] - 2022-03-08
+
+### Added
+
+-   Replace Logo
+-   Add TODO.md
+
 ## [0.0.4] - 2022-03-08
 
 ### Added

@@ -3,7 +3,7 @@
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
     "description": "Git Worktrees",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "icon": "images/logo.png",
     "repository": {
         "type": "git",
