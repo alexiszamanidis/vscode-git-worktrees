@@ -2,8 +2,8 @@
     "name": "git-worktrees",
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
-    "description": "A VS Code extension that wraps git worktree operations for simplicity and productivity",
-    "version": "0.0.6",
+    "description": "A Wrapper for Git Worktree Operations that provides an interactive API so developers have a better experience",
+    "version": "0.0.7",
     "icon": "images/logo.png",
     "repository": {
         "type": "git",

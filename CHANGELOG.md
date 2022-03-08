@@ -2,6 +2,13 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [0.0.7] - 2022-03-08
+
+### Updated
+
+-   Update README.md
+-   Description in package.json
+
 ## [0.0.6] - 2022-03-08
 
 ### Updated
