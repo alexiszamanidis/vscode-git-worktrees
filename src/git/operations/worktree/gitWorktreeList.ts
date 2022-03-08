@@ -5,11 +5,12 @@ import * as util from "util";
 
 const exec = util.promisify(require("child_process").exec);
 
+type FilteredWorktree = [string, string, string];
 type Worktree = { path: string; hash: string; worktree: string };
 type WorktreeList = Array<Worktree>;
 type SelectedWorktree = { label: string; detail: string };
 
-const formatWorktrees = (splitWorktrees: Array<[string, string, string]>): WorktreeList =>
+const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList =>
     splitWorktrees.map((worktree) => ({
         path: worktree[0],
         hash: worktree[1],
@@ -17,7 +18,7 @@ const formatWorktrees = (splitWorktrees: Array<[string, string, string]>): Workt
     }));
 
 const getWorktreesList = (stdout: string): WorktreeList => {
-    let splitWorktrees: Array<[string, string, string]> = [];
+    let splitWorktrees: Array<FilteredWorktree> = [];
 
     stdout.split("\n").forEach((worktree: string) => {
         // worktree: path-hash-worktree
@@ -25,7 +26,7 @@ const getWorktreesList = (stdout: string): WorktreeList => {
         const filteredWt = worktree.split(" ").filter((str: string) => str !== "");
         // ignore: path-(bare)
         if (filteredWt.length === 3) {
-            splitWorktrees.push(filteredWt as any);
+            splitWorktrees.push(filteredWt as FilteredWorktree);
         }
     });
 
@@ -34,20 +35,16 @@ const getWorktreesList = (stdout: string): WorktreeList => {
 
 const selectWorktree = async (worktrees: WorktreeList): Promise<SelectedWorktree | undefined> =>
     await vscode.window.showQuickPick(
-        worktrees.map((wt: any) => ({ label: wt.worktree, detail: wt.path })),
+        worktrees.map((wt) => ({ label: wt.worktree, detail: wt.path })),
         {
             matchOnDetail: true,
         }
     );
 
 const moveIntoWorktree = async (worktree: SelectedWorktree): Promise<void> =>
-    await vscode.commands.executeCommand(
-        "vscode.openFolder",
-        vscode.Uri.file((worktree as any).detail),
-        {
-            forceNewWindow: false,
-        }
-    );
+    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktree.detail), {
+        forceNewWindow: false,
+    });
 
 const gitWorktreeList = async (): Promise<void> => {
     const command = "git worktree list";
