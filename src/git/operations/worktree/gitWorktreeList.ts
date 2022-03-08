@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
-import { removeFirstAndLastCharacter } from "../../../helpers/stringHelpers";
-import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 import * as util from "util";
-import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { OPEN_ISSUE_URL } from "../../../constants/constants";
+import * as vscode from "vscode";
+import { OPEN_ISSUE_URL } from "@constants/constants";
+import { copyToClipboard, openBrowser } from "@helpers/helpers";
+import { showErrorMessageWithButton } from "@helpers/vsCodeHelpers";
+import { removeFirstAndLastCharacter } from "@helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
