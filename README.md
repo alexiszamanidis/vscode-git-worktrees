@@ -19,11 +19,11 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 -   Install [Git Worktree](https://marketplace.visualstudio.com/items?itemName=GitWorktrees.git-worktrees) VS Code extension
 -   Open the palette: `CTRL + SHIFT + P`
 -   Search for any avaiable operations
-    -   Prefix: `Git Worktrees: `
+    -   Prefix: `Git Worktree: `
 
 ### Features/Operations
 
--   **Worktree Switch**
+-   **Worktree List (Switch)**
 
 ![worktree-list](https://user-images.githubusercontent.com/48658768/157105330-6db6ecae-75b4-4b0b-9fe8-4762ef389931.gif)
 

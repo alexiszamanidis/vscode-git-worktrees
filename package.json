@@ -22,8 +22,9 @@
     "contributes": {
         "commands": [
             {
+                "category": "Git Worktree",
                 "command": "git-worktrees.worktree.list",
-                "title": "Git Worktrees: Git Worktree List"
+                "title": "List"
             }
         ]
     },
