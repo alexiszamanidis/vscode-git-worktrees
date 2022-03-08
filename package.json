@@ -34,7 +34,8 @@
         "pretest": "yarn run compile && yarn run lint",
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js",
-        "format": "yarn prettier --write ."
+        "format": "yarn prettier --write .",
+        "publish": "vsce publish"
     },
     "devDependencies": {
         "@types/vscode": "^1.65.0",
