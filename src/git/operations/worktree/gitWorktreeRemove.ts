@@ -1,9 +1,9 @@
 import { OPEN_ISSUE_URL } from "@constants/constants";
 import { copyToClipboard, openBrowser } from "@helpers/helpers";
 import { showErrorMessageWithButton } from "@helpers/vsCodeHelpers";
-import { moveIntoWorktree, selectWorktree, getWorktrees } from "@helpers/gitWorktreeHelpers";
+import { selectWorktree, getWorktrees } from "@helpers/gitWorktreeHelpers";
 
-const gitWorktreeList = async (): Promise<void> => {
+const gitWorktreeRemove = async (): Promise<void> => {
     try {
         const worktrees = await getWorktrees();
 
@@ -11,8 +11,6 @@ const gitWorktreeList = async (): Promise<void> => {
 
         // eslint-disable-next-line curly
         if (!worktree) return;
-
-        await moveIntoWorktree(worktree);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Copy Error and Open an Issue";
@@ -26,4 +24,4 @@ const gitWorktreeList = async (): Promise<void> => {
     }
 };
 
-export default gitWorktreeList;
+export default gitWorktreeRemove;
