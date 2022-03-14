@@ -63,3 +63,29 @@ export const getWorktrees = async () => {
         throw Error(e);
     }
 };
+
+export const pruneWorktrees = async () => {
+    const command = "git worktree prune";
+
+    try {
+        await exec(command);
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const removeWorktree = async (worktree: Worktree) => {
+    const command = `git worktree remove ${worktree.path}`;
+    // const options = {
+    //     cwd: vscode.workspace.rootPath,
+    // };
+
+    try {
+        const { stdout } = await exec(command);
+        // const { stdout } = await exec(command, options);
+
+        console.log(stdout);
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
