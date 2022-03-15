@@ -19,13 +19,14 @@ const gitWorktreeList = async (): Promise<void> => {
         await moveIntoWorktree(worktree);
     } catch (e: any) {
         const errorMessage = e.message;
-        const buttonName = "Copy Error and Open an Issue";
+        const buttonName = "Open an Issue";
+        // const buttonName = "Copy Error and Open an Issue";
         const answer = await showErrorMessageWithButton({ errorMessage, buttonName });
 
         // eslint-disable-next-line curly
         if (answer !== buttonName) return;
 
-        await copyToClipboard(errorMessage);
+        // await copyToClipboard(errorMessage);
         await openBrowser(OPEN_ISSUE_URL);
     }
 };
