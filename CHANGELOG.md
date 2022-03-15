@@ -2,6 +2,16 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [0.0.8] - 2022-03-15
+
+### Added
+
+-   Add Git Worktree Remove operation
+
+### Updated
+
+-   Update Error Pop up
+
 ## [0.0.7] - 2022-03-08
 
 ### Updated

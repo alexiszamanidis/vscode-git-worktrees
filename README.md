@@ -12,6 +12,9 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
     Display all worktrees and switch between them
 
+-   `git worktree remove [worktree-name]`
+    Remove a worktree
+
 ### Getting started
 
 **Steps:**
@@ -26,6 +29,8 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 -   **Worktree List (Switch)**
 
 ![worktree-list](https://user-images.githubusercontent.com/48658768/157105330-6db6ecae-75b4-4b0b-9fe8-4762ef389931.gif)
+
+-   **Worktree Remove**
 
 -   **Error**
 
