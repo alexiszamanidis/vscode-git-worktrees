@@ -1,5 +1,6 @@
 import * as util from "util";
 import * as vscode from "vscode";
+import { getCurrentPath } from "./helpers";
 import { removeFirstAndLastCharacter } from "../helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
@@ -50,7 +51,7 @@ const getWorktreesList = (stdout: string): WorktreeList => {
 export const getWorktrees = async () => {
     const command = "git worktree list";
     const options = {
-        cwd: vscode.workspace.rootPath,
+        cwd: await getCurrentPath(),
     };
 
     try {
@@ -66,24 +67,29 @@ export const getWorktrees = async () => {
 
 export const pruneWorktrees = async () => {
     const command = "git worktree prune";
+    const options = {
+        cwd: await getCurrentPath(),
+    };
 
     try {
-        await exec(command);
+        await exec(command, options);
     } catch (e: any) {
         throw Error(e);
     }
 };
 
-export const removeWorktree = async (worktree: Worktree) => {
-    const command = `git worktree remove ${worktree.path}`;
-    // const options = {
-    //     cwd: vscode.workspace.rootPath,
-    // };
+export const removeWorktree = async (worktree: SelectedWorktree) => {
+    const currentPath = await getCurrentPath();
+    const isSamePath = currentPath === worktree.detail;
+    const command = `git worktree remove ${worktree.label}`;
+    const options = {
+        cwd: currentPath,
+    };
+    console.log(worktree);
+    console.log(currentPath);
 
     try {
-        const { stdout } = await exec(command);
-        // const { stdout } = await exec(command, options);
-
+        const { stdout } = await exec(command, options);
         console.log(stdout);
     } catch (e: any) {
         throw Error(e);

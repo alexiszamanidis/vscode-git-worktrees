@@ -1,7 +1,12 @@
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
-import { selectWorktree, getWorktrees } from "../../../helpers/gitWorktreeHelpers";
+import { showErrorMessageWithButton, showInformationMessage } from "../../../helpers/vsCodeHelpers";
+import {
+    selectWorktree,
+    getWorktrees,
+    removeWorktree,
+    pruneWorktrees,
+} from "../../../helpers/gitWorktreeHelpers";
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {
@@ -11,6 +16,12 @@ const gitWorktreeRemove = async (): Promise<void> => {
 
         // eslint-disable-next-line curly
         if (!worktree) return;
+
+        await removeWorktree(worktree);
+
+        await pruneWorktrees();
+
+        await showInformationMessage(`Worktree named '${worktree.label}' was removed successfully`);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

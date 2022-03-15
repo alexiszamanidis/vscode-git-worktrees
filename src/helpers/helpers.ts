@@ -1,5 +1,9 @@
 import * as util from "util";
+import * as vscode from "vscode";
 
+export const getCurrentPath = () => vscode.workspace.rootPath;
+
+// TODO: fix this function
 export const copyToClipboard = async (content = "") =>
     await require("child_process").spawn("clip").stdin.end(util.inspect(content));
 
