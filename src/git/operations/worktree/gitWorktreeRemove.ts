@@ -1,7 +1,7 @@
-import { OPEN_ISSUE_URL } from "@constants/constants";
-import { copyToClipboard, openBrowser } from "@helpers/helpers";
-import { showErrorMessageWithButton } from "@helpers/vsCodeHelpers";
-import { selectWorktree, getWorktrees } from "@helpers/gitWorktreeHelpers";
+import { OPEN_ISSUE_URL } from "../../../constants/constants";
+import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
+import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
+import { selectWorktree, getWorktrees } from "../../../helpers/gitWorktreeHelpers";
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {

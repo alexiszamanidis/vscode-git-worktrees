@@ -7,10 +7,6 @@
         "sourceMap": true,
         "rootDir": "src",
         "strict": true,
-        "baseUrl": "./src",
-        "paths": {
-            "@constants/*": ["constants/*"],
-            "@helpers/*": ["helpers/*"]
-        }
+        "baseUrl": "./src"
     }
 }

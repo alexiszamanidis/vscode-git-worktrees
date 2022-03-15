@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { APP_NAME } from "@constants/constants";
+import { APP_NAME } from "../constants/constants";
 
 export const showErrorMessageWithButton = async ({ errorMessage = "", buttonName = "" }) =>
     await vscode.window.showErrorMessage(`${APP_NAME}: ${errorMessage}`, buttonName);

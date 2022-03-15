@@ -1,6 +1,6 @@
 import * as util from "util";
 import * as vscode from "vscode";
-import { removeFirstAndLastCharacter } from "@helpers/stringHelpers";
+import { removeFirstAndLastCharacter } from "../helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
