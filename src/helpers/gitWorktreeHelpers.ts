@@ -85,12 +85,9 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     const options = {
         cwd: currentPath,
     };
-    console.log(worktree);
-    console.log(currentPath);
 
     try {
         const { stdout } = await exec(command, options);
-        console.log(stdout);
     } catch (e: any) {
         throw Error(e);
     }
