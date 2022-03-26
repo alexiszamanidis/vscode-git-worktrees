@@ -13,6 +13,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
     Display all worktrees and switch between them
 
 -   `git worktree remove [worktree-name]`
+
     Remove a worktree
 
 ### Getting started
@@ -32,13 +33,15 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 -   **Worktree Remove**
 
+![Worktree remove](https://user-images.githubusercontent.com/48658768/160238740-e9e5dc1a-4c45-4d66-a6c1-4a8ae73d412d.gif)
+
 -   **Error**
 
     If anything goes wrong a Popup will be shown at the bottom left of the screen
 
     If you see anything weird, please open an [issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues)
 
-![error](https://user-images.githubusercontent.com/48658768/157106534-1b350ce4-426c-4fdc-9001-a2d2841d92be.gif)
+![error](https://user-images.githubusercontent.com/48658768/160239217-c915cf20-9e03-49cb-be3b-9a4b691cf189.gif)
 
 ## Contribution
 
