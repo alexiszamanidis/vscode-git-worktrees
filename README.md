@@ -1,6 +1,6 @@
 # Git Worktrees
 
-A Wrapper for Git Worktree Operations that provides an interactive API so developers have a better experience.
+A Wrapper for Git Worktree Operations that provides an interactive API so developers can have a better experience.
 
 ### Purpose of the extension
 
