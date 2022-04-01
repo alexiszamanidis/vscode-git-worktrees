@@ -1,4 +1,5 @@
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
+import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { showErrorMessageWithButton, showInformationMessage } from "../../../helpers/vsCodeHelpers";
 import {
@@ -10,6 +11,9 @@ import {
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {
+        // eslint-disable-next-line curly
+        if (!isGitRepository()) throw new Error("This is not a git repository.");
+
         const worktrees = await getWorktrees();
 
         const worktree = await selectWorktree(worktrees);
