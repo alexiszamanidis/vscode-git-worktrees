@@ -6,6 +6,10 @@ A Wrapper for Git Worktree Operations that provides an interactive API so develo
 
 After creating a ZSH plugin that was responsible for wrapping up my daily git operations([zsh-git-fzf](https://github.com/alexiszamanidis/zsh-git-fzf)), I found myself very often switching between the terminal and my main Editor(VS Code). So I decided to create an extension for my main Editor that would help me avoid switching between them and keep everything in one tool.
 
+### Purpose of the extension
+
+-   Git version: 2.34.1
+
 ### Supported operations
 
 -   `git worktree list`
