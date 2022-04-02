@@ -10,9 +10,7 @@ export const copyToClipboard = async (content = "") =>
 const calculateBrowserStart = async () => {
     let start = "xdg-open";
 
-    // eslint-disable-next-line curly
     if (process.platform === "darwin") start = "open";
-    // eslint-disable-next-line curly
     else if (process.platform === "win32") start = "start";
 
     return start;

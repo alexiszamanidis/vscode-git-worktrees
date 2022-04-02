@@ -82,8 +82,8 @@ export const pruneWorktrees = async () => {
 export const findDefaultWorktreeToMove = async (currentWorktree: SelectedWorktree) => {
     try {
         const worktrees = await getWorktrees();
-        const filteredWorktrees = worktrees.filter((wt) => wt.worktree !== currentWorktree.label);
-        const test = true;
+        const filteredWorktrees = worktrees.filter((wt) => wt.worktree === "testasdas");
+        if (filteredWorktrees.length === 0) return;
     } catch (e: any) {
         throw new Error(e);
     }

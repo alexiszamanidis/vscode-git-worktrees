@@ -10,14 +10,12 @@ import {
 
 const gitWorktreeList = async (): Promise<void> => {
     try {
-        // eslint-disable-next-line curly
         if (!isGitRepository()) throw new Error("This is not a git repository.");
 
         const worktrees = await getWorktrees();
 
         const worktree = await selectWorktree(worktrees);
 
-        // eslint-disable-next-line curly
         if (!worktree) return;
 
         await moveIntoWorktree(worktree);
@@ -27,7 +25,6 @@ const gitWorktreeList = async (): Promise<void> => {
         // const buttonName = "Copy Error and Open an Issue";
         const answer = await showErrorMessageWithButton({ errorMessage, buttonName });
 
-        // eslint-disable-next-line curly
         if (answer !== buttonName) return;
 
         // await copyToClipboard(errorMessage);
