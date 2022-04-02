@@ -121,12 +121,18 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     };
 
     try {
-        const defaultWorktree = await findDefaultWorktreeToMove(worktree);
+        if (isSamePath)
+            throw new Error(
+                "You cannot delete the same Worktree as the one you are currently working on"
+            );
         const { stdout } = await exec(command, options);
 
-        if (!isSamePath) return;
+        // const defaultWorktree = await findDefaultWorktreeToMove(worktree);
+        // const { stdout } = await exec(command, options);
 
-        await moveIntoWorktree(defaultWorktree);
+        // if (!isSamePath) return;
+
+        // await moveIntoWorktree(defaultWorktree);
     } catch (e: any) {
         throw Error(e);
     }
