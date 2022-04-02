@@ -88,7 +88,17 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
     try {
         const { stdout } = await exec(command, options);
+        console.log(stdout);
+        const test = true;
+        // if(isSamePath) {
+        //   MOVE TO ANOTHER BRANCH
+        // CREATE A FUNCTION FOR IT
+        // }
     } catch (e: any) {
-        throw Error(e);
+        const errorMessage = e.stderr;
+        const untrackedOrUnmodifiedFiles = `fatal: '${worktree.label}' contains modified or untracked files, use --force to delete it\n`;
+        const isErrorForUntrackedAndUnmodifiedFiles = errorMessage === untrackedOrUnmodifiedFiles;
+
+        if (!isErrorForUntrackedAndUnmodifiedFiles) throw new Error(e);
     }
 };
