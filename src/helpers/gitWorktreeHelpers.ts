@@ -1,8 +1,8 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
-import { MAIN_BRANCHES } from "../constants/constants";
-import { removeFirstAndLastCharacter } from "../helpers/stringHelpers";
+import { MAIN_WORKTREES } from "../constants/constants";
+import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -79,11 +79,34 @@ export const pruneWorktrees = async () => {
     }
 };
 
-export const findDefaultWorktreeToMove = async (currentWorktree: SelectedWorktree) => {
+const convertWorktreeToSelectedWorktree = (worktree: Worktree): SelectedWorktree => ({
+    label: worktree.worktree,
+    detail: worktree.path,
+});
+
+export const findDefaultWorktreeToMove = async (
+    currentWorktree: SelectedWorktree
+): Promise<SelectedWorktree> => {
     try {
+        const defaultWorktree: SelectedWorktree = {
+            label: "",
+            detail: removeLastDirectoryInURL(currentWorktree.detail),
+        };
         const worktrees = await getWorktrees();
-        const filteredWorktrees = worktrees.filter((wt) => wt.worktree === "testasdas");
-        if (filteredWorktrees.length === 0) return;
+
+        const filteredWorktrees = worktrees.filter((wt) => wt.worktree !== currentWorktree.label);
+        // move to parent directory
+        if (filteredWorktrees.length === 0) return defaultWorktree;
+
+        const filteredMainBranches = MAIN_WORKTREES.filter(
+            (branch) => branch !== currentWorktree.label
+        );
+        const defaultWt = filteredWorktrees.find((wt) =>
+            filteredMainBranches.includes(wt.worktree)
+        );
+        if (!defaultWt) return convertWorktreeToSelectedWorktree(filteredWorktrees[0]);
+
+        return convertWorktreeToSelectedWorktree(defaultWt);
     } catch (e: any) {
         throw new Error(e);
     }
@@ -98,11 +121,12 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     };
 
     try {
-        // if the path is the same
-        // find
         const defaultWorktree = await findDefaultWorktreeToMove(worktree);
         const { stdout } = await exec(command, options);
+
         if (!isSamePath) return;
+
+        await moveIntoWorktree(defaultWorktree);
     } catch (e: any) {
         throw Error(e);
     }
