@@ -1,6 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
+import { MAIN_BRANCHES } from "../constants/constants";
 import { removeFirstAndLastCharacter } from "../helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
@@ -78,6 +79,16 @@ export const pruneWorktrees = async () => {
     }
 };
 
+export const findDefaultWorktreeToMove = async (currentWorktree: SelectedWorktree) => {
+    try {
+        const worktrees = await getWorktrees();
+        const filteredWorktrees = worktrees.filter((wt) => wt.worktree !== currentWorktree.label);
+        const test = true;
+    } catch (e: any) {
+        throw new Error(e);
+    }
+};
+
 export const removeWorktree = async (worktree: SelectedWorktree) => {
     const currentPath = await getCurrentPath();
     const isSamePath = currentPath === worktree.detail;
@@ -87,7 +98,11 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     };
 
     try {
+        // if the path is the same
+        // find
+        const defaultWorktree = await findDefaultWorktreeToMove(worktree);
         const { stdout } = await exec(command, options);
+        if (!isSamePath) return;
     } catch (e: any) {
         throw Error(e);
     }
