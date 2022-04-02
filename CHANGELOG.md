@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [0.0.11] - 2022-04-02
+
+### Reverted
+
+-   Revert Git Worktree redirection when a working worktree gets deleted
+
 ## [0.0.10] - 2022-04-02
 
 ### Added
