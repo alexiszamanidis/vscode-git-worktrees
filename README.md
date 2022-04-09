@@ -30,7 +30,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 -   Install [Git Worktree](https://marketplace.visualstudio.com/items?itemName=GitWorktrees.git-worktrees) VS Code extension
 -   Open the palette: `CTRL + SHIFT + P`
--   Search for any avaiable operations
+-   Search for any available operations
     -   Prefix: `Git Worktree: `
 
 ### Features/Operations
