@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     let gitWtAdd = vscode.commands.registerCommand("git-worktrees.worktree.add", async () => {
-        await gitWorktreeRemove();
+        await gitWorktreeAdd();
     });
 
     context.subscriptions.push(gitWtList);

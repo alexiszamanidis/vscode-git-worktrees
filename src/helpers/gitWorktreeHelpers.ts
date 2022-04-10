@@ -146,8 +146,9 @@ export const calculateNewWorktreePath = async () => {
     };
 
     try {
-        const { stdout } = await exec(command, options);
-        return stdout;
+        const { stdout: isBareRepository } = await exec(command, options);
+        if (!isBareRepository) return removeLastDirectoryInURL(currentPath as string);
+        return currentPath;
     } catch (e: any) {
         throw Error(e);
     }
