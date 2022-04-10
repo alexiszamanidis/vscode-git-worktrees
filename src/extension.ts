@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import gitWorktreeAdd from "./git/operations/worktree/gitWorktreeAdd";
 import gitWorktreeList from "./git/operations/worktree/gitWorktreeList";
 import gitWorktreeRemove from "./git/operations/worktree/gitWorktreeRemove";
 
@@ -11,8 +12,13 @@ export function activate(context: vscode.ExtensionContext) {
         await gitWorktreeRemove();
     });
 
+    let gitWtAdd = vscode.commands.registerCommand("git-worktrees.worktree.add", async () => {
+        await gitWorktreeRemove();
+    });
+
     context.subscriptions.push(gitWtList);
     context.subscriptions.push(gitWtRemove);
+    context.subscriptions.push(gitWtAdd);
 }
 
 export function deactivate() {}

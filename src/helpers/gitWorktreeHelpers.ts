@@ -137,3 +137,18 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
         throw Error(e);
     }
 };
+
+export const calculateNewWorktreePath = async () => {
+    const currentPath = await getCurrentPath();
+    const command = "git rev-parse --is-bare-repository ";
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        const { stdout } = await exec(command, options);
+        return stdout;
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
