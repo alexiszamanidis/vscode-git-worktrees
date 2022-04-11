@@ -154,22 +154,6 @@ export const calculateNewWorktreePath = async () => {
     }
 };
 
-export const existsRemoteBranch = async (branch: string) => {
-    const currentPath = await getCurrentPath();
-    const command = `git ls-remote origin ${branch}`;
-    const options = {
-        cwd: currentPath,
-    };
-
-    try {
-        const { stdout } = await exec(command, options);
-        if (!stdout) return false;
-        return true;
-    } catch (e: any) {
-        throw Error(e);
-    }
-};
-
 export const existsWorktree = async (worktree: string) => {
     try {
         const worktrees = await getWorktrees();
