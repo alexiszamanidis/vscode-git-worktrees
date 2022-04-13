@@ -1,5 +1,5 @@
 import { calculateNewWorktreePath } from "helpers/gitWorktreeHelpers";
-import { OPEN_ISSUE_URL } from "../../../constants/constants";
+import { OPEN_ISSUE_URL } from "@constants/constants";
 import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";

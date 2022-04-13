@@ -1,7 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
-import { MAIN_WORKTREES } from "../constants/constants";
+import { MAIN_WORKTREES } from "@constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
