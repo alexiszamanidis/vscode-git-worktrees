@@ -36,3 +36,19 @@ export const existsRemoteBranch = async (branch: string) => {
         throw Error(e);
     }
 };
+
+export const getRemoteBranches = async () => {
+    const currentPath = await getCurrentPath();
+    const command = `git branch -r | cut -c10-`;
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        const { stdout } = await exec(command, options);
+        if (!stdout) return [];
+        return stdout.split("\n").map((branch: string) => branch.trim());
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
