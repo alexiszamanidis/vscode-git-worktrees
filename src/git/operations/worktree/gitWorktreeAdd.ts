@@ -1,8 +1,8 @@
-import { calculateNewWorktreePath } from "@helpers/gitWorktreeHelpers";
-import { OPEN_ISSUE_URL } from "@constants/constants";
-import { isGitRepository, getRemoteBranches } from "@helpers/gitHelpers";
-import { copyToClipboard, openBrowser } from "@helpers/helpers";
-import { showErrorMessageWithButton } from "@helpers/vsCodeHelpers";
+import { calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
+import { OPEN_ISSUE_URL } from "../../../constants/constants";
+import { isGitRepository, getRemoteBranches } from "../../../helpers/gitHelpers";
+import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
+import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 
 const gitWorktreeAdd = async (): Promise<void> => {
     try {

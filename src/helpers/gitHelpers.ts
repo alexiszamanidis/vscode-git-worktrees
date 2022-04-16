@@ -1,5 +1,5 @@
 import * as util from "util";
-import { getCurrentPath } from "@helpers/helpers";
+import { getCurrentPath } from "./helpers";
 
 const exec = util.promisify(require("child_process").exec);
 
