@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import gitWorktreeList from "./git/operations/worktree/gitWorktreeList";
-import gitWorktreeRemove from "./git/operations/worktree/gitWorktreeRemove";
-import gitWorktreeAdd from "./git/operations/worktree/gitWorktreeAdd";
+import gitWorktreeList from "@git/operations/worktree/gitWorktreeList";
+import gitWorktreeRemove from "@git/operations/worktree/gitWorktreeRemove";
+import gitWorktreeAdd from "@git/operations/worktree/gitWorktreeAdd";
 
 export function activate(context: vscode.ExtensionContext) {
     let gitWtList = vscode.commands.registerCommand("git-worktrees.worktree.list", async () => {

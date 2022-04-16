@@ -1,13 +1,13 @@
-import { OPEN_ISSUE_URL } from "../../../constants/constants";
-import { isGitRepository } from "../../../helpers/gitHelpers";
-import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { showErrorMessageWithButton, showInformationMessage } from "../../../helpers/vsCodeHelpers";
+import { OPEN_ISSUE_URL } from "@constants/constants";
+import { isGitRepository } from "@helpers/gitHelpers";
+import { copyToClipboard, openBrowser } from "@helpers/helpers";
+import { showErrorMessageWithButton, showInformationMessage } from "@helpers/vsCodeHelpers";
 import {
     selectWorktree,
     getWorktrees,
     removeWorktree,
     pruneWorktrees,
-} from "../../../helpers/gitWorktreeHelpers";
+} from "@helpers/gitWorktreeHelpers";
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {
