@@ -48,6 +48,7 @@
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js",
         "format": "yarn prettier --write .",
+        "typescript": "yarn tsc --noEmit",
         "publish": "vsce publish"
     },
     "devDependencies": {
@@ -62,6 +63,13 @@
         "mocha": "^9.2.1",
         "typescript": "^4.5.5",
         "@vscode/test-electron": "^2.1.2",
-        "prettier": "^2.5.1"
+        "prettier": "^2.5.1",
+        "husky": "4",
+        "lint-staged": "^12.1.7"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "yarn lint-staged"
+        }
     }
 }
