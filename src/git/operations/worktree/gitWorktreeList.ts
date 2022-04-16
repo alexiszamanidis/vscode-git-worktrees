@@ -10,7 +10,8 @@ import {
 
 const gitWorktreeList = async (): Promise<void> => {
     try {
-        if (!isGitRepository()) throw new Error("This is not a git repository.");
+        const isGitRepo = await isGitRepository();
+        if (!isGitRepo) throw new Error("This is not a git repository.");
 
         const worktrees = await getWorktrees();
 

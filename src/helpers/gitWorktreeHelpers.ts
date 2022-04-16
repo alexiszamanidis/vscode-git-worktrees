@@ -140,14 +140,15 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
 export const calculateNewWorktreePath = async () => {
     const currentPath = await getCurrentPath();
-    const command = "git rev-parse --is-bare-repository ";
+    const command = "git rev-parse --is-bare-repository";
     const options = {
         cwd: currentPath,
     };
 
     try {
-        const { stdout: isBareRepository } = await exec(command, options);
-        if (!isBareRepository) return removeLastDirectoryInURL(currentPath as string);
+        const { stdout } = await exec(command, options);
+        const isBareRepository = stdout.replace(/\n/g, "");
+        if (isBareRepository === "false") return removeLastDirectoryInURL(currentPath as string);
         return currentPath;
     } catch (e: any) {
         throw Error(e);

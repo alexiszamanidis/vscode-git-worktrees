@@ -6,7 +6,8 @@ import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 
 const gitWorktreeAdd = async (): Promise<void> => {
     try {
-        if (!isGitRepository()) throw new Error("This is not a git repository.");
+        const isGitRepo = await isGitRepository();
+        if (!isGitRepo) throw new Error("This is not a git repository.");
 
         const newWorktreePath = await calculateNewWorktreePath();
 
