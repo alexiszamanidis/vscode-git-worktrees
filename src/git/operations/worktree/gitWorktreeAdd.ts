@@ -1,11 +1,16 @@
+import { calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
-import { isGitRepository } from "../../../helpers/gitHelpers";
+import { isGitRepository, getRemoteBranches } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 
 const gitWorktreeAdd = async (): Promise<void> => {
     try {
         if (!isGitRepository()) throw new Error("This is not a git repository.");
+
+        const newWorktreePath = await calculateNewWorktreePath();
+
+        const remoteBranches = await getRemoteBranches();
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";
