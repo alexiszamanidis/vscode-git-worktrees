@@ -17,7 +17,8 @@
     ],
     "activationEvents": [
         "onCommand:git-worktrees.worktree.list",
-        "onCommand:git-worktrees.worktree.remove"
+        "onCommand:git-worktrees.worktree.remove",
+        "onCommand:git-worktrees.worktree.add"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -31,6 +32,11 @@
                 "category": "Git Worktree",
                 "command": "git-worktrees.worktree.remove",
                 "title": "Remove"
+            },
+            {
+                "category": "Git Worktree",
+                "command": "git-worktrees.worktree.add",
+                "title": "Add"
             }
         ]
     },
