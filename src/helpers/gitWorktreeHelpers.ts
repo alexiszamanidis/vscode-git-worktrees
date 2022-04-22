@@ -1,6 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
+import { isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
 
@@ -52,7 +53,7 @@ const getWorktreesList = (stdout: string): WorktreeList => {
 export const getWorktrees = async () => {
     const command = "git worktree list";
     const options = {
-        cwd: await getCurrentPath(),
+        cwd: getCurrentPath(),
     };
 
     try {
@@ -69,7 +70,7 @@ export const getWorktrees = async () => {
 export const pruneWorktrees = async () => {
     const command = "git worktree prune";
     const options = {
-        cwd: await getCurrentPath(),
+        cwd: getCurrentPath(),
     };
 
     try {
@@ -113,7 +114,7 @@ export const findDefaultWorktreeToMove = async (
 };
 
 export const removeWorktree = async (worktree: SelectedWorktree) => {
-    const currentPath = await getCurrentPath();
+    const currentPath = getCurrentPath();
     const isSamePath = currentPath === worktree.detail;
     const command = `git worktree remove ${worktree.label}`;
     const options = {
@@ -139,16 +140,11 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 };
 
 export const calculateNewWorktreePath = async () => {
-    const currentPath = await getCurrentPath();
-    const command = "git rev-parse --is-bare-repository";
-    const options = {
-        cwd: currentPath,
-    };
+    const currentPath = getCurrentPath();
 
     try {
-        const { stdout } = await exec(command, options);
-        const isBareRepository = stdout.replace(/\n/g, "");
-        if (isBareRepository === "false") return removeLastDirectoryInURL(currentPath as string);
+        const isBareRepo = await isBareRepository();
+        if (!isBareRepository) return removeLastDirectoryInURL(currentPath as string);
         return currentPath;
     } catch (e: any) {
         throw Error(e);

@@ -6,7 +6,7 @@ const exec = util.promisify(require("child_process").exec);
 export const isGitRepository = async (): Promise<boolean> => {
     const command = "git rev-parse --is-inside-work-tree";
     const options = {
-        cwd: await getCurrentPath(),
+        cwd: getCurrentPath(),
     };
 
     try {
@@ -22,7 +22,7 @@ export const isGitRepository = async (): Promise<boolean> => {
 };
 
 export const existsRemoteBranch = async (branch: string) => {
-    const currentPath = await getCurrentPath();
+    const currentPath = getCurrentPath();
     const command = `git ls-remote origin ${branch}`;
     const options = {
         cwd: currentPath,
@@ -38,7 +38,7 @@ export const existsRemoteBranch = async (branch: string) => {
 };
 
 export const getRemoteBranches = async () => {
-    const currentPath = await getCurrentPath();
+    const currentPath = getCurrentPath();
     const command = `git branch -r | cut -c10-`;
     const options = {
         cwd: currentPath,
@@ -47,7 +47,40 @@ export const getRemoteBranches = async () => {
     try {
         const { stdout } = await exec(command, options);
         if (!stdout) return [];
-        return stdout.split("\n").map((branch: string) => branch.trim());
+        return stdout
+            .split("\n")
+            .filter((branch: string) => branch !== "")
+            .map((branch: string) => branch.trim());
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const isBareRepository = async () => {
+    const currentPath = getCurrentPath();
+    const command = "git rev-parse --is-bare-repository";
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        const { stdout } = await exec(command, options);
+        const isBareRepo = stdout.replace(/\n/g, "");
+        return isBareRepo === "true";
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const gitFetch = async () => {
+    const currentPath = getCurrentPath();
+    const command = `git fetch --all --prune`;
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(command, options);
     } catch (e: any) {
         throw Error(e);
     }
