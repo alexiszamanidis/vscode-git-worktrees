@@ -1,6 +1,6 @@
 import { calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
-import { isGitRepository, getRemoteBranches } from "../../../helpers/gitHelpers";
+import { isGitRepository, getRemoteBranches, selectBranch } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 
@@ -12,6 +12,10 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const newWorktreePath = await calculateNewWorktreePath();
 
         const remoteBranches = await getRemoteBranches();
+
+        const remoteBranch = await selectBranch(remoteBranches);
+
+        if (!remoteBranch) return;
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

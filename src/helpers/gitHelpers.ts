@@ -1,7 +1,19 @@
 import * as util from "util";
+import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
 
 const exec = util.promisify(require("child_process").exec);
+
+export const selectBranch = async (branches: string[]): Promise<string | undefined> => {
+    const selectedBranch = await vscode.window.showQuickPick(
+        branches.map((branch) => ({ label: branch })),
+        {
+            matchOnDetail: true,
+        }
+    );
+
+    return selectedBranch?.label;
+};
 
 export const isGitRepository = async (): Promise<boolean> => {
     const command = "git rev-parse --is-inside-work-tree";
