@@ -1,5 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
+import { EXTENSION_ID } from "../constants/constants";
+import { showInformationMessage } from "./vsCodeHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -34,5 +36,36 @@ export const executeCommand = async (command: string) => {
         return { stdout };
     } catch (e: any) {
         throw Error(e);
+    }
+};
+
+export const isMajorUpdate = (previousVersion: string, currentVersion: string) => {
+    // rain-check for malformed string
+    if (previousVersion.indexOf(".") === -1) return true;
+
+    //returns int array [1,1,1] i.e. [major,minor,patch]
+    const previousVerArr = previousVersion.split(".").map(Number);
+    const currentVerArr = currentVersion.split(".").map(Number);
+
+    if (currentVerArr[0] > previousVerArr[0]) return true;
+
+    return false;
+};
+
+export const showWhatsNew = async (context: vscode.ExtensionContext) => {
+    try {
+        const previousVersion = context.globalState.get<string>(EXTENSION_ID);
+        const currentVersion = vscode.extensions.getExtension(EXTENSION_ID)!.packageJSON.version;
+
+        // store latest version
+        context.globalState.update(EXTENSION_ID, currentVersion);
+
+        if (previousVersion !== undefined && !isMajorUpdate(previousVersion, currentVersion))
+            return;
+
+        const result = await showInformationMessage(`v${currentVersion} - Git Worktree Add`);
+        if (!result) return;
+    } catch (e) {
+        console.log("showWhatsNew: Error", e);
     }
 };

@@ -7,3 +7,5 @@ export const MAIN_WORKTREES = ["master", "main", "develop", "dev", "release"];
 export const BARE_REPOSITORY = "bare";
 
 export const BARE_REPOSITORY_REMOTE_ORIGIN_FETCH = "+refs/heads/*:refs/remotes/origin/*";
+
+export const EXTENSION_ID = "gitworktrees.git-worktrees";
