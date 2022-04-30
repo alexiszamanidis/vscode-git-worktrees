@@ -84,9 +84,23 @@ export const isBareRepository = async () => {
     }
 };
 
-export const gitFetch = async () => {
+export const fetch = async () => {
     const currentPath = getCurrentPath();
     const command = `git fetch --all --prune`;
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(command, options);
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
+    const currentPath = getCurrentPath();
+    const command = `git branch -vv | awk '/: gone]/{print $1}' | awk '!/^(*|+)/' | xargs --no-run-if-empty git branch -D`;
     const options = {
         cwd: currentPath,
     };
