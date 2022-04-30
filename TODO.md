@@ -11,3 +11,5 @@
     -   If there are no other worktrees, you will be moved to the parent directory
     -   Otherwise, it will search for **main worktrees** like: `["master", "main", "develop", "dev", "release"]`, so you can be moved to them.
         -   If it **doesn't find any main worktree**, you will be moved to the first directory selected by `git worktree list`
+
+## Replace all exec commands with executeCommand function
