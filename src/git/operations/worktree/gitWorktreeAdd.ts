@@ -1,6 +1,7 @@
 import {
     addWorktree,
     calculateNewWorktreePath,
+    existsWorktree,
     getWorktrees,
 } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
@@ -10,6 +11,7 @@ import {
     isGitRepository,
     getRemoteBranches,
     removeLocalBranchesThatDoNotExistOnRemoteRepository,
+    existsRemoteBranch,
 } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import {
@@ -31,14 +33,13 @@ const gitWorktreeAdd = async (): Promise<void> => {
         await fetch();
         await removeLocalBranchesThatDoNotExistOnRemoteRepository();
 
+        const isRemoteBranch = await existsRemoteBranch(newBranch);
+        if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
+
+        const isWorktree = await existsWorktree(newBranch);
+        if (isWorktree) throw new Error(`Worktree '${newBranch}' already exists.`);
+
         const remoteBranches = await getRemoteBranches();
-        const foundBranch = remoteBranches.find((branch) => branch === newBranch);
-        if (foundBranch) throw new Error(`Branch '${foundBranch}' already exists.`);
-
-        const worktrees = await getWorktrees();
-        const foundWorktree = worktrees.find((wt) => wt.worktree === newBranch);
-        if (foundWorktree) throw new Error(`Worktree '${foundWorktree.worktree}' already exists.`);
-
         const remoteBranch = await selectBranch(remoteBranches);
         if (!remoteBranch) return;
 
