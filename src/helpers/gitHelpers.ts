@@ -1,7 +1,9 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getWorktrees } from "./gitWorktreeHelpers";
-import { getCurrentPath } from "./helpers";
+import { executeCommand, getCurrentPath } from "./helpers";
+import { BARE_REPOSITORY, BARE_REPOSITORY_REMOTE_ORIGIN_FETCH } from "../constants/constants";
+import { removeNewLine } from "./stringHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -78,15 +80,30 @@ export const isBareRepository = async () => {
 
     try {
         const { stdout } = await exec(command, options);
-        const isBareRepo = stdout.replace(/\n/g, "");
+        const isBareRepo = removeNewLine(stdout);
         return isBareRepo === "true";
     } catch (e: any) {
         throw Error(e);
     }
 };
 
-export const fetch = async () => {
+const setUpBareRepositoryFetch = async () => {
+    const { stdout } = await executeCommand("git config remote.origin.fetch");
+    const remoteOriginFetch = removeNewLine(stdout);
+    if (remoteOriginFetch === BARE_REPOSITORY_REMOTE_ORIGIN_FETCH) return;
+
+    await executeCommand(`git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`);
+};
+
+const hasBareRepository = async () => {
     const worktrees = await getWorktrees(true);
+    const hasBareRepo = worktrees.find((wt) => wt.worktree === BARE_REPOSITORY);
+    return hasBareRepo;
+};
+
+export const fetch = async () => {
+    const hasBareRepo = await hasBareRepository();
+    if (hasBareRepo) await setUpBareRepositoryFetch();
 
     const currentPath = getCurrentPath();
     const command = `git fetch --all --prune`;

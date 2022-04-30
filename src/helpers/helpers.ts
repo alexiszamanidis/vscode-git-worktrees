@@ -1,6 +1,8 @@
 import * as util from "util";
 import * as vscode from "vscode";
 
+const exec = util.promisify(require("child_process").exec);
+
 export const getCurrentPath = () => vscode.workspace.rootPath;
 
 // TODO: fix this function
@@ -19,4 +21,18 @@ const calculateBrowserStart = async () => {
 export const openBrowser = async (url = "") => {
     const start = await calculateBrowserStart();
     await require("child_process").exec(start + " " + url);
+};
+
+export const executeCommand = async (command: string) => {
+    const currentPath = getCurrentPath();
+    const options = {
+        cwd: currentPath,
+    };
+
+    try {
+        const { stdout } = await exec(command, options);
+        return { stdout };
+    } catch (e: any) {
+        throw Error(e);
+    }
 };

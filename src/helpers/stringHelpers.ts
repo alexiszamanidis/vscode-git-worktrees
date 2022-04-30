@@ -5,3 +5,7 @@ export const removeLastDirectoryInURL = (path: string): string => {
     pathParts.pop();
     return pathParts.join("/");
 };
+
+export const removeNewLine = (string: string): string => {
+    return string.replace(/\n/g, "");
+};
