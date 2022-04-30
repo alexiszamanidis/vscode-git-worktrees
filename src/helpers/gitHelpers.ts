@@ -1,5 +1,6 @@
 import * as util from "util";
 import * as vscode from "vscode";
+import { getWorktrees } from "./gitWorktreeHelpers";
 import { getCurrentPath } from "./helpers";
 
 const exec = util.promisify(require("child_process").exec);
@@ -85,6 +86,8 @@ export const isBareRepository = async () => {
 };
 
 export const fetch = async () => {
+    const worktrees = await getWorktrees(true);
+
     const currentPath = getCurrentPath();
     const command = `git fetch --all --prune`;
     const options = {

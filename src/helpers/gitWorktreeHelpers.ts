@@ -34,7 +34,7 @@ const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList 
         worktree: removeFirstAndLastCharacter(worktree[2]),
     }));
 
-const getWorktreesList = (stdout: string): WorktreeList => {
+const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList => {
     let splitWorktrees: Array<FilteredWorktree> = [];
 
     stdout.split("\n").forEach((worktree: string) => {
@@ -44,13 +44,18 @@ const getWorktreesList = (stdout: string): WorktreeList => {
         // ignore: path-(bare)
         if (filteredWt.length === 3) {
             splitWorktrees.push(filteredWt as FilteredWorktree);
+        } else if (withBareRepo && filteredWt.length === 2) {
+            const path = filteredWt[0];
+            const hash = "";
+            const worktree = filteredWt[1];
+            splitWorktrees.push([path, hash, worktree] as FilteredWorktree);
         }
     });
 
     return formatWorktrees(splitWorktrees);
 };
 
-export const getWorktrees = async () => {
+export const getWorktrees = async (withBareRepo = false) => {
     const command = "git worktree list";
     const options = {
         cwd: getCurrentPath(),
@@ -59,7 +64,7 @@ export const getWorktrees = async () => {
     try {
         const { stdout } = await exec(command, options);
 
-        const worktrees = await getWorktreesList(stdout);
+        const worktrees = await getWorktreesList(stdout, withBareRepo);
 
         return worktrees;
     } catch (e: any) {
