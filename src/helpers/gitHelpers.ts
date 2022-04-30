@@ -12,6 +12,7 @@ export const selectBranch = async (branches: string[]): Promise<string | undefin
         branches.map((branch) => ({ label: branch })),
         {
             matchOnDetail: true,
+            placeHolder: "Select Remote Branch",
         }
     );
 
