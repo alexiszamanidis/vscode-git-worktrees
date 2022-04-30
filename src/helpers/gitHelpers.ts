@@ -89,11 +89,22 @@ export const isBareRepository = async () => {
 };
 
 const setUpBareRepositoryFetch = async () => {
-    const { stdout } = await executeCommand("git config remote.origin.fetch");
-    const remoteOriginFetch = removeNewLine(stdout);
-    if (remoteOriginFetch === BARE_REPOSITORY_REMOTE_ORIGIN_FETCH) return;
+    try {
+        const { stdout } = await executeCommand("git config remote.origin.fetch");
+        const remoteOriginFetch = removeNewLine(stdout);
+        if (remoteOriginFetch === BARE_REPOSITORY_REMOTE_ORIGIN_FETCH) return;
 
-    await executeCommand(`git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`);
+        await executeCommand(
+            `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
+        );
+    } catch (e: any) {
+        // if this repository is bare,
+        // then 'git config remote.origin.fetch' command fails
+        // and we need to set the remote.origin.fetch
+        await executeCommand(
+            `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
+        );
+    }
 };
 
 const hasBareRepository = async () => {
