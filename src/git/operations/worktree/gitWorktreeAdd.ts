@@ -2,7 +2,7 @@ import { calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { isGitRepository, getRemoteBranches, selectBranch } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
+import { getUserInput, showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 
 const gitWorktreeAdd = async (): Promise<void> => {
     try {
@@ -16,6 +16,14 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const remoteBranch = await selectBranch(remoteBranches);
 
         if (!remoteBranch) return;
+
+        const newBranch = await getUserInput("New branch", "Type the name of the new branch");
+
+        if (!newBranch) return;
+
+        const foundBranch = remoteBranches.find((branch) => branch === newBranch);
+
+        if (foundBranch) throw new Error(`Branch '${newBranch}' already exists.`);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

@@ -49,7 +49,7 @@ export const existsRemoteBranch = async (branch: string) => {
     }
 };
 
-export const getRemoteBranches = async () => {
+export const getRemoteBranches = async (): Promise<string[]> => {
     const currentPath = getCurrentPath();
     const command = `git branch -r | cut -c10-`;
     const options = {
