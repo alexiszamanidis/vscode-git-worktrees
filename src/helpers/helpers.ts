@@ -63,7 +63,9 @@ export const showWhatsNew = async (context: vscode.ExtensionContext) => {
         if (previousVersion !== undefined && !isMajorUpdate(previousVersion, currentVersion))
             return;
 
-        const result = await showInformationMessage(`v${currentVersion} - Git Worktree Add`);
+        const result = await showInformationMessage(
+            `v${currentVersion} - Git Worktree Add Feature is now available!`
+        );
         if (!result) return;
     } catch (e) {
         console.log("showWhatsNew: Error", e);
