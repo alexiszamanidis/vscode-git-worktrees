@@ -1,7 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
-import { EXTENSION_ID } from "../constants/constants";
-import { showInformationMessage } from "./vsCodeHelpers";
+import { EXTENSION_ID, DEMO_URL } from "../constants/constants";
+import { showInformationMessageWithButton } from "./vsCodeHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -62,11 +62,16 @@ export const showWhatsNew = async (context: vscode.ExtensionContext) => {
 
         if (previousVersion !== undefined && !isMajorUpdate(previousVersion, currentVersion))
             return;
+        const buttonName = "View Demo";
 
-        const result = await showInformationMessage(
-            `v${currentVersion} - Git Worktree Add Feature is now available!`
+        const answer = await showInformationMessageWithButton(
+            `v${currentVersion} - Git Worktree Add Feature is now available!`,
+            buttonName
         );
-        if (!result) return;
+
+        if (answer !== buttonName) return;
+
+        await openBrowser(DEMO_URL);
     } catch (e) {
         console.log("showWhatsNew: Error", e);
     }

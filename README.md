@@ -12,6 +12,10 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 ### Supported operations
 
+-   `git worktree add [new-branch] [remote-branch]`
+
+    Create a new worktree
+
 -   `git worktree list`
 
     Display all worktrees and switch between them
@@ -33,7 +37,11 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 -   Search for any available operations
     -   Prefix: `Git Worktree: `
 
-### Features/Operations
+### Features/Operations/Error
+
+-   **Worktree Add (Create)**
+
+![worktree-add](https://user-images.githubusercontent.com/48658768/166122708-e09b1f00-1797-4297-b7c5-6e624f7d4c64.gif)
 
 -   **Worktree List (Switch)**
 
