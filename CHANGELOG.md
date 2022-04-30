@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.3] - 2022-05-01
+
+### Added
+
+-   Git Worktree Add: Add(Handle) remote branch
+
 ## [1.0.2] - 2022-05-01
 
 ### Updated
