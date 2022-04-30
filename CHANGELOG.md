@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.4] - 2022-05-01
+
+### Fixed
+
+-   Bare repository fetch setup
+
 ## [1.0.3] - 2022-05-01
 
 ### Added
