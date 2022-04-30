@@ -127,10 +127,11 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     };
 
     try {
-        if (isSamePath)
+        if (isSamePath) {
             throw new Error(
                 "You cannot delete the same Worktree as the one you are currently working on"
             );
+        }
         const { stdout } = await exec(command, options);
 
         // const defaultWorktree = await findDefaultWorktreeToMove(worktree);
@@ -173,9 +174,10 @@ export const existsWorktree = async (worktree: string) => {
     }
 };
 
-export const addWorktree = async (remoteBranch: string, newBranch: string, path: string) => {
+export const addNewWorktree = async (remoteBranch: string, newBranch: string) => {
+    const newWorktreePath = await calculateNewWorktreePath(newBranch);
     const currentPath = getCurrentPath();
-    const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${path} origin/${remoteBranch}`;
+    const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
     const worktreeAddOptions = {
         cwd: currentPath,
     };
@@ -198,9 +200,62 @@ export const addWorktree = async (remoteBranch: string, newBranch: string, path:
     }
 
     try {
-        await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(path), {
-            forceNewWindow: false,
-        });
+        await vscode.commands.executeCommand(
+            "vscode.openFolder",
+            vscode.Uri.file(newWorktreePath),
+            {
+                forceNewWindow: false,
+            }
+        );
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const addRemoteWorktree = async (remoteBranch: string, newBranch: string) => {
+    const newWorktreePath = await calculateNewWorktreePath(newBranch);
+    const currentPath = getCurrentPath();
+    const worktreeAddCommand = `git worktree add ${newWorktreePath}`;
+    const worktreeAddOptions = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(worktreeAddCommand, worktreeAddOptions);
+    } catch (e: any) {
+        throw Error(e);
+    }
+
+    const connectBranchCommand = `git branch --set-upstream-to=origin/${newBranch} ${newBranch}`;
+    const connectBranchOptions = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(connectBranchCommand, connectBranchOptions);
+    } catch (e: any) {
+        throw Error(e);
+    }
+
+    const pullCommand = `git -C ${newWorktreePath} pull`;
+    const pullOptions = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(pullCommand, pullOptions);
+    } catch (e: any) {
+        throw Error(e);
+    }
+
+    try {
+        await vscode.commands.executeCommand(
+            "vscode.openFolder",
+            vscode.Uri.file(newWorktreePath),
+            {
+                forceNewWindow: false,
+            }
+        );
     } catch (e: any) {
         throw Error(e);
     }
