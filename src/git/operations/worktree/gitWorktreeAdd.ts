@@ -1,4 +1,4 @@
-import { calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
+import { addWorktree, calculateNewWorktreePath } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { isGitRepository, getRemoteBranches, selectBranch } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
@@ -8,8 +8,6 @@ const gitWorktreeAdd = async (): Promise<void> => {
     try {
         const isGitRepo = await isGitRepository();
         if (!isGitRepo) throw new Error("This is not a git repository.");
-
-        const newWorktreePath = await calculateNewWorktreePath();
 
         const remoteBranches = await getRemoteBranches();
 
@@ -24,6 +22,10 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const foundBranch = remoteBranches.find((branch) => branch === newBranch);
 
         if (foundBranch) throw new Error(`Branch '${newBranch}' already exists.`);
+
+        const newWorktreePath = await calculateNewWorktreePath(newBranch);
+
+        await addWorktree(remoteBranch, newBranch, newWorktreePath);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

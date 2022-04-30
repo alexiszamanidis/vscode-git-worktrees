@@ -139,13 +139,19 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     }
 };
 
-export const calculateNewWorktreePath = async () => {
+export const calculateNewWorktreePath = async (branch: string) => {
     const currentPath = getCurrentPath();
+
+    let path = currentPath;
 
     try {
         const isBareRepo = await isBareRepository();
-        if (!isBareRepository) return removeLastDirectoryInURL(currentPath as string);
-        return currentPath;
+
+        if (!isBareRepo) path = removeLastDirectoryInURL(currentPath as string);
+
+        path = `${path}/${branch}`;
+
+        return path;
     } catch (e: any) {
         throw Error(e);
     }
@@ -157,6 +163,39 @@ export const existsWorktree = async (worktree: string) => {
         const foundWorktree = worktrees.find((wt) => wt.worktree === worktree);
         if (!foundWorktree) return false;
         return true;
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const addWorktree = async (remoteBranch: string, newBranch: string, path: string) => {
+    const currentPath = getCurrentPath();
+    const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${path} origin/${remoteBranch}`;
+    const worktreeAddOptions = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(worktreeAddCommand, worktreeAddOptions);
+    } catch (e: any) {
+        throw Error(e);
+    }
+
+    const pushCommand = `git push --set-upstream origin ${newBranch}`;
+    const pushOptions = {
+        cwd: currentPath,
+    };
+
+    try {
+        await exec(pushCommand, pushOptions);
+    } catch (e: any) {
+        throw Error(e);
+    }
+
+    try {
+        await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(path), {
+            forceNewWindow: false,
+        });
     } catch (e: any) {
         throw Error(e);
     }
