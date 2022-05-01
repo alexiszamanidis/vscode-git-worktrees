@@ -1,4 +1,4 @@
-# Git Worktrees
+# VS Code Git Worktrees
 
 A Wrapper for Git Worktree Operations that provides an interactive API so developers can have a better experience.
 
