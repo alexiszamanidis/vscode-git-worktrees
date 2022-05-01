@@ -36,8 +36,11 @@ const gitWorktreeAdd = async (): Promise<void> => {
         await removeLocalBranchesThatDoNotExistOnRemoteRepository();
 
         const remoteBranches = await getRemoteBranches();
-        const remoteBranch = await selectBranch(remoteBranches);
-        if (!remoteBranch) return;
+        let remoteBranch = await selectBranch(remoteBranches);
+        // if the user didn't select a remote branch, we assign the new branch as the remote branch
+        if (!remoteBranch) {
+            remoteBranch = newBranch;
+        }
 
         const isSameBranch = remoteBranch === newBranch;
 
