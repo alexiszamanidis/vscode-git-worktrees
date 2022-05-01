@@ -45,7 +45,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 -   **Worktree Add (Create)**
 
-![worktree-add](https://user-images.githubusercontent.com/48658768/166122708-e09b1f00-1797-4297-b7c5-6e624f7d4c64.gif)
+![worktree-add](https://user-images.githubusercontent.com/48658768/166140848-f58e7cd6-17c1-4ed6-a29f-2295518b39da.gif)
 
 -   **Worktree List (Switch)**
 
