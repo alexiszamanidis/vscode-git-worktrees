@@ -16,6 +16,10 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
     Create a new worktree
 
+    **Behavior**
+
+    -   If you do not select a remote branch(`ESC`), you will create a new worktree with the new branch you typed. This was made for convenience, instead of having `git worktree add master master`, you can just run `git worktree add master`.
+
 -   `git worktree list`
 
     Display all worktrees and switch between them
