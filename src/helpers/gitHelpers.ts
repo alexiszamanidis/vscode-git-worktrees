@@ -55,7 +55,7 @@ export const existsRemoteBranch = async (branch: string) => {
 
 export const getRemoteBranches = async (): Promise<string[]> => {
     const currentPath = getCurrentPath();
-    const command = `git branch -r | cut -c10-`;
+    const command = `git branch -r`;
     const options = {
         cwd: currentPath,
     };
@@ -65,7 +65,10 @@ export const getRemoteBranches = async (): Promise<string[]> => {
         if (!stdout) return [];
         return stdout
             .split("\n")
-            .filter((branch: string) => branch !== "")
+            .filter((line: string) => line !== "")
+            .filter((line: string) => !line.includes("->")) // exclude "  origin/HEAD -> origin/master"
+            .filter((line: string) => line.startsWith("  origin/"))
+            .map((line: string) => line.substring("  origin/".length))
             .map((branch: string) => branch.trim());
     } catch (e: any) {
         throw Error(e);
@@ -132,13 +135,28 @@ export const fetch = async () => {
 
 export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
     const currentPath = getCurrentPath();
-    const command = `git branch -vv | awk '/: gone]/{print $1}' | awk '!/^(*|+)/' | xargs --no-run-if-empty git branch -D`;
+    const command = `git branch -vv`;
     const options = {
         cwd: currentPath,
     };
 
     try {
-        await exec(command, options);
+        const { stdout } = await exec(command, options);
+        if (!stdout) return;
+
+        const localBranchesThatDoNotExistOnRemoteRepository = stdout
+            .split("\n")
+            .filter((line: string) => line.includes(": gone]"))
+            .filter((line: string) => !line.match(/^[\*\+]/))
+            .map((line: string) => line.trim())
+            .map((line: string) => line.split(" ")[0]);
+
+        if (localBranchesThatDoNotExistOnRemoteRepository.length === 0) return;
+
+        await exec(
+            `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`,
+            options
+        );
     } catch (e: any) {
         throw Error(e);
     }
