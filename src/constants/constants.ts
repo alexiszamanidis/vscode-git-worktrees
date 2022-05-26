@@ -11,4 +11,4 @@ export const BARE_REPOSITORY_REMOTE_ORIGIN_FETCH = "+refs/heads/*:refs/remotes/o
 export const EXTENSION_ID = "gitworktrees.git-worktrees";
 
 export const DEMO_URL =
-    "https://github.com/alexiszamanidis/vscode-git-worktrees#featuresoperations";
+    "https://github.com/alexiszamanidis/vscode-git-worktrees#featuresoperationserror";
