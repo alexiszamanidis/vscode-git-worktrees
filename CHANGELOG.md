@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.8] - 2022-05-31
+
+### Added
+
+-   Add `vsCodeGitWorktrees.remove.stalledBranches` property
+
 ## [1.0.8] - 2022-05-28
 
 ### Added
