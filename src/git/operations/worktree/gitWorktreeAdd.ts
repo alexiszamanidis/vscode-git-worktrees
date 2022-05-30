@@ -12,7 +12,11 @@ import {
     removeLocalBranchesThatDoNotExistOnRemoteRepository,
     existsRemoteBranch,
 } from "../../../helpers/gitHelpers";
-import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
+import {
+    copyToClipboard,
+    openBrowser,
+    shouldRemoveStalledBranches,
+} from "../../../helpers/helpers";
 import {
     getUserInput,
     showErrorMessageWithButton,
@@ -33,7 +37,10 @@ const gitWorktreeAdd = async (): Promise<void> => {
         showInformationMessage("Calculating remote branches to suggest you...");
 
         await fetch();
-        await removeLocalBranchesThatDoNotExistOnRemoteRepository();
+
+        if (shouldRemoveStalledBranches) {
+            await removeLocalBranchesThatDoNotExistOnRemoteRepository();
+        }
 
         const remoteBranches = await getRemoteBranches();
         let remoteBranch = await selectBranch(remoteBranches);

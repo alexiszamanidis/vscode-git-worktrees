@@ -63,6 +63,12 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 ![error](https://user-images.githubusercontent.com/48658768/160239217-c915cf20-9e03-49cb-be3b-9a4b691cf189.gif)
 
+## Properties
+
+| Property                                  | Type    | Default value | Description                                                 |
+| ----------------------------------------- | ------- | ------------- | ----------------------------------------------------------- |
+| vsCodeGitWorktrees.remove.stalledBranches | boolean | false         | Removes local(stalled) branches that do not exist on remote |
+
 ## Contribution
 
 -   Reporting a bug

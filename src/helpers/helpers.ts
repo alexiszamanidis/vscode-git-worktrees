@@ -76,3 +76,6 @@ export const showWhatsNew = async (context: vscode.ExtensionContext) => {
         console.log("showWhatsNew: Error", e);
     }
 };
+
+export const shouldRemoveStalledBranches =
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.remove.stalledBranches") ?? false;

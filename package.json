@@ -38,6 +38,19 @@
                 "command": "git-worktrees.worktree.add",
                 "title": "Add"
             }
+        ],
+        "configuration": [
+            {
+                "id": "stalled-branches",
+                "title": "Stalled branches",
+                "properties": {
+                    "vsCodeGitWorktrees.remove.stalledBranches": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Removes local(stalled) branches that do not exist on remote"
+                    }
+                }
+            }
         ]
     },
     "scripts": {
