@@ -1,7 +1,7 @@
 import * as util from "util";
 import * as vscode from "vscode";
 import { getCurrentPath } from "./helpers";
-import { isBareRepository } from "./gitHelpers";
+import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
 
@@ -175,6 +175,9 @@ export const existsWorktree = async (worktree: string) => {
 };
 
 export const addNewWorktree = async (remoteBranch: string, newBranch: string) => {
+    const isRemoteBranch = await existsRemoteBranch(newBranch);
+    if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
+
     const newWorktreePath = await calculateNewWorktreePath(newBranch);
     const currentPath = getCurrentPath();
     const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
@@ -213,6 +216,9 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
 };
 
 export const addRemoteWorktree = async (remoteBranch: string, newBranch: string) => {
+    const isRemoteBranch = await existsRemoteBranch(remoteBranch);
+    if (!isRemoteBranch) throw new Error(`Branch '${newBranch}' does not exist.`);
+
     const newWorktreePath = await calculateNewWorktreePath(newBranch);
     const currentPath = getCurrentPath();
     const worktreeAddCommand = `git worktree add ${newWorktreePath}`;

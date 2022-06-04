@@ -10,7 +10,6 @@ import {
     isGitRepository,
     getRemoteBranches,
     removeLocalBranchesThatDoNotExistOnRemoteRepository,
-    existsRemoteBranch,
 } from "../../../helpers/gitHelpers";
 import {
     copyToClipboard,
@@ -49,17 +48,15 @@ const gitWorktreeAdd = async (): Promise<void> => {
             remoteBranch = newBranch;
         }
 
-        const isSameBranch = remoteBranch === newBranch;
-
-        if (!isSameBranch) {
-            const isRemoteBranch = await existsRemoteBranch(newBranch);
-            if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
-        }
-
         showInformationMessage(`Creating new Worktree named '${newBranch}'...`);
 
-        if (isSameBranch) await addRemoteWorktree(remoteBranch, newBranch);
-        await addNewWorktree(remoteBranch, newBranch);
+        const isSameBranch = remoteBranch === newBranch;
+
+        if (isSameBranch) {
+            await addRemoteWorktree(remoteBranch, newBranch);
+        } else {
+            await addNewWorktree(remoteBranch, newBranch);
+        }
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";
