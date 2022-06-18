@@ -13,3 +13,13 @@
         -   If it **doesn't find any main worktree**, you will be moved to the first directory selected by `git worktree list`
 
 ## Replace all exec commands with executeCommand function
+
+## Add better GIFs(Replace already existing GIFs)
+
+## Add tests
+
+## Is there a way to implement the on_worktree_change feature?
+
+Refs:
+
+-   [zsh_git_fzf_on_worktree_change](https://github.com/alexiszamanidis/zsh-git-fzf#worktree-on-change-feature)

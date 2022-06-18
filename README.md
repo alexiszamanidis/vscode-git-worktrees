@@ -76,6 +76,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 -   Writing tests
 -   Sharing this project and recommending it to your friends
 -   Giving a star on this repository
+-   [TODO](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/TODO.md)
 
 **Run the Extension locally**
 
@@ -84,7 +85,9 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 yarn
 # compile code and watch input files
 yarn watch
-# Then, inside the editor, press F5. This will compile and run the extension in a new Extension Development Host window.
+# Then, inside the editor, press F5. This will
+# compile and run the extension in a new Extension
+# Development Host window.
 ```
 
 ## License
