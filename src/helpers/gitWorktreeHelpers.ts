@@ -4,6 +4,7 @@ import { getCurrentPath } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
+import { showInformationMessageWithButton } from "./vsCodeHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -118,22 +119,26 @@ export const findDefaultWorktreeToMove = async (
     }
 };
 
+// TODO: refactor this function
 export const removeWorktree = async (worktree: SelectedWorktree) => {
     const currentPath = getCurrentPath();
     const isSamePath = currentPath === worktree.detail;
-    const command = `git worktree remove ${worktree.label}`;
+    const branch = worktree.label;
+    const command = `git worktree remove ${branch}`;
     const options = {
         cwd: currentPath,
     };
 
-    try {
-        if (isSamePath) {
-            throw new Error(
-                "You cannot delete the same Worktree as the one you are currently working on"
-            );
-        }
-        const { stdout } = await exec(command, options);
+    // TODO: something bad happens with paths!!!
+    if (isSamePath) {
+        throw new Error(
+            "You cannot delete the same Worktree as the one you are currently working on"
+        );
+    }
 
+    try {
+        const { stdout } = await exec(command, options);
+        await pruneWorktrees();
         // const defaultWorktree = await findDefaultWorktreeToMove(worktree);
         // const { stdout } = await exec(command, options);
 
@@ -141,7 +146,32 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
         // await moveIntoWorktree(defaultWorktree);
     } catch (e: any) {
-        throw Error(e);
+        const errorMessage = e.message;
+
+        // TODDO: add all cases that the user might want to force delete
+        const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${branch}\nfatal: '${branch}' contains modified or untracked files, use --force to delete it\n`;
+
+        const isUntrackedOrModifiedFilesError = errorMessage === untrackedOrModifiedFilesError;
+
+        if (!isUntrackedOrModifiedFilesError) throw Error(e);
+
+        const buttonName = "Force Delete";
+
+        const answer = await showInformationMessageWithButton(
+            `fatal: '${branch}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the branch.`,
+            buttonName
+        );
+
+        if (answer !== buttonName) return;
+
+        const forceCommand = `git worktree remove -f ${branch}`;
+        try {
+            const { stdout } = await exec(forceCommand, options);
+
+            await pruneWorktrees();
+        } catch (err: any) {
+            throw Error(err);
+        }
     }
 };
 

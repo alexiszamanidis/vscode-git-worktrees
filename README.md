@@ -28,6 +28,11 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
     Remove a worktree
 
+    **Behavior**
+
+    -   If you have untracked or modified files a Popup will be shown at the bottom left of the screen.
+        -   If you want to force delete the worktree with the untracked or modified files, just click `Force delete` on the Popup
+
     **Restrictions**
 
     -   You cannot delete the same Worktree as the one you are currently working on

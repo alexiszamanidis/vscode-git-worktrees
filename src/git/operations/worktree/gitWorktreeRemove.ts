@@ -2,12 +2,7 @@ import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { showErrorMessageWithButton, showInformationMessage } from "../../../helpers/vsCodeHelpers";
-import {
-    selectWorktree,
-    getWorktrees,
-    removeWorktree,
-    pruneWorktrees,
-} from "../../../helpers/gitWorktreeHelpers";
+import { selectWorktree, getWorktrees, removeWorktree } from "../../../helpers/gitWorktreeHelpers";
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {
@@ -21,8 +16,6 @@ const gitWorktreeRemove = async (): Promise<void> => {
         if (!worktree) return;
 
         await removeWorktree(worktree);
-
-        await pruneWorktrees();
 
         await showInformationMessage(`Worktree named '${worktree.label}' was removed successfully`);
     } catch (e: any) {

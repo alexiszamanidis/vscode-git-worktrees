@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.11] - 2022-07-02
+
+### Added
+
+-   Add force remove for untracked or modified files
+
 ## [1.0.10] - 2022-06-05
 
 ### Added
