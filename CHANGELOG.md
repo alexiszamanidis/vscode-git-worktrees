@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.15] - 2022-08-17
+
+### Added
+
+-   Add `vsCodeGitWorktrees.move.openNewVscodeWindow` property
+
 ## [1.0.11] - 2022-07-02
 
 ### Added

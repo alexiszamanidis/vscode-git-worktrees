@@ -70,9 +70,10 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 ## Properties
 
-| Property                                  | Type    | Default value | Description                                                 |
-| ----------------------------------------- | ------- | ------------- | ----------------------------------------------------------- |
-| vsCodeGitWorktrees.remove.stalledBranches | boolean | false         | Removes local(stalled) branches that do not exist on remote |
+| Property                                    | Type    | Default value | Description                                                 |
+| ------------------------------------------- | ------- | ------------- | ----------------------------------------------------------- |
+| vsCodeGitWorktrees.remove.stalledBranches   | boolean | false         | Removes local(stalled) branches that do not exist on remote |
+| vsCodeGitWorktrees.move.openNewVscodeWindow | boolean | false         | Open new vscode window when you switch or create a worktree |
 
 ## Contribution
 

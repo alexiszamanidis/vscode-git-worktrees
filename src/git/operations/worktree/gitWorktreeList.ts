@@ -19,7 +19,7 @@ const gitWorktreeList = async (): Promise<void> => {
 
         if (!worktree) return;
 
-        await moveIntoWorktree(worktree);
+        await moveIntoWorktree(worktree.detail);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

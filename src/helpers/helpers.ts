@@ -79,3 +79,6 @@ export const showWhatsNew = async (context: vscode.ExtensionContext) => {
 
 export const shouldRemoveStalledBranches =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.remove.stalledBranches") ?? false;
+
+export const shouldOpenNewVscodeWindow =
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.openNewVscodeWindow") ?? false;

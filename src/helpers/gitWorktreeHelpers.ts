@@ -1,6 +1,6 @@
 import * as util from "util";
 import * as vscode from "vscode";
-import { getCurrentPath } from "./helpers";
+import { getCurrentPath, shouldOpenNewVscodeWindow } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
@@ -23,9 +23,9 @@ export const selectWorktree = async (
         }
     );
 
-export const moveIntoWorktree = async (worktree: SelectedWorktree): Promise<void> =>
-    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktree.detail), {
-        forceNewWindow: false,
+export const moveIntoWorktree = async (worktreePath: string): Promise<void> =>
+    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktreePath), {
+        forceNewWindow: shouldOpenNewVscodeWindow,
     });
 
 const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList =>
@@ -144,6 +144,7 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
         // if (!isSamePath) return;
 
+        // TODO: care moveIntoWorktree node needs a path as a parameter
         // await moveIntoWorktree(defaultWorktree);
     } catch (e: any) {
         const errorMessage = e.message;
@@ -233,13 +234,7 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
     }
 
     try {
-        await vscode.commands.executeCommand(
-            "vscode.openFolder",
-            vscode.Uri.file(newWorktreePath),
-            {
-                forceNewWindow: false,
-            }
-        );
+        await moveIntoWorktree(newWorktreePath);
     } catch (e: any) {
         throw Error(e);
     }
@@ -285,13 +280,7 @@ export const addRemoteWorktree = async (remoteBranch: string, newBranch: string)
     }
 
     try {
-        await vscode.commands.executeCommand(
-            "vscode.openFolder",
-            vscode.Uri.file(newWorktreePath),
-            {
-                forceNewWindow: false,
-            }
-        );
+        await moveIntoWorktree(newWorktreePath);
     } catch (e: any) {
         throw Error(e);
     }

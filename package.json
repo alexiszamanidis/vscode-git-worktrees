@@ -3,7 +3,7 @@
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
     "description": "A Wrapper for Git Worktree Operations that provides an interactive API so developers have a better experience",
-    "version": "1.0.11",
+    "version": "1.0.15",
     "icon": "images/logo.png",
     "repository": {
         "type": "git",
@@ -48,6 +48,17 @@
                         "type": "boolean",
                         "default": false,
                         "description": "Removes local(stalled) branches that do not exist on remote"
+                    }
+                }
+            },
+            {
+                "id": "open-new-vscode-window",
+                "title": "Open new Vscode window",
+                "properties": {
+                    "vsCodeGitWorktrees.move.openNewVscodeWindow": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Open new vscode window when you switch or create a worktree"
                     }
                 }
             }
