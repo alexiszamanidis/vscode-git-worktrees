@@ -22,4 +22,4 @@
 
 Refs:
 
--   [zsh_git_fzf_on_worktree_change](https://github.com/alexiszamanidis/zsh-git-fzf#worktree-on-change-feature)
+-   [zsh_git_fzf_on_worktree_operation](https://github.com/alexiszamanidis/zsh-git-fzf#hooks)
