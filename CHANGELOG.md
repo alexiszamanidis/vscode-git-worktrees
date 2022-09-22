@@ -2,7 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
-## [1.0.15] - 2022-08-17
+## [1.0.16] - 2022-09-22
+
+### Updated
+
+-   Enhance new worktree path calculation
+    -   Calculate the path based on the top level git directory
 
 ### Added
 
