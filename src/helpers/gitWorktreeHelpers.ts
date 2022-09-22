@@ -1,6 +1,6 @@
 import * as util from "util";
 import * as vscode from "vscode";
-import { getCurrentPath, shouldOpenNewVscodeWindow } from "./helpers";
+import { executeCommand, getCurrentPath, shouldOpenNewVscodeWindow } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
@@ -184,7 +184,10 @@ export const calculateNewWorktreePath = async (branch: string) => {
     try {
         const isBareRepo = await isBareRepository();
 
-        if (!isBareRepo) path = removeLastDirectoryInURL(currentPath as string);
+        if (!isBareRepo) {
+            const { stdout: topLevelPath } = await executeCommand("git rev-parse --show-toplevel");
+            path = removeLastDirectoryInURL(topLevelPath as string);
+        }
 
         path = `${path}/${branch}`;
 
