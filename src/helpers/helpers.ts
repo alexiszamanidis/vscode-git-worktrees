@@ -35,7 +35,8 @@ export const executeCommand = async (command: string) => {
         const { stdout } = await exec(command, options);
         return { stdout };
     } catch (e: any) {
-        throw Error(e);
+        const errorMessage = `command: '${command}'. Error: '${e.message}'`;
+        throw Error(errorMessage);
     }
 };
 

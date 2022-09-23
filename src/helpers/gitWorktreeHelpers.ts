@@ -58,14 +58,11 @@ const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList =>
 
 export const getWorktrees = async (withBareRepo = false) => {
     const command = "git worktree list";
-    const options = {
-        cwd: getCurrentPath(),
-    };
 
     try {
-        const { stdout } = await exec(command, options);
+        const { stdout } = await executeCommand(command);
 
-        const worktrees = await getWorktreesList(stdout, withBareRepo);
+        const worktrees = getWorktreesList(stdout, withBareRepo);
 
         return worktrees;
     } catch (e: any) {
@@ -75,12 +72,9 @@ export const getWorktrees = async (withBareRepo = false) => {
 
 export const pruneWorktrees = async () => {
     const command = "git worktree prune";
-    const options = {
-        cwd: getCurrentPath(),
-    };
 
     try {
-        await exec(command, options);
+        await executeCommand(command);
     } catch (e: any) {
         throw Error(e);
     }
