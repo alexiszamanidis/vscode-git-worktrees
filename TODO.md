@@ -18,6 +18,8 @@
 
 ## Add tests
 
+## Add typescript path aliases
+
 ## Is there a way to implement the on_worktree_change feature?
 
 Refs:
