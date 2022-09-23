@@ -57,10 +57,10 @@ const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList =>
 };
 
 export const getWorktrees = async (withBareRepo = false) => {
-    const command = "git worktree list";
+    const listWorktreesCommand = "git worktree list";
 
     try {
-        const { stdout } = await executeCommand(command);
+        const { stdout } = await executeCommand(listWorktreesCommand);
 
         const worktrees = getWorktreesList(stdout, withBareRepo);
 
@@ -71,10 +71,10 @@ export const getWorktrees = async (withBareRepo = false) => {
 };
 
 export const pruneWorktrees = async () => {
-    const command = "git worktree prune";
+    const pruneWorktreesCommand = "git worktree prune";
 
     try {
-        await executeCommand(command);
+        await executeCommand(pruneWorktreesCommand);
     } catch (e: any) {
         throw Error(e);
     }
@@ -118,10 +118,7 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     const currentPath = getCurrentPath();
     const isSamePath = currentPath === worktree.detail;
     const branch = worktree.label;
-    const command = `git worktree remove ${branch}`;
-    const options = {
-        cwd: currentPath,
-    };
+    const removeWorktreeCommand = `git worktree remove ${branch}`;
 
     // TODO: something bad happens with paths!!!
     if (isSamePath) {
@@ -131,15 +128,8 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     }
 
     try {
-        const { stdout } = await exec(command, options);
+        await executeCommand(removeWorktreeCommand);
         await pruneWorktrees();
-        // const defaultWorktree = await findDefaultWorktreeToMove(worktree);
-        // const { stdout } = await exec(command, options);
-
-        // if (!isSamePath) return;
-
-        // TODO: care moveIntoWorktree node needs a path as a parameter
-        // await moveIntoWorktree(defaultWorktree);
     } catch (e: any) {
         const errorMessage = e.message;
 
@@ -161,7 +151,7 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
         const forceCommand = `git worktree remove -f ${branch}`;
         try {
-            const { stdout } = await exec(forceCommand, options);
+            await executeCommand(forceCommand);
 
             await pruneWorktrees();
         } catch (err: any) {
@@ -179,7 +169,8 @@ export const calculateNewWorktreePath = async (branch: string) => {
         const isBareRepo = await isBareRepository();
 
         if (!isBareRepo) {
-            const { stdout: topLevelPath } = await executeCommand("git rev-parse --show-toplevel");
+            const getTopLevelPathCommand = "git rev-parse --show-toplevel";
+            const { stdout: topLevelPath } = await executeCommand(getTopLevelPathCommand);
             path = removeLastDirectoryInURL(topLevelPath as string);
         }
 
@@ -207,30 +198,14 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
     if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
 
     const newWorktreePath = await calculateNewWorktreePath(newBranch);
-    const currentPath = getCurrentPath();
-    const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
-    const worktreeAddOptions = {
-        cwd: currentPath,
-    };
 
     try {
-        await exec(worktreeAddCommand, worktreeAddOptions);
-    } catch (e: any) {
-        throw Error(e);
-    }
+        const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
+        await executeCommand(worktreeAddCommand);
 
-    const pushCommand = `git push --set-upstream origin ${newBranch}`;
-    const pushOptions = {
-        cwd: currentPath,
-    };
+        const pushCommand = `git push --set-upstream origin ${newBranch}`;
+        await executeCommand(pushCommand);
 
-    try {
-        await exec(pushCommand, pushOptions);
-    } catch (e: any) {
-        throw Error(e);
-    }
-
-    try {
         await moveIntoWorktree(newWorktreePath);
     } catch (e: any) {
         throw Error(e);
@@ -242,41 +217,17 @@ export const addRemoteWorktree = async (remoteBranch: string, newBranch: string)
     if (!isRemoteBranch) throw new Error(`Branch '${newBranch}' does not exist.`);
 
     const newWorktreePath = await calculateNewWorktreePath(newBranch);
-    const currentPath = getCurrentPath();
-    const worktreeAddCommand = `git worktree add ${newWorktreePath}`;
-    const worktreeAddOptions = {
-        cwd: currentPath,
-    };
 
     try {
-        await exec(worktreeAddCommand, worktreeAddOptions);
-    } catch (e: any) {
-        throw Error(e);
-    }
+        const worktreeAddCommand = `git worktree add ${newWorktreePath}`;
+        await executeCommand(worktreeAddCommand);
 
-    const connectBranchCommand = `git branch --set-upstream-to=origin/${newBranch} ${newBranch}`;
-    const connectBranchOptions = {
-        cwd: currentPath,
-    };
+        const connectBranchCommand = `git branch --set-upstream-to=origin/${newBranch} ${newBranch}`;
+        await executeCommand(connectBranchCommand);
 
-    try {
-        await exec(connectBranchCommand, connectBranchOptions);
-    } catch (e: any) {
-        throw Error(e);
-    }
+        const pullCommand = `git -C ${newWorktreePath} pull`;
+        await executeCommand(pullCommand);
 
-    const pullCommand = `git -C ${newWorktreePath} pull`;
-    const pullOptions = {
-        cwd: currentPath,
-    };
-
-    try {
-        await exec(pullCommand, pullOptions);
-    } catch (e: any) {
-        throw Error(e);
-    }
-
-    try {
         await moveIntoWorktree(newWorktreePath);
     } catch (e: any) {
         throw Error(e);

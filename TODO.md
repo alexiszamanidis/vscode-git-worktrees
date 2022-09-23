@@ -12,8 +12,6 @@
     -   Otherwise, it will search for **main worktrees** like: `["master", "main", "develop", "dev", "release"]`, so you can be moved to them.
         -   If it **doesn't find any main worktree**, you will be moved to the first directory selected by `git worktree list`
 
-## Replace all exec commands with executeCommand function
-
 ## Add better GIFs(Replace already existing GIFs)
 
 ## Add tests

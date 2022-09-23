@@ -1,11 +1,8 @@
-import * as util from "util";
 import * as vscode from "vscode";
-import { getWorktrees } from "./gitWorktreeHelpers";
-import { executeCommand, getCurrentPath } from "./helpers";
-import { BARE_REPOSITORY, BARE_REPOSITORY_REMOTE_ORIGIN_FETCH } from "../constants/constants";
+import { executeCommand } from "./helpers";
 import { removeNewLine } from "./stringHelpers";
-
-const exec = util.promisify(require("child_process").exec);
+import { getWorktrees } from "./gitWorktreeHelpers";
+import { BARE_REPOSITORY, BARE_REPOSITORY_REMOTE_ORIGIN_FETCH } from "../constants/constants";
 
 export const selectBranch = async (branches: string[]): Promise<string | undefined> => {
     const selectedBranch = await vscode.window.showQuickPick(
@@ -20,33 +17,23 @@ export const selectBranch = async (branches: string[]): Promise<string | undefin
 };
 
 export const isGitRepository = async (): Promise<boolean> => {
-    const command = "git rev-parse --is-inside-work-tree";
-    const options = {
-        cwd: getCurrentPath(),
-    };
-
     try {
-        await exec(command, options);
-        // const { stdout } = await exec(command, options);
-        // console.log(stdout);
+        const isGitRepositoryCommand = "git rev-parse --is-inside-work-tree";
+        await executeCommand(isGitRepositoryCommand);
+
         return true;
     } catch (e: any) {
-        // throw Error(e);
-        // console.log(e.message);
         return false;
     }
 };
 
 export const existsRemoteBranch = async (branch: string) => {
-    const currentPath = getCurrentPath();
-    const command = `git ls-remote origin ${branch}`;
-    const options = {
-        cwd: currentPath,
-    };
-
     try {
-        const { stdout } = await exec(command, options);
+        const existsRemoteBranchCommand = `git ls-remote origin ${branch}`;
+        const { stdout } = await executeCommand(existsRemoteBranchCommand);
+
         if (!stdout) return false;
+
         return true;
     } catch (e: any) {
         throw Error(e);
@@ -54,15 +41,12 @@ export const existsRemoteBranch = async (branch: string) => {
 };
 
 export const getRemoteBranches = async (): Promise<string[]> => {
-    const currentPath = getCurrentPath();
-    const command = `git branch -r`;
-    const options = {
-        cwd: currentPath,
-    };
-
     try {
-        const { stdout } = await exec(command, options);
+        const getRemoteBranchesCommand = `git branch -r`;
+        const { stdout } = await executeCommand(getRemoteBranchesCommand);
+
         if (!stdout) return [];
+
         return stdout
             .split("\n")
             .filter((line: string) => line !== "")
@@ -76,15 +60,12 @@ export const getRemoteBranches = async (): Promise<string[]> => {
 };
 
 export const isBareRepository = async () => {
-    const currentPath = getCurrentPath();
-    const command = "git rev-parse --is-bare-repository";
-    const options = {
-        cwd: currentPath,
-    };
-
     try {
-        const { stdout } = await exec(command, options);
+        const isBareRepositoryCommand = "git rev-parse --is-bare-repository";
+        const { stdout } = await executeCommand(isBareRepositoryCommand);
+
         const isBareRepo = removeNewLine(stdout);
+
         return isBareRepo === "true";
     } catch (e: any) {
         throw Error(e);
@@ -94,19 +75,26 @@ export const isBareRepository = async () => {
 const setUpBareRepositoryFetch = async () => {
     try {
         const { stdout } = await executeCommand("git config remote.origin.fetch");
+
         const remoteOriginFetch = removeNewLine(stdout);
+
         if (remoteOriginFetch === BARE_REPOSITORY_REMOTE_ORIGIN_FETCH) return;
 
         await executeCommand(
             `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
         );
+        return;
     } catch (e: any) {
         // if this repository is bare,
         // then 'git config remote.origin.fetch' command fails
         // and we need to set the remote.origin.fetch
-        await executeCommand(
-            `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
-        );
+        try {
+            await executeCommand(
+                `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
+            );
+        } catch (e: any) {
+            throw Error(e);
+        }
     }
 };
 
@@ -120,28 +108,19 @@ export const fetch = async () => {
     const hasBareRepo = await hasBareRepository();
     if (hasBareRepo) await setUpBareRepositoryFetch();
 
-    const currentPath = getCurrentPath();
-    const command = `git fetch --all --prune`;
-    const options = {
-        cwd: currentPath,
-    };
-
     try {
-        await exec(command, options);
+        const fetchCommand = `git fetch --all --prune`;
+        await executeCommand(fetchCommand);
     } catch (e: any) {
         throw Error(e);
     }
 };
 
 export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
-    const currentPath = getCurrentPath();
-    const command = `git branch -vv`;
-    const options = {
-        cwd: currentPath,
-    };
-
     try {
-        const { stdout } = await exec(command, options);
+        const getBranchesCommand = `git branch -vv`;
+        const { stdout } = await executeCommand(getBranchesCommand);
+
         if (!stdout) return;
 
         const localBranchesThatDoNotExistOnRemoteRepository = stdout
@@ -153,9 +132,8 @@ export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
 
         if (localBranchesThatDoNotExistOnRemoteRepository.length === 0) return;
 
-        await exec(
-            `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`,
-            options
+        await executeCommand(
+            `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`
         );
     } catch (e: any) {
         throw Error(e);
