@@ -16,7 +16,7 @@ type SelectedWorktree = { label: string; detail: string };
 export const selectWorktree = async (
     worktrees: WorktreeList
 ): Promise<SelectedWorktree | undefined> =>
-    await vscode.window.showQuickPick(
+    vscode.window.showQuickPick(
         worktrees.map((wt) => ({ label: wt.worktree, detail: wt.path })),
         {
             matchOnDetail: true,
@@ -24,7 +24,7 @@ export const selectWorktree = async (
     );
 
 export const moveIntoWorktree = async (worktreePath: string): Promise<void> =>
-    await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktreePath), {
+    vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktreePath), {
         forceNewWindow: shouldOpenNewVscodeWindow,
     });
 
