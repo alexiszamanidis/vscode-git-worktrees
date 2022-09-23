@@ -2,6 +2,16 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.17] - 2022-09-23
+
+### Added
+
+-   Commands logging
+
+### Updated
+
+-   Replace all exec command with executeCommand
+
 ## [1.0.16] - 2022-09-22
 
 ### Updated
