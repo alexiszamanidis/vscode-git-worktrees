@@ -25,14 +25,18 @@ export const openBrowser = async (url = "") => {
     await require("child_process").exec(start + " " + url);
 };
 
-export const executeCommand = async (command: string) => {
-    const currentPath = getCurrentPath();
-    const options = {
-        cwd: currentPath,
-    };
+export const executeCommand = async (command: string, options?: any) => {
+    let execOptions = options;
+
+    if (!options) {
+        const currentPath = getCurrentPath();
+        execOptions = {
+            cwd: currentPath,
+        };
+    }
 
     try {
-        const { stdout } = await exec(command, options);
+        const { stdout } = await exec(command, execOptions);
         return { stdout };
     } catch (e: any) {
         const errorMessage = `command: '${command}'. Error: '${e.message}'`;
