@@ -39,7 +39,7 @@ export const executeCommand = async (command: string, options?: any) => {
         const { stdout } = await exec(command, execOptions);
         return { stdout };
     } catch (e: any) {
-        const errorMessage = `command: '${command}'. Error: '${e.message}'`;
+        const errorMessage = `command: '${command}'. error: '${e.message}'`;
         throw Error(errorMessage);
     }
 };
@@ -86,4 +86,4 @@ export const shouldRemoveStalledBranches =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.remove.stalledBranches") ?? false;
 
 export const shouldOpenNewVscodeWindow =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.openNewVscodeWindow") ?? false;
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.openNewVscodeWindow") ?? true;

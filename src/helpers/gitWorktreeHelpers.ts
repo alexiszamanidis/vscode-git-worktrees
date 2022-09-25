@@ -4,7 +4,7 @@ import { executeCommand, getCurrentPath, shouldOpenNewVscodeWindow } from "./hel
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
-import { showInformationMessageWithButton } from "./vsCodeHelpers";
+import { showInformationMessage, showInformationMessageWithButton } from "./vsCodeHelpers";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -207,6 +207,10 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
         await executeCommand(pushCommand);
 
         await moveIntoWorktree(newWorktreePath);
+
+        showInformationMessage(
+            `Worktree named '${newBranch}' was added successfully. Path: ${newWorktreePath}`
+        );
     } catch (e: any) {
         throw Error(e);
     }
@@ -219,16 +223,17 @@ export const addRemoteWorktree = async (remoteBranch: string, newBranch: string)
     const newWorktreePath = await calculateNewWorktreePath(newBranch);
 
     try {
-        const worktreeAddCommand = `git worktree add ${newWorktreePath}`;
+        const worktreeAddCommand = `git worktree add ${newWorktreePath} ${newBranch}`;
         await executeCommand(worktreeAddCommand);
-
-        const connectBranchCommand = `git branch --set-upstream-to=origin/${newBranch} ${newBranch}`;
-        await executeCommand(connectBranchCommand);
 
         const pullCommand = `git -C ${newWorktreePath} pull`;
         await executeCommand(pullCommand);
 
         await moveIntoWorktree(newWorktreePath);
+
+        showInformationMessage(
+            `Worktree named '${newBranch}' was added successfully. Path: ${newWorktreePath}`
+        );
     } catch (e: any) {
         throw Error(e);
     }

@@ -57,7 +57,7 @@
                 "properties": {
                     "vsCodeGitWorktrees.move.openNewVscodeWindow": {
                         "type": "boolean",
-                        "default": false,
+                        "default": true,
                         "description": "Open new vscode window when you switch or create a worktree"
                     }
                 }
