@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.19] - 2022-09-26
+
+### Updated
+
+-   Enhance path calculation method to calculate the path based on the common git directory
+
 ## [1.0.18] - 2022-09-26
 
 ### Added

@@ -3,7 +3,7 @@
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
     "description": "A Wrapper for Git Worktree Operations that provides an interactive API so developers have a better experience",
-    "version": "1.0.18",
+    "version": "1.0.19",
     "icon": "images/logo.png",
     "repository": {
         "type": "git",
