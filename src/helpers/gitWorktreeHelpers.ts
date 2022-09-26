@@ -3,7 +3,11 @@ import * as vscode from "vscode";
 import { executeCommand, getCurrentPath, shouldOpenNewVscodeWindow } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
-import { removeFirstAndLastCharacter, removeLastDirectoryInURL } from "../helpers/stringHelpers";
+import {
+    removeFirstAndLastCharacter,
+    removeLastDirectoryInURL,
+    removeNewLine,
+} from "../helpers/stringHelpers";
 import { showInformationMessage, showInformationMessageWithButton } from "./vsCodeHelpers";
 
 const exec = util.promisify(require("child_process").exec);
@@ -161,17 +165,22 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 };
 
 export const calculateNewWorktreePath = async (branch: string) => {
-    const currentPath = getCurrentPath();
-
-    let path = currentPath;
-
     try {
-        const isBareRepo = await isBareRepository();
+        const getGitCommonDirPathCommand = "git rev-parse --path-format=absolute --git-common-dir";
+        const { stdout: gitCommonDirPath } = await executeCommand(getGitCommonDirPathCommand);
+        let path = removeNewLine(gitCommonDirPath);
+
+        const isBareRepo = await isBareRepository(path);
 
         if (!isBareRepo) {
-            const getTopLevelPathCommand = "git rev-parse --show-toplevel";
-            const { stdout: topLevelPath } = await executeCommand(getTopLevelPathCommand);
-            path = removeLastDirectoryInURL(topLevelPath as string);
+            // remove .git
+            // e.g. /absolute/path/project/.git
+            //   -> /absolute/path/project
+            path = removeLastDirectoryInURL(path);
+            // remove project
+            // e.g. /absolute/path/project
+            //   -> /absolute/path
+            path = removeLastDirectoryInURL(path);
         }
 
         path = `${path}/${branch}`;

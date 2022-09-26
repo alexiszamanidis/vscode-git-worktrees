@@ -59,9 +59,9 @@ export const getRemoteBranches = async (): Promise<string[]> => {
     }
 };
 
-export const isBareRepository = async () => {
+export const isBareRepository = async (path: string) => {
     try {
-        const isBareRepositoryCommand = "git rev-parse --is-bare-repository";
+        const isBareRepositoryCommand = `git -C ${path} rev-parse --is-bare-repository`;
         const { stdout } = await executeCommand(isBareRepositoryCommand);
 
         const isBareRepo = removeNewLine(stdout);
