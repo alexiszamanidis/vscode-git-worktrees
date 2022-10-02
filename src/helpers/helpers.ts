@@ -7,6 +7,8 @@ const exec = util.promisify(require("child_process").exec);
 
 export const getCurrentPath = () => vscode.workspace.rootPath;
 
+export const getWorkspaceFilePath = () => vscode.workspace.workspaceFile;
+
 // TODO: fix this function
 export const copyToClipboard = async (content = "") =>
     await require("child_process").spawn("clip").stdin.end(util.inspect(content));

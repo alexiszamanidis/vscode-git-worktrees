@@ -1,6 +1,11 @@
-import * as util from "util";
+import * as fs from "fs";
 import * as vscode from "vscode";
-import { executeCommand, getCurrentPath, shouldOpenNewVscodeWindow } from "./helpers";
+import {
+    executeCommand,
+    getCurrentPath,
+    getWorkspaceFilePath,
+    shouldOpenNewVscodeWindow,
+} from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
@@ -9,8 +14,6 @@ import {
     removeNewLine,
 } from "../helpers/stringHelpers";
 import { showInformationMessage, showInformationMessageWithButton } from "./vsCodeHelpers";
-
-const exec = util.promisify(require("child_process").exec);
 
 type FilteredWorktree = [string, string, string];
 type Worktree = { path: string; hash: string; worktree: string };
@@ -27,10 +30,64 @@ export const selectWorktree = async (
         }
     );
 
-export const moveIntoWorktree = async (worktreePath: string): Promise<void> =>
-    vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(worktreePath), {
+export const getGitTopLevel = async () => {
+    try {
+        const getGitTopLevelPathCommand = "git rev-parse --show-toplevel";
+        const { stdout: getGitTopLevelPath } = await executeCommand(getGitTopLevelPathCommand);
+        let topLevelPath = removeNewLine(getGitTopLevelPath);
+
+        return topLevelPath;
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const openVscodeInstance = async (path: string): Promise<void> =>
+    vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(path), {
         forceNewWindow: shouldOpenNewVscodeWindow,
     });
+
+// TODO: refactor this function
+export const moveIntoWorktree = async (
+    worktreePath: string
+): Promise<{ type: string; path: string }> => {
+    const workspaceFilePath = getWorkspaceFilePath();
+    if (!workspaceFilePath) {
+        openVscodeInstance(worktreePath);
+        return { type: "folder", path: worktreePath };
+    }
+
+    const topLevelPath = await getGitTopLevel();
+    const basePath = topLevelPath.split("/");
+    const workspacePath = workspaceFilePath.path.split("/");
+
+    // remove first element if it is empty
+    // eg. path = '/test/path/
+    //     pathArray = ['', 'test', 'path']
+    //     pathArray = ['test', 'path']
+    if (basePath[0] === "") {
+        basePath.shift();
+    }
+    if (workspacePath[0] === "") {
+        workspacePath.shift();
+    }
+
+    let pathToWorkspace = "";
+
+    for (let i = basePath.length; i < workspacePath.length; i++) {
+        pathToWorkspace += "/" + workspacePath[i];
+    }
+
+    const fullWorkspacePath = `${worktreePath}${pathToWorkspace}`;
+
+    if (!fs.existsSync(fullWorkspacePath)) {
+        openVscodeInstance(worktreePath);
+        return { type: "folder", path: worktreePath };
+    }
+
+    openVscodeInstance(fullWorkspacePath);
+    return { type: "workspace", path: fullWorkspacePath };
+};
 
 const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList =>
     splitWorktrees.map((worktree) => ({
@@ -137,7 +194,7 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     } catch (e: any) {
         const errorMessage = e.message;
 
-        // TODDO: add all cases that the user might want to force delete
+        // TODO: add all cases that the user might want to force delete
         const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${branch}\nfatal: '${branch}' contains modified or untracked files, use --force to delete it\n`;
 
         const isUntrackedOrModifiedFilesError = errorMessage === untrackedOrModifiedFilesError;
@@ -215,10 +272,10 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
         const pushCommand = `git push --set-upstream origin ${newBranch}`;
         await executeCommand(pushCommand);
 
-        await moveIntoWorktree(newWorktreePath);
+        const newWtInfo = await moveIntoWorktree(newWorktreePath);
 
         showInformationMessage(
-            `Worktree named '${newBranch}' was added successfully. Path: ${newWorktreePath}`
+            `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
         );
     } catch (e: any) {
         throw Error(e);
@@ -238,10 +295,10 @@ export const addRemoteWorktree = async (remoteBranch: string, newBranch: string)
         const pullCommand = `git -C ${newWorktreePath} pull`;
         await executeCommand(pullCommand);
 
-        await moveIntoWorktree(newWorktreePath);
+        const newWtInfo = await moveIntoWorktree(newWorktreePath);
 
         showInformationMessage(
-            `Worktree named '${newBranch}' was added successfully. Path: ${newWorktreePath}`
+            `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
         );
     } catch (e: any) {
         throw Error(e);
