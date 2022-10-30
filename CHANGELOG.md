@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.21] - 2022-10-30
+
+### Added
+
+-   Add `vsCodeGitWorktrees.worktrees.dir.path` property
+
 ## [1.0.20] - 2022-10-02
 
 ### Added

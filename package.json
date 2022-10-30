@@ -3,7 +3,7 @@
     "publisher": "GitWorktrees",
     "displayName": "Git Worktrees",
     "description": "A Wrapper for Git Worktree Operations that provides an interactive API so developers have a better experience",
-    "version": "1.0.20",
+    "version": "1.0.21",
     "icon": "images/logo.png",
     "repository": {
         "type": "git",
@@ -59,6 +59,17 @@
                         "type": "boolean",
                         "default": true,
                         "description": "Open new vscode window when you switch or create a worktree"
+                    }
+                }
+            },
+            {
+                "id": "worktrees-directory-path",
+                "title": "Worktrees directory path",
+                "properties": {
+                    "vsCodeGitWorktrees.worktrees.dir.path": {
+                        "type": "string",
+                        "default": null,
+                        "description": "Define a directory for all worktrees between your projects"
                     }
                 }
             }
