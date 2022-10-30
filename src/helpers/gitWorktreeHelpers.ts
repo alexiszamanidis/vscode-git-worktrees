@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import {
     executeCommand,
     getCurrentPath,
+    worktreesDirPath,
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
 } from "./helpers";
@@ -223,6 +224,18 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
 export const calculateNewWorktreePath = async (branch: string) => {
     try {
+        // If a worktrees path is defined, wee need to move the new worktree there
+        if (worktreesDirPath) {
+            const path = `${worktreesDirPath}/${branch}`;
+
+            // check if directory exists
+            if (fs.existsSync(path)) {
+                throw new Error(`Directory '${path}' already exists.`);
+            }
+
+            return path;
+        }
+
         const getGitCommonDirPathCommand = "git rev-parse --path-format=absolute --git-common-dir";
         const { stdout: gitCommonDirPath } = await executeCommand(getGitCommonDirPathCommand);
         let path = removeNewLine(gitCommonDirPath);

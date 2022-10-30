@@ -90,5 +90,5 @@ export const shouldRemoveStalledBranches =
 export const shouldOpenNewVscodeWindow =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.openNewVscodeWindow") ?? true;
 
-export const getWorktreesDirPath = 
+export const worktreesDirPath =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktrees.dir.path") ?? null;
