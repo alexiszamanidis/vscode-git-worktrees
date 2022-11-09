@@ -12,13 +12,13 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 ### Supported operations
 
--   `git worktree add [new-branch] [remote-branch]`
+-   `git worktree add [remote-branch] [new-branch]`
 
     Create a new worktree
 
     **Behavior**
 
-    -   If you do not select a remote branch(`ESC`), you will create a new worktree with the new branch you typed. This was made for convenience, instead of having `git worktree add master master`, you can just run `git worktree add master`.
+    -   If you do not select a new branch(`ESC`), you will create a new worktree with the remote branch you typed. This was made for convenience, instead of having `git worktree add master master`, you can just run `git worktree add master`.
 
 -   `git worktree list`
 
