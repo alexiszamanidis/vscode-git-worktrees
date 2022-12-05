@@ -2,12 +2,18 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.22] - 2022-10-30
+
+### Updated
+
+-   Update `README.md` and `CREDITS.md`
+
 ## [1.0.21] - 2022-10-30
 
 ### Added
 
 -   Add `vsCodeGitWorktrees.worktrees.dir.path` property
--   Chnage `git worktree add` operation flow
+-   Change `git worktree add` operation flow
 
 ## [1.0.20] - 2022-10-02
 
