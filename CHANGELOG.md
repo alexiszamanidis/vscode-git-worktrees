@@ -7,6 +7,7 @@ All notable changes to the "git-worktrees" extension will be documented in this 
 ### Added
 
 -   Add `vsCodeGitWorktrees.worktrees.dir.path` property
+-   Chnage `git worktree add` operation flow
 
 ## [1.0.20] - 2022-10-02
 
