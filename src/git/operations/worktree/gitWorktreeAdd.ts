@@ -27,12 +27,6 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const isGitRepo = await isGitRepository();
         if (!isGitRepo) throw new Error("This is not a git repository.");
 
-        const newBranch = await getUserInput("New branch", "Type the name of the new branch");
-        if (!newBranch) return;
-
-        const isWorktree = await existsWorktree(newBranch);
-        if (isWorktree) throw new Error(`Worktree '${newBranch}' already exists.`);
-
         showInformationMessage("Calculating remote branches to suggest you...");
 
         await fetch();
@@ -42,11 +36,18 @@ const gitWorktreeAdd = async (): Promise<void> => {
         }
 
         const remoteBranches = await getRemoteBranches();
-        let remoteBranch = await selectBranch(remoteBranches);
-        // if the user didn't select a remote branch, we assign the new branch as the remote branch
-        if (!remoteBranch) {
-            remoteBranch = newBranch;
+        const remoteBranch = await selectBranch(remoteBranches);
+        if (!remoteBranch) return;
+
+        let newBranch = await getUserInput("New branch", "Type the name of the new branch");
+
+        // if the user didn't select a branch, we assign the remote branch as the new branch
+        if (!newBranch) {
+            newBranch = remoteBranch;
         }
+
+        const isWorktree = await existsWorktree(newBranch);
+        if (isWorktree) throw new Error(`Worktree '${newBranch}' already exists.`);
 
         showInformationMessage(`Creating new Worktree named '${newBranch}'...`);
 
