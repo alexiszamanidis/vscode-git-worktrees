@@ -43,6 +43,10 @@ const gitWorktreeAdd = async (): Promise<void> => {
 
         // we need to check if the user's input value is a valid git branch name
         const branchNameValidateInput: InputBoxOptions["validateInput"] = async (value: string) => {
+            // we allow user input an empty string here,
+            // because we will assign the remote branch as the new branch later if the input is an empty string
+            if (value === "") return "";
+
             if (await isBranchNameValid(value)) return "";
 
             return `fatal: '${value}' is not a valid branch name`;
