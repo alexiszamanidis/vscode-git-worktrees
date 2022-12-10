@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.23] - 2022-12-10
+
+### Added
+
+-   Prevent collisions
+
 ## [1.0.22] - 2022-10-30
 
 ### Updated
