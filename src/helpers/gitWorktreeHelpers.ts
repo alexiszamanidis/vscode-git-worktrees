@@ -10,6 +10,7 @@ import {
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
+    getFileFromPath,
     removeFirstAndLastCharacter,
     removeLastDirectoryInURL,
     removeNewLine,
@@ -224,9 +225,11 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
 export const calculateNewWorktreePath = async (branch: string) => {
     try {
-        // If a worktrees path is defined, wee need to move the new worktree there
+        // If a worktrees path is defined, we need to move the new worktree there
         if (worktreesDirPath) {
-            const path = `${worktreesDirPath}/${branch}`;
+            const topLevelPath = await getGitTopLevel();
+            const repositoryName = await getFileFromPath(topLevelPath);
+            const path = `${worktreesDirPath}/${repositoryName}/${branch}`;
 
             // check if directory exists
             if (fs.existsSync(path)) {
