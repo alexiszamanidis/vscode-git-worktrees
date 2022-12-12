@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [1.0.24] - 2022-12-12
+
+### Added
+
+-   Add remote branch input validation
+
 ## [1.0.23] - 2022-12-10
 
 ### Added
