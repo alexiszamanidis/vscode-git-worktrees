@@ -139,3 +139,18 @@ export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
         throw Error(e);
     }
 };
+
+/**
+ * use `git check-ref-format` command to check if a given string is a valid branch name.
+ * see https://git-scm.com/docs/git-check-ref-format for more details.
+ */
+export const isBranchNameValid = async (branchName: string): Promise<boolean> => {
+    try {
+        const isBranchNameValidCommand = `git check-ref-format --branch "${branchName}"`;
+        await executeCommand(isBranchNameValidCommand);
+
+        return true;
+    } catch {
+        return false;
+    }
+};

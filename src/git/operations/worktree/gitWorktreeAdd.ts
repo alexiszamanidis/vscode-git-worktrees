@@ -1,3 +1,4 @@
+import type { InputBoxOptions } from "vscode";
 import {
     addNewWorktree,
     addRemoteWorktree,
@@ -10,6 +11,7 @@ import {
     isGitRepository,
     getRemoteBranches,
     removeLocalBranchesThatDoNotExistOnRemoteRepository,
+    isBranchNameValid,
 } from "../../../helpers/gitHelpers";
 import {
     copyToClipboard,
@@ -39,7 +41,21 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const remoteBranch = await selectBranch(remoteBranches);
         if (!remoteBranch) return;
 
-        let newBranch = await getUserInput("New branch", "Type the name of the new branch");
+        // we need to check if the user's input value is a valid git branch name
+        const branchNameValidateInput: InputBoxOptions["validateInput"] = async (value: string) => {
+            // we allow user input an empty string here,
+            // because we will assign the remote branch as the new branch later if the input is an empty string
+            if (value === "") return "";
+
+            if (await isBranchNameValid(value)) return "";
+
+            return `fatal: '${value}' is not a valid branch name`;
+        };
+        let newBranch = await getUserInput(
+            "New branch",
+            "Type the name of the new branch",
+            branchNameValidateInput
+        );
 
         // if the user didn't select a branch, we assign the remote branch as the new branch
         if (!newBranch) {

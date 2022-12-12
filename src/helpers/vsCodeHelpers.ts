@@ -18,10 +18,15 @@ export const showInformationMessageWithButton = async (
 ): Promise<string | undefined> =>
     await vscode.window.showInformationMessage(`${APP_NAME}: ${informationMessage}`, buttonName);
 
-export const getUserInput = async (placeHolder: string, prompt: string) => {
+export const getUserInput = async (
+    placeHolder: string,
+    prompt: string,
+    validateInput?: vscode.InputBoxOptions["validateInput"]
+) => {
     const input = await vscode.window.showInputBox({
         placeHolder,
         prompt,
+        validateInput,
     });
 
     return input;
