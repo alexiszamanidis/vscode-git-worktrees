@@ -20,7 +20,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
     -   If you do not select a new branch(`ESC`), you will create a new worktree with the remote branch you typed. This was made for convenience, instead of having `git worktree add master master`, you can just run `git worktree add master`.
 
-    -   You cannot create a worktree with spaces(Relevant [issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues/22))
+    -   Since the name of the worktree and branch is the same, we validate the user's new-branch input(Relevant [issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues/22))
 
 -   `git worktree list`
 
