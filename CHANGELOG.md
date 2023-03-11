@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [2.0.1] - 2023-03-11
+
+### Added
+
+-   Add multiple-workspaces handling
+
 ## [1.0.24] - 2022-12-12
 
 ### Added
