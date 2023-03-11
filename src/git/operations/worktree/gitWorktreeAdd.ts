@@ -20,6 +20,7 @@ import {
 } from "../../../helpers/helpers";
 import {
     getUserInput,
+    getWorkspaceFolder,
     showErrorMessageWithButton,
     showInformationMessage,
 } from "../../../helpers/vsCodeHelpers";
@@ -39,18 +40,21 @@ const isBranchInputValid: InputBoxOptions["validateInput"] = async (branch: stri
 
 const gitWorktreeAdd = async (): Promise<void> => {
     try {
-        const isGitRepo = await isGitRepository();
+        const workspaceFolder = await getWorkspaceFolder();
+        if (!workspaceFolder) return;
+
+        const isGitRepo = await isGitRepository(workspaceFolder);
         if (!isGitRepo) throw new Error("This is not a git repository.");
 
         showInformationMessage("Calculating remote branches to suggest you...");
 
-        await fetch();
+        await fetch(workspaceFolder);
 
         if (shouldRemoveStalledBranches) {
-            await removeLocalBranchesThatDoNotExistOnRemoteRepository();
+            await removeLocalBranchesThatDoNotExistOnRemoteRepository(workspaceFolder);
         }
 
-        const remoteBranches = await getRemoteBranches();
+        const remoteBranches = await getRemoteBranches(workspaceFolder);
         const remoteBranch = await selectBranch(remoteBranches);
         if (!remoteBranch) return;
 
@@ -65,7 +69,7 @@ const gitWorktreeAdd = async (): Promise<void> => {
             newBranch = remoteBranch;
         }
 
-        const isWorktree = await existsWorktree(newBranch);
+        const isWorktree = await existsWorktree(workspaceFolder, newBranch);
         if (isWorktree) throw new Error(`Worktree '${newBranch}' already exists.`);
 
         showInformationMessage(`Creating new Worktree named '${newBranch}'...`);
@@ -73,9 +77,9 @@ const gitWorktreeAdd = async (): Promise<void> => {
         const isSameBranch = remoteBranch === newBranch;
 
         if (isSameBranch) {
-            await addRemoteWorktree(remoteBranch, newBranch);
+            await addRemoteWorktree(workspaceFolder, remoteBranch, newBranch);
         } else {
-            await addNewWorktree(remoteBranch, newBranch);
+            await addNewWorktree(workspaceFolder, remoteBranch, newBranch);
         }
     } catch (e: any) {
         const errorMessage = e.message;

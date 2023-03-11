@@ -1,21 +1,26 @@
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { showErrorMessageWithButton, showInformationMessage } from "../../../helpers/vsCodeHelpers";
-import { selectWorktree, getWorktrees, removeWorktree } from "../../../helpers/gitWorktreeHelpers";
+import {
+    getWorkspaceFolder,
+    showErrorMessageWithButton,
+    showInformationMessage,
+} from "../../../helpers/vsCodeHelpers";
+import { getWorktree, removeWorktree } from "../../../helpers/gitWorktreeHelpers";
 
 const gitWorktreeRemove = async (): Promise<void> => {
     try {
-        const isGitRepo = await isGitRepository();
+        const workspaceFolder = await getWorkspaceFolder();
+        if (!workspaceFolder) return;
+
+        const isGitRepo = await isGitRepository(workspaceFolder);
         if (!isGitRepo) throw new Error("This is not a git repository.");
 
-        const worktrees = await getWorktrees();
-
-        const worktree = await selectWorktree(worktrees);
+        const worktree = await getWorktree(workspaceFolder);
 
         if (!worktree) return;
 
-        await removeWorktree(worktree);
+        await removeWorktree(workspaceFolder, worktree);
 
         await showInformationMessage(`Worktree named '${worktree.label}' was removed successfully`);
     } catch (e: any) {

@@ -1,25 +1,22 @@
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
-import { showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
-import {
-    moveIntoWorktree,
-    selectWorktree,
-    getWorktrees,
-} from "../../../helpers/gitWorktreeHelpers";
+import { getWorkspaceFolder, showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
+import { moveIntoWorktree, getWorktree } from "../../../helpers/gitWorktreeHelpers";
 
 const gitWorktreeList = async (): Promise<void> => {
     try {
-        const isGitRepo = await isGitRepository();
+        const workspaceFolder = await getWorkspaceFolder();
+        if (!workspaceFolder) return;
+
+        const isGitRepo = await isGitRepository(workspaceFolder);
         if (!isGitRepo) throw new Error("This is not a git repository.");
 
-        const worktrees = await getWorktrees();
-
-        const worktree = await selectWorktree(worktrees);
+        const worktree = await getWorktree(workspaceFolder);
 
         if (!worktree) return;
 
-        await moveIntoWorktree(worktree.detail);
+        await moveIntoWorktree(workspaceFolder, worktree.detail);
     } catch (e: any) {
         const errorMessage = e.message;
         const buttonName = "Open an Issue";

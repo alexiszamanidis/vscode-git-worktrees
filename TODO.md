@@ -18,6 +18,8 @@
 
 ## Add typescript path aliases
 
+## Check the Git version and log the corresponding message
+
 ## Is there a way to implement the on_worktree_change feature?
 
 Refs:

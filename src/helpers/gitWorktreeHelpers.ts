@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as vscode from "vscode";
 import {
     executeCommand,
-    getCurrentPath,
     worktreesDirPath,
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
@@ -32,10 +31,12 @@ export const selectWorktree = async (
         }
     );
 
-export const getGitTopLevel = async () => {
+export const getGitTopLevel = async (workspaceFolder: string) => {
     try {
         const getGitTopLevelPathCommand = "git rev-parse --show-toplevel";
-        const { stdout: getGitTopLevelPath } = await executeCommand(getGitTopLevelPathCommand);
+        const { stdout: getGitTopLevelPath } = await executeCommand(getGitTopLevelPathCommand, {
+            cwd: workspaceFolder,
+        });
         let topLevelPath = removeNewLine(getGitTopLevelPath);
 
         return topLevelPath;
@@ -51,6 +52,7 @@ export const openVscodeInstance = async (path: string): Promise<void> =>
 
 // TODO: refactor this function
 export const moveIntoWorktree = async (
+    workspaceFolder: string,
     worktreePath: string
 ): Promise<{ type: string; path: string }> => {
     const workspaceFilePath = getWorkspaceFilePath();
@@ -59,7 +61,7 @@ export const moveIntoWorktree = async (
         return { type: "folder", path: worktreePath };
     }
 
-    const topLevelPath = await getGitTopLevel();
+    const topLevelPath = await getGitTopLevel(workspaceFolder);
     const basePath = topLevelPath.split("/");
     const workspacePath = workspaceFilePath.path.split("/");
 
@@ -119,11 +121,19 @@ const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList =>
     return formatWorktrees(splitWorktrees);
 };
 
-export const getWorktrees = async (withBareRepo = false) => {
+interface GetWorktreesTypes {
+    workspaceFolder: string;
+    withBareRepo?: boolean;
+}
+
+export const getWorktrees = async ({
+    workspaceFolder,
+    withBareRepo = false,
+}: GetWorktreesTypes) => {
     const listWorktreesCommand = "git worktree list";
 
     try {
-        const { stdout } = await executeCommand(listWorktreesCommand);
+        const { stdout } = await executeCommand(listWorktreesCommand, { cwd: workspaceFolder });
 
         const worktrees = getWorktreesList(stdout, withBareRepo);
 
@@ -133,11 +143,19 @@ export const getWorktrees = async (withBareRepo = false) => {
     }
 };
 
-export const pruneWorktrees = async () => {
+export const getWorktree = async (workspaceFolder: string) => {
+    const worktrees = await getWorktrees({ workspaceFolder });
+
+    const worktree = await selectWorktree(worktrees);
+
+    return worktree;
+};
+
+export const pruneWorktrees = async (workspaceFolder: string) => {
     const pruneWorktreesCommand = "git worktree prune";
 
     try {
-        await executeCommand(pruneWorktreesCommand);
+        await executeCommand(pruneWorktreesCommand, { cwd: workspaceFolder });
     } catch (e: any) {
         throw Error(e);
     }
@@ -149,14 +167,15 @@ const convertWorktreeToSelectedWorktree = (worktree: Worktree): SelectedWorktree
 });
 
 export const findDefaultWorktreeToMove = async (
-    currentWorktree: SelectedWorktree
+    currentWorktree: SelectedWorktree,
+    workspaceFolder: string
 ): Promise<SelectedWorktree> => {
     try {
         const defaultWorktree: SelectedWorktree = {
             label: "",
             detail: removeLastDirectoryInURL(currentWorktree.detail),
         };
-        const worktrees = await getWorktrees();
+        const worktrees = await getWorktrees({ workspaceFolder });
 
         const filteredWorktrees = worktrees.filter((wt) => wt.worktree !== currentWorktree.label);
         // move to parent directory
@@ -177,9 +196,8 @@ export const findDefaultWorktreeToMove = async (
 };
 
 // TODO: refactor this function
-export const removeWorktree = async (worktree: SelectedWorktree) => {
-    const currentPath = getCurrentPath();
-    const isSamePath = currentPath === worktree.detail;
+export const removeWorktree = async (workspaceFolder: string, worktree: SelectedWorktree) => {
+    const isSamePath = workspaceFolder === worktree.detail;
     const branch = worktree.label;
     const removeWorktreeCommand = `git worktree remove ${branch}`;
 
@@ -191,8 +209,8 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
     }
 
     try {
-        await executeCommand(removeWorktreeCommand);
-        await pruneWorktrees();
+        await executeCommand(removeWorktreeCommand, { cwd: workspaceFolder });
+        await pruneWorktrees(workspaceFolder);
     } catch (e: any) {
         const errorMessage = e.message;
 
@@ -212,22 +230,32 @@ export const removeWorktree = async (worktree: SelectedWorktree) => {
 
         if (answer !== buttonName) return;
 
-        const forceCommand = `git worktree remove -f ${branch}`;
+        const forceRemoveWorktreeCommand = `git worktree remove -f ${branch}`;
         try {
-            await executeCommand(forceCommand);
+            await executeCommand(forceRemoveWorktreeCommand, { cwd: workspaceFolder });
 
-            await pruneWorktrees();
+            await pruneWorktrees(workspaceFolder);
         } catch (err: any) {
             throw Error(err);
         }
     }
 };
 
-export const calculateNewWorktreePath = async (branch: string) => {
+const getGitCommonDirPath = async (workspaceFolder: string) => {
+    const getGitCommonDirPathCommand = "git rev-parse --path-format=absolute --git-common-dir";
+
+    const { stdout: gitCommonDirPath } = await executeCommand(getGitCommonDirPathCommand, {
+        cwd: workspaceFolder,
+    });
+
+    return gitCommonDirPath;
+};
+
+export const calculateNewWorktreePath = async (workspaceFolder: string, branch: string) => {
     try {
         // If a worktrees path is defined, we need to move the new worktree there
         if (worktreesDirPath) {
-            const topLevelPath = await getGitTopLevel();
+            const topLevelPath = await getGitTopLevel(workspaceFolder);
             const repositoryName = await getFileFromPath(topLevelPath);
             const path = `${worktreesDirPath}/${repositoryName}/${branch}`;
 
@@ -239,11 +267,10 @@ export const calculateNewWorktreePath = async (branch: string) => {
             return path;
         }
 
-        const getGitCommonDirPathCommand = "git rev-parse --path-format=absolute --git-common-dir";
-        const { stdout: gitCommonDirPath } = await executeCommand(getGitCommonDirPathCommand);
+        const gitCommonDirPath = await getGitCommonDirPath(workspaceFolder);
         let path = removeNewLine(gitCommonDirPath);
 
-        const isBareRepo = await isBareRepository(path);
+        const isBareRepo = await isBareRepository(workspaceFolder, path);
 
         if (!isBareRepo) {
             // remove .git
@@ -264,9 +291,9 @@ export const calculateNewWorktreePath = async (branch: string) => {
     }
 };
 
-export const existsWorktree = async (worktree: string) => {
+export const existsWorktree = async (workspaceFolder: string, worktree: string) => {
     try {
-        const worktrees = await getWorktrees();
+        const worktrees = await getWorktrees({ workspaceFolder });
         const foundWorktree = worktrees.find((wt) => wt.worktree === worktree);
         if (!foundWorktree) return false;
         return true;
@@ -275,20 +302,24 @@ export const existsWorktree = async (worktree: string) => {
     }
 };
 
-export const addNewWorktree = async (remoteBranch: string, newBranch: string) => {
-    const isRemoteBranch = await existsRemoteBranch(newBranch);
+export const addNewWorktree = async (
+    workspaceFolder: string,
+    remoteBranch: string,
+    newBranch: string
+) => {
+    const isRemoteBranch = await existsRemoteBranch(workspaceFolder, newBranch);
     if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
 
-    const newWorktreePath = await calculateNewWorktreePath(newBranch);
+    const newWorktreePath = await calculateNewWorktreePath(workspaceFolder, newBranch);
 
     try {
         const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
-        await executeCommand(worktreeAddCommand);
+        await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
         const pushCommand = `git push --set-upstream origin ${newBranch}`;
-        await executeCommand(pushCommand);
+        await executeCommand(pushCommand, { cwd: workspaceFolder });
 
-        const newWtInfo = await moveIntoWorktree(newWorktreePath);
+        const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
         showInformationMessage(
             `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
@@ -298,20 +329,24 @@ export const addNewWorktree = async (remoteBranch: string, newBranch: string) =>
     }
 };
 
-export const addRemoteWorktree = async (remoteBranch: string, newBranch: string) => {
-    const isRemoteBranch = await existsRemoteBranch(remoteBranch);
+export const addRemoteWorktree = async (
+    workspaceFolder: string,
+    remoteBranch: string,
+    newBranch: string
+) => {
+    const isRemoteBranch = await existsRemoteBranch(workspaceFolder, remoteBranch);
     if (!isRemoteBranch) throw new Error(`Branch '${newBranch}' does not exist.`);
 
-    const newWorktreePath = await calculateNewWorktreePath(newBranch);
+    const newWorktreePath = await calculateNewWorktreePath(workspaceFolder, newBranch);
 
     try {
         const worktreeAddCommand = `git worktree add ${newWorktreePath} ${newBranch}`;
-        await executeCommand(worktreeAddCommand);
+        await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
         const pullCommand = `git -C ${newWorktreePath} pull`;
-        await executeCommand(pullCommand);
+        await executeCommand(pullCommand, { cwd: workspaceFolder });
 
-        const newWtInfo = await moveIntoWorktree(newWorktreePath);
+        const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
         showInformationMessage(
             `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`

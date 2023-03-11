@@ -10,6 +10,12 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 -   Git version: 2.34.1
 
+### Multiple Workspaces
+
+This project supports multiple workspaces, allowing users to organize and manage their projects in separate spaces. If you have opened more than one project, you will be asked to select the workspace in which you want to run the operation. If you have only one project opened, it will be selected as the default workspace.
+
+To select a workspace, simply choose from the list of available workspaces when prompted. Once you've made your selection, the operation will be executed within the chosen workspace.
+
 ### Supported operations
 
 -   `git worktree add [remote-branch] [new-branch]`

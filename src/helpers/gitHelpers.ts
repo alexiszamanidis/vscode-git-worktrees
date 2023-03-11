@@ -16,10 +16,12 @@ export const selectBranch = async (branches: string[]): Promise<string | undefin
     return selectedBranch?.label;
 };
 
-export const isGitRepository = async (): Promise<boolean> => {
+export const isGitRepository = async (workspaceFolder: string): Promise<boolean> => {
     try {
         const isGitRepositoryCommand = "git rev-parse --is-inside-work-tree";
-        await executeCommand(isGitRepositoryCommand);
+        await executeCommand(isGitRepositoryCommand, {
+            cwd: workspaceFolder,
+        });
 
         return true;
     } catch (e: any) {
@@ -27,10 +29,12 @@ export const isGitRepository = async (): Promise<boolean> => {
     }
 };
 
-export const existsRemoteBranch = async (branch: string) => {
+export const existsRemoteBranch = async (workspaceFolder: string, branch: string) => {
     try {
         const existsRemoteBranchCommand = `git ls-remote origin ${branch}`;
-        const { stdout } = await executeCommand(existsRemoteBranchCommand);
+        const { stdout } = await executeCommand(existsRemoteBranchCommand, {
+            cwd: workspaceFolder,
+        });
 
         if (!stdout) return false;
 
@@ -40,10 +44,10 @@ export const existsRemoteBranch = async (branch: string) => {
     }
 };
 
-export const getRemoteBranches = async (): Promise<string[]> => {
+export const getRemoteBranches = async (workspaceFolder: string): Promise<string[]> => {
     try {
         const getRemoteBranchesCommand = `git branch -r`;
-        const { stdout } = await executeCommand(getRemoteBranchesCommand);
+        const { stdout } = await executeCommand(getRemoteBranchesCommand, { cwd: workspaceFolder });
 
         if (!stdout) return [];
 
@@ -59,10 +63,10 @@ export const getRemoteBranches = async (): Promise<string[]> => {
     }
 };
 
-export const isBareRepository = async (path: string) => {
+export const isBareRepository = async (workspaceFolder: string, path: string) => {
     try {
         const isBareRepositoryCommand = `git -C ${path} rev-parse --is-bare-repository`;
-        const { stdout } = await executeCommand(isBareRepositoryCommand);
+        const { stdout } = await executeCommand(isBareRepositoryCommand, { cwd: workspaceFolder });
 
         const isBareRepo = removeNewLine(stdout);
 
@@ -72,54 +76,60 @@ export const isBareRepository = async (path: string) => {
     }
 };
 
-const setUpBareRepositoryFetch = async () => {
+const setUpBareRepositoryFetch = async (workspaceFolder: string) => {
     try {
-        const { stdout } = await executeCommand("git config remote.origin.fetch");
+        const command = "git config remote.origin.fetch";
+        const { stdout } = await executeCommand(command, { cwd: workspaceFolder });
 
         const remoteOriginFetch = removeNewLine(stdout);
 
         if (remoteOriginFetch === BARE_REPOSITORY_REMOTE_ORIGIN_FETCH) return;
 
-        await executeCommand(
-            `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
-        );
+        const setBareRepositoryRemoteOriginFetchCommand = `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`;
+        await executeCommand(setBareRepositoryRemoteOriginFetchCommand, { cwd: workspaceFolder });
         return;
     } catch (e: any) {
         // if this repository is bare,
         // then 'git config remote.origin.fetch' command fails
         // and we need to set the remote.origin.fetch
         try {
-            await executeCommand(
-                `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`
-            );
+            const setBareRepositoryRemoteOriginFetchCommand = `git config remote.origin.fetch "${BARE_REPOSITORY_REMOTE_ORIGIN_FETCH}"`;
+            await executeCommand(setBareRepositoryRemoteOriginFetchCommand, {
+                cwd: workspaceFolder,
+            });
         } catch (e: any) {
             throw Error(e);
         }
     }
 };
 
-const hasBareRepository = async () => {
-    const worktrees = await getWorktrees(true);
+const hasBareRepository = async (workspaceFolder: string) => {
+    const worktrees = await getWorktrees({
+        workspaceFolder,
+        withBareRepo: false,
+    });
     const hasBareRepo = worktrees.find((wt) => wt.worktree === BARE_REPOSITORY);
     return hasBareRepo;
 };
 
-export const fetch = async () => {
-    const hasBareRepo = await hasBareRepository();
-    if (hasBareRepo) await setUpBareRepositoryFetch();
+export const fetch = async (workspaceFolder: string) => {
+    const hasBareRepo = await hasBareRepository(workspaceFolder);
+    if (hasBareRepo) await setUpBareRepositoryFetch(workspaceFolder);
 
     try {
         const fetchCommand = `git fetch --all --prune`;
-        await executeCommand(fetchCommand);
+        await executeCommand(fetchCommand, { cwd: workspaceFolder });
     } catch (e: any) {
         throw Error(e);
     }
 };
 
-export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
+export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async (
+    workspaceFolder: string
+) => {
     try {
         const getBranchesCommand = `git branch -vv`;
-        const { stdout } = await executeCommand(getBranchesCommand);
+        const { stdout } = await executeCommand(getBranchesCommand, { cwd: workspaceFolder });
 
         if (!stdout) return;
 
@@ -133,7 +143,8 @@ export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async () => {
         if (localBranchesThatDoNotExistOnRemoteRepository.length === 0) return;
 
         await executeCommand(
-            `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`
+            `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`,
+            { cwd: workspaceFolder }
         );
     } catch (e: any) {
         throw Error(e);
