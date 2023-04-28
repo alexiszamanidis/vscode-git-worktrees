@@ -2,6 +2,12 @@
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
 
+## [2.0.4] - 2023-04-29
+
+### Fixed
+
+-   Bugfix: Path with spaces
+
 ## [2.0.1] - 2023-03-11
 
 ### Added
