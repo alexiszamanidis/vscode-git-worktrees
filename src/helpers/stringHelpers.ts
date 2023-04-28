@@ -14,3 +14,7 @@ export const getFileFromPath = async (path: string) => {
     const file = await parse(path).base;
     return file;
 };
+
+export const escapeSpaces = (string: string): string => {
+    return string.replace(/ /g, '\\ ');
+};
