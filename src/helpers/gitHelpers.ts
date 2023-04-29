@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { executeCommand } from "./helpers";
+import { executeCommand, spawnCommand } from "./helpers";
 import { removeNewLine } from "./stringHelpers";
 import { getWorktrees } from "./gitWorktreeHelpers";
 import { BARE_REPOSITORY, BARE_REPOSITORY_REMOTE_ORIGIN_FETCH } from "../constants/constants";
@@ -65,8 +65,11 @@ export const getRemoteBranches = async (workspaceFolder: string): Promise<string
 
 export const isBareRepository = async (workspaceFolder: string, path: string) => {
     try {
-        const isBareRepositoryCommand = `git -C ${path} rev-parse --is-bare-repository`;
-        const { stdout } = await executeCommand(isBareRepositoryCommand, { cwd: workspaceFolder });
+        const { stdout } = await spawnCommand(
+            "git",
+            ["-C", path, "rev-parse", "--is-bare-repository"],
+            { cwd: workspaceFolder }
+        );
 
         const isBareRepo = removeNewLine(stdout);
 
