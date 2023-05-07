@@ -1,6 +1,5 @@
 import * as util from "util";
 import * as vscode from "vscode";
-import { SpawnOptionsWithoutStdio, spawn } from "child_process";
 import { EXTENSION_ID, DEMO_URL } from "../constants/constants";
 import { showInformationMessageWithButton } from "./vsCodeHelpers";
 
@@ -39,40 +38,6 @@ export const executeCommand = async (
         const errorMessage = `command: '${command}'. error: '${e.message}'`;
         throw Error(errorMessage);
     }
-};
-
-// modified from https://stackoverflow.com/a/67379845/9979122
-export const spawnCommand = async (
-    command: string,
-    args?: string[],
-    options?: SpawnOptionsWithoutStdio
-) => {
-    return new Promise<{ stdout: string }>((resolve, reject) => {
-        const stdoutChunks: Buffer[] = [];
-        const stderrChunks: Buffer[] = [];
-
-        const subprocess = spawn(command, args, options);
-
-        subprocess.stdout.on("data", (chunk) => {
-            stdoutChunks.push(chunk);
-        });
-
-        subprocess.stderr.on("data", (chunk) => {
-            stderrChunks.push(chunk);
-        });
-
-        subprocess.on("error", (error) => {
-            reject(error);
-        });
-
-        subprocess.on("exit", (code) => {
-            if (code !== 0) {
-                reject(Buffer.concat(stderrChunks).toString());
-            }
-
-            resolve({ stdout: Buffer.concat(stdoutChunks).toString() });
-        });
-    });
 };
 
 export const isMajorUpdate = (previousVersion: string, currentVersion: string) => {

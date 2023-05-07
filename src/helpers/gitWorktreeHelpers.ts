@@ -9,6 +9,7 @@ import {
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
+    escapeSpaces,
     getFileFromPath,
     removeFirstAndLastCharacter,
     removeLastDirectoryInURL,
@@ -269,6 +270,7 @@ export const calculateNewWorktreePath = async (workspaceFolder: string, branch: 
 
         const gitCommonDirPath = await getGitCommonDirPath(workspaceFolder);
         let path = removeNewLine(gitCommonDirPath);
+        path = escapeSpaces(path);
 
         const isBareRepo = await isBareRepository(workspaceFolder, path);
 
