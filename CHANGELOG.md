@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.0.5...v2.1.0) (2023-06-18)
+
+
+### Features
+
+* **ci:** add ci.yml ([00823b3](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/00823b3f6cc1d6e029a543e49f6ee591c8309b8e))
+
 # Change Log
 
 All notable changes to the "git-worktrees" extension will be documented in this file.
