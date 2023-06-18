@@ -8,7 +8,7 @@ After creating a ZSH plugin that was responsible for wrapping up my daily git op
 
 ### Requirements
 
--   Git version: 2.34.1
+-   Git version >= 2.34.1
 
 ### Multiple Workspaces
 
