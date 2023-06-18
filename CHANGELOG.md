@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.0...v2.1.1) (2023-06-18)
+
+
+### Bug Fixes
+
+* **ci:** run ci.yml on every commit ([8341ca7](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/8341ca72418d9f0fd9e25e087c24bc6a3960445e))
+
 # [2.1.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.0.5...v2.1.0) (2023-06-18)
 
 
