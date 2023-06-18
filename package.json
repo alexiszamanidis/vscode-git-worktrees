@@ -88,6 +88,10 @@
         "jest-test": "jest --watchAll"
     },
     "devDependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^8.0.7",
+        "semantic-release": "^21.0.1",
         "@types/glob": "^7.2.0",
         "@types/jest": "^28.1.0",
         "@types/mocha": "^9.1.0",
