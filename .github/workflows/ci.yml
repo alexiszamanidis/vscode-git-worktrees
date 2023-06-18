@@ -1,0 +1,33 @@
+name: CI
+on:
+    pull_request:
+        branches:
+            - "**"
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Set Node.js 18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: "yarn"
+
+            - name: Install dependencies
+              run: yarn
+
+            - name: Compile code
+              run: yarn compile
+
+            - name: Run tests
+              run: yarn jest-test -- --watchAll=false --coverage --coverageReporters json-summary
+
+            - name: Jest Coverage Comment
+              uses: MishaKav/jest-coverage-comment@main
