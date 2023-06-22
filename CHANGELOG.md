@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.2...v2.1.3) (2023-06-22)
+
+
+### Bug Fixes
+
+* **release:** add extension publish task in release.yml file ([c019a55](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/c019a552ae88d6c5df19933b53e9fe997c942ea8))
+
 ## [2.1.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.1...v2.1.2) (2023-06-22)
 
 
