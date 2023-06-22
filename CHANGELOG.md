@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.1...v2.1.2) (2023-06-22)
+
+
+### Bug Fixes
+
+* **ci:** run linting in ci.yml ([084efda](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/084efda44bba04d3b66aed414700088b0c4333e9))
+
 ## [2.1.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.0...v2.1.1) (2023-06-18)
 
 
