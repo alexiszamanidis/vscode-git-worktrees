@@ -26,11 +26,14 @@ jobs:
             - name: Install dependencies
               run: yarn
 
-            - name: Compile code
-              run: yarn compile
+            - name: Run linting and style checks
+              run: yarn lint
 
             - name: Run tests
               run: yarn jest-test -- --watchAll=false --coverage --coverageReporters json-summary
+
+            - name: Compile code
+              run: yarn compile
 
             - name: Jest Coverage Comment
               uses: MishaKav/jest-coverage-comment@main
