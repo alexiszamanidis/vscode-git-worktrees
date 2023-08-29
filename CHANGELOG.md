@@ -1,3 +1,10 @@
+## [2.1.4](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.3...v2.1.4) (2023-08-29)
+
+
+### Bug Fixes
+
+* **copy-to-clipboard:** refactor clipboard function and use vscode API ([9bbce6a](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/9bbce6ab27d3f7983dd16e50b4a9e606cde2cc22))
+
 ## [2.1.3](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.2...v2.1.3) (2023-06-22)
 
 
