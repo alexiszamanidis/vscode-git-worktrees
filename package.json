@@ -83,6 +83,17 @@
                         "description": "Auto push worktree branch after its creation"
                     }
                 }
+            },
+            {
+                "id": "auto-pull",
+                "title": "Auto pull",
+                "properties": {
+                    "vsCodeGitWorktrees.add.autoPull": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Auto pull worktree branch after its creation"
+                    }
+                }
             }
         ]
     },

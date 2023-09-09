@@ -123,3 +123,6 @@ export const worktreesDirPath =
 
 export const shouldAutoPushAfterWorktreeCreation =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPush") ?? true;
+
+export const shouldAutoPullAfterWorktreeCreation =
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") ?? true;

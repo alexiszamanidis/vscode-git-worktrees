@@ -6,6 +6,7 @@ import {
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
     shouldAutoPushAfterWorktreeCreation,
+    shouldAutoPullAfterWorktreeCreation,
 } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
@@ -336,6 +337,11 @@ export const addNewWorktree = async (
     }
 };
 
+export const pullBranch = async (worktreePath: string, workspaceFolder: string) => {
+    const pullCommand = `git -C ${worktreePath} pull`;
+    await executeCommand(pullCommand, { cwd: workspaceFolder });
+};
+
 export const addRemoteWorktree = async (
     workspaceFolder: string,
     remoteBranch: string,
@@ -350,8 +356,9 @@ export const addRemoteWorktree = async (
         const worktreeAddCommand = `git worktree add ${newWorktreePath} ${newBranch}`;
         await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
-        const pullCommand = `git -C ${newWorktreePath} pull`;
-        await executeCommand(pullCommand, { cwd: workspaceFolder });
+        if (shouldAutoPullAfterWorktreeCreation) {
+            await pullBranch(newWorktreePath, workspaceFolder);
+        }
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
