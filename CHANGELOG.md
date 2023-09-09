@@ -1,3 +1,11 @@
+# [2.2.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.4...v2.2.0) (2023-09-09)
+
+
+### Features
+
+* **auto-pull:** add auto-pull option ([d22f5be](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/d22f5be25ae8f786619fa21f9e81e69f82e157e9))
+* **auto-push:** add auto-push option ([cd3bd22](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/cd3bd22a7fdee2de420fed2986d874a9700dc45a))
+
 ## [2.1.4](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.3...v2.1.4) (2023-08-29)
 
 
