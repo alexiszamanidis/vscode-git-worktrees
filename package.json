@@ -72,6 +72,17 @@
                         "description": "Define a directory for all worktrees between your projects"
                     }
                 }
+            },
+            {
+                "id": "auto-push",
+                "title": "Auto push",
+                "properties": {
+                    "vsCodeGitWorktrees.add.autoPush": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Auto push worktree branch after its creation"
+                    }
+                }
             }
         ]
     },

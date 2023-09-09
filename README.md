@@ -83,6 +83,7 @@ To select a workspace, simply choose from the list of available workspaces when 
 | vsCodeGitWorktrees.remove.stalledBranches   | boolean | false         | Removes local(stalled) branches that do not exist on remote |
 | vsCodeGitWorktrees.move.openNewVscodeWindow | boolean | true          | Open new vscode window when you switch or create a worktree |
 | vsCodeGitWorktrees.worktrees.dir.path       | string  | null          | Define a directory for all worktrees between your projects  |
+| vsCodeGitWorktrees.add.autoPush             | boolean | true          | Auto push worktree branch after its creation                |
 
 ## Contribution
 
