@@ -5,6 +5,8 @@ import {
     worktreesDirPath,
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
+    shouldAutoPushAfterWorktreeCreation,
+    shouldAutoPullAfterWorktreeCreation,
 } from "./helpers";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
@@ -302,6 +304,11 @@ export const existsWorktree = async (workspaceFolder: string, worktree: string) 
     }
 };
 
+export const pushBranch = async (branch: string, workspaceFolder: string) => {
+    const pushCommand = `git push --set-upstream origin ${branch}`;
+    await executeCommand(pushCommand, { cwd: workspaceFolder });
+};
+
 export const addNewWorktree = async (
     workspaceFolder: string,
     remoteBranch: string,
@@ -316,8 +323,9 @@ export const addNewWorktree = async (
         const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
         await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
-        const pushCommand = `git push --set-upstream origin ${newBranch}`;
-        await executeCommand(pushCommand, { cwd: workspaceFolder });
+        if (shouldAutoPushAfterWorktreeCreation) {
+            await pushBranch(newBranch, workspaceFolder);
+        }
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
@@ -327,6 +335,11 @@ export const addNewWorktree = async (
     } catch (e: any) {
         throw Error(e);
     }
+};
+
+export const pullBranch = async (worktreePath: string, workspaceFolder: string) => {
+    const pullCommand = `git -C ${worktreePath} pull`;
+    await executeCommand(pullCommand, { cwd: workspaceFolder });
 };
 
 export const addRemoteWorktree = async (
@@ -343,8 +356,9 @@ export const addRemoteWorktree = async (
         const worktreeAddCommand = `git worktree add ${newWorktreePath} ${newBranch}`;
         await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
-        const pullCommand = `git -C ${newWorktreePath} pull`;
-        await executeCommand(pullCommand, { cwd: workspaceFolder });
+        if (shouldAutoPullAfterWorktreeCreation) {
+            await pullBranch(newWorktreePath, workspaceFolder);
+        }
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 

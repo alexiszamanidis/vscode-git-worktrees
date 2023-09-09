@@ -120,3 +120,9 @@ export const shouldOpenNewVscodeWindow =
 
 export const worktreesDirPath =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktrees.dir.path") ?? null;
+
+export const shouldAutoPushAfterWorktreeCreation =
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPush") ?? true;
+
+export const shouldAutoPullAfterWorktreeCreation =
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") ?? true;
