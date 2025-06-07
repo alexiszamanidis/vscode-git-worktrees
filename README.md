@@ -89,26 +89,48 @@ To select a workspace, simply choose from the list of available workspaces when 
 | vsCodeGitWorktrees.worktreeCopyExcludePatterns | array   | []            | Patterns specifying files and folders to exclude from copying when creating a new worktree         |
 | vsCodeGitWorktrees.worktree.coloring           | boolean | false         | Enable worktree coloring when creating or switching worktree                                       |
 
-## Contribution
+## 💡 How You Can Contribute
 
--   Reporting a bug
--   Improving this documentation
--   Writing tests
--   Sharing this project and recommending it to your friends
--   Giving a star on this repository
--   [TODO](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/TODO.md)
+Whether it’s your first time contributing or you're a seasoned open-source developer, you're welcome here! Here are some great ways to get involved:
 
-**Run the Extension locally**
+-   🐛 **Report a Bug** – Found something odd? [Open an issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues) and let us know.
+-   📚 **Improve the Documentation** – Typos, clarity, or better examples? We’d love your help!
+-   ✅ **Write Tests** – Help us make sure everything works smoothly.
+-   📢 **Share the Project** – Tell your friends or tweet about it!
+-   ⭐️ **Star the Repository** – A small gesture that means a lot.
+-   📋 **Check Out the [TODO List](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/TODO.md)** – Grab a task and dive in!
+
+## 🚀 Want to Contribute Code?
+
+Awesome! Here’s a quick guide to get started:
+
+1. **Fork the Project**
+   Click the _Fork_ button at the top right of the repository.
+2. **Clone Your Fork**
 
 ```bash
-# install dependencies
-yarn
-# compile code and watch input files
-yarn watch
-# Then, inside the editor, press F5. This will
-# compile and run the extension in a new Extension
-# Development Host window.
+git clone https://github.com/your-username/vscode-git-worktrees.git
+cd vscode-git-worktrees
 ```
+
+3. **Make Your Changes**
+   Work your magic — whether it’s a new feature, a fix, or docs improvement.
+4. **Open a Pull Request**
+   Go to the original repository and click Compare & pull request. Add a helpful description and submit!
+
+### 🛠️ Run the Extension Locally
+
+Want to test or develop the extension on your machine? Here’s how:
+
+```bash
+# Install dependencies
+yarn
+
+# Compile the code and watch for changes
+yarn watch
+```
+
+Then, open the project in Visual Studio Code, press F5, and it will launch in a new Extension Development Host window.
 
 ## License
 
