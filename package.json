@@ -94,6 +94,28 @@
                         "description": "Auto pull worktree branch after its creation"
                     }
                 }
+            },
+            {
+                "id": "copy-include-patterns",
+                "title": "Worktree Copy Include Patterns",
+                "properties": {
+                    "vsCodeGitWorktrees.worktreeCopyIncludePatterns": {
+                        "type": "array",
+                        "default": [],
+                        "description": "Patterns specifying which files and folders to copy from the source repository to the new worktree"
+                    }
+                }
+            },
+            {
+                "id": "copy-exclude-patterns",
+                "title": "Worktree Copy Exclude Patterns",
+                "properties": {
+                    "vsCodeGitWorktrees.worktreeCopyExcludePatterns": {
+                        "type": "array",
+                        "default": [],
+                        "description": "Patterns specifying files and folders to exclude from copying when creating a new worktree"
+                    }
+                }
             }
         ]
     },

@@ -1,45 +1,39 @@
 # [2.2.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.4...v2.2.0) (2023-09-09)
 
-
 ### Features
 
-* **auto-pull:** add auto-pull option ([d22f5be](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/d22f5be25ae8f786619fa21f9e81e69f82e157e9))
-* **auto-push:** add auto-push option ([cd3bd22](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/cd3bd22a7fdee2de420fed2986d874a9700dc45a))
+-   **auto-pull:** add auto-pull option ([d22f5be](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/d22f5be25ae8f786619fa21f9e81e69f82e157e9))
+-   **auto-push:** add auto-push option ([cd3bd22](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/cd3bd22a7fdee2de420fed2986d874a9700dc45a))
 
 ## [2.1.4](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.3...v2.1.4) (2023-08-29)
 
-
 ### Bug Fixes
 
-* **copy-to-clipboard:** refactor clipboard function and use vscode API ([9bbce6a](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/9bbce6ab27d3f7983dd16e50b4a9e606cde2cc22))
+-   **copy-to-clipboard:** refactor clipboard function and use vscode API ([9bbce6a](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/9bbce6ab27d3f7983dd16e50b4a9e606cde2cc22))
 
 ## [2.1.3](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.2...v2.1.3) (2023-06-22)
 
-
 ### Bug Fixes
 
-* **release:** add extension publish task in release.yml file ([c019a55](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/c019a552ae88d6c5df19933b53e9fe997c942ea8))
+-   **release:** add extension publish task in release.yml file ([c019a55](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/c019a552ae88d6c5df19933b53e9fe997c942ea8))
 
 ## [2.1.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.1...v2.1.2) (2023-06-22)
 
-
 ### Bug Fixes
 
-* **ci:** run linting in ci.yml ([084efda](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/084efda44bba04d3b66aed414700088b0c4333e9))
+-   **ci:** run linting in ci.yml ([084efda](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/084efda44bba04d3b66aed414700088b0c4333e9))
 
 ## [2.1.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.0...v2.1.1) (2023-06-18)
 
-
 ### Bug Fixes
 
-* **ci:** run ci.yml on every commit ([8341ca7](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/8341ca72418d9f0fd9e25e087c24bc6a3960445e))
+-   **ci:** run ci.yml on every commit ([8341ca7](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/8341ca72418d9f0fd9e25e087c24bc6a3960445e))
 
 # [2.1.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.0.5...v2.1.0) (2023-06-18)
 
-
 ### Features
 
-* **ci:** add ci.yml ([00823b3](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/00823b3f6cc1d6e029a543e49f6ee591c8309b8e))
+-   **ci:** add ci.yml ([00823b3](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/00823b3f6cc1d6e029a543e49f6ee591c8309b8e))
 
 # Change Log
 

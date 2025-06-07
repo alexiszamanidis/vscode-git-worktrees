@@ -1,10 +1,16 @@
 import * as util from "util";
 import * as vscode from "vscode";
+import * as path from "path";
+import { pipeline as pipelineCallback } from "stream";
+import { promisify } from "util";
+
 import { SpawnOptionsWithoutStdio, spawn } from "child_process";
 import { EXTENSION_ID, DEMO_URL } from "../constants/constants";
 import { showInformationMessageWithButton } from "./vsCodeHelpers";
+import { createReadStream, createWriteStream, promises } from "fs";
 
 const exec = util.promisify(require("child_process").exec);
+const pipeline = promisify(pipelineCallback);
 
 export const getCurrentPath = () => vscode.workspace.rootPath;
 
@@ -112,6 +118,36 @@ export const showWhatsNew = async (context: vscode.ExtensionContext) => {
     }
 };
 
+export async function copyWorktreeFiles(sourceRepo: string, targetWorktree: string) {
+    try {
+        const patterns = worktreeCopyIncludePatterns;
+        const ignorePatterns = worktreeCopyExcludePatterns;
+
+        if (patterns.length === 0) return;
+
+        // Find matching files
+        const files = await vscode.workspace.findFiles(
+            new vscode.RelativePattern(sourceRepo, `{${patterns.join(",")}}`),
+            `{${ignorePatterns.join(",")}}`
+        );
+
+        // Copy the found files
+        for (const file of files) {
+            const relativePath = path.relative(sourceRepo, file.fsPath);
+            const targetPath = path.join(targetWorktree, relativePath);
+            const targetDir = path.dirname(targetPath);
+
+            // Ensure target directory exists
+            await promises.mkdir(targetDir, { recursive: true });
+
+            // Copy single file
+            await pipeline(createReadStream(file.fsPath), createWriteStream(targetPath));
+        }
+    } catch (e: any) {
+        throw Error(e);
+    }
+}
+
 export const shouldRemoveStalledBranches =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.remove.stalledBranches") ?? false;
 
@@ -126,3 +162,13 @@ export const shouldAutoPushAfterWorktreeCreation =
 
 export const shouldAutoPullAfterWorktreeCreation =
     vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") ?? true;
+
+export const worktreeCopyIncludePatterns =
+    (vscode.workspace
+        .getConfiguration()
+        .get("vsCodeGitWorktrees.worktreeCopyIncludePatterns") as string[]) ?? [];
+
+export const worktreeCopyExcludePatterns =
+    (vscode.workspace
+        .getConfiguration()
+        .get("vsCodeGitWorktrees.worktreeCopyExcludePatterns") as string[]) ?? [];
