@@ -116,6 +116,17 @@
                         "description": "Patterns specifying files and folders to exclude from copying when creating a new worktree"
                     }
                 }
+            },
+            {
+                "id": "enable-worktree-coloring",
+                "title": "Enable Worktree Coloring",
+                "properties": {
+                    "vsCodeGitWorktrees.worktree.coloring": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Enable worktree coloring when creating or switching worktree"
+                    }
+                }
             }
         ]
     },
