@@ -87,6 +87,7 @@ To select a workspace, simply choose from the list of available workspaces when 
 | vsCodeGitWorktrees.add.autoPull                | boolean | true          | Auto pull worktree branch after its creation                                                       |
 | vsCodeGitWorktrees.worktreeCopyIncludePatterns | array   | []            | Patterns specifying which files and folders to copy from the source repository to the new worktree |
 | vsCodeGitWorktrees.worktreeCopyExcludePatterns | array   | []            | Patterns specifying files and folders to exclude from copying when creating a new worktree         |
+| vsCodeGitWorktrees.worktree.coloring           | boolean | false         | Enable worktree coloring when creating or switching worktree                                       |
 
 ## Contribution
 

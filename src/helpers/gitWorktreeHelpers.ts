@@ -4,6 +4,7 @@ import {
     executeCommand,
     worktreesDirPath,
     copyWorktreeFiles,
+    applyWorktreeColor,
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
     shouldAutoPushAfterWorktreeCreation,
@@ -61,6 +62,7 @@ export const moveIntoWorktree = async (
     const workspaceFilePath = getWorkspaceFilePath();
     if (!workspaceFilePath) {
         openVscodeInstance(worktreePath);
+        await applyWorktreeColor(worktreePath);
         return { type: "folder", path: worktreePath };
     }
 
@@ -89,10 +91,12 @@ export const moveIntoWorktree = async (
 
     if (!fs.existsSync(fullWorkspacePath)) {
         openVscodeInstance(worktreePath);
+        await applyWorktreeColor(worktreePath);
         return { type: "folder", path: worktreePath };
     }
 
     openVscodeInstance(fullWorkspacePath);
+    await applyWorktreeColor(fullWorkspacePath);
     return { type: "workspace", path: fullWorkspacePath };
 };
 

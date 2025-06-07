@@ -1,8 +1,9 @@
+import * as fs from "fs";
 import * as util from "util";
-import * as vscode from "vscode";
 import * as path from "path";
-import { pipeline as pipelineCallback } from "stream";
+import * as vscode from "vscode";
 import { promisify } from "util";
+import { pipeline as pipelineCallback } from "stream";
 
 import { SpawnOptionsWithoutStdio, spawn } from "child_process";
 import { EXTENSION_ID, DEMO_URL } from "../constants/constants";
@@ -148,20 +149,70 @@ export async function copyWorktreeFiles(sourceRepo: string, targetWorktree: stri
     }
 }
 
+// Generate a random hex color
+const getRandomColor = (): string => {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+};
+
+// Apply per-repo activityBar color in .vscode/settings.json
+export const applyWorktreeColor = async (worktreePath: string): Promise<void> => {
+    if (!shouldColorWorktrees) return;
+
+    const vscodeDir = path.join(worktreePath, ".vscode");
+    const settingsPath = path.join(vscodeDir, "settings.json");
+
+    if (!fs.existsSync(vscodeDir)) {
+        fs.mkdirSync(vscodeDir);
+    }
+
+    let settings: any = {};
+    if (fs.existsSync(settingsPath)) {
+        try {
+            settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+        } catch {
+            settings = {};
+        }
+    }
+
+    const customizations = settings["workbench.colorCustomizations"] || {};
+
+    // Only set if it doesn't already exist
+    if (!customizations["activityBar.background"]) {
+        customizations["activityBar.background"] = getRandomColor();
+        settings["workbench.colorCustomizations"] = customizations;
+
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 4));
+    }
+};
+
 export const shouldRemoveStalledBranches =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.remove.stalledBranches") ?? false;
+    (vscode.workspace
+        .getConfiguration()
+        .get("vsCodeGitWorktrees.remove.stalledBranches") as boolean) ?? false;
+
+export const shouldColorWorktrees =
+    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktree.coloring") as boolean) ??
+    false;
 
 export const shouldOpenNewVscodeWindow =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.openNewVscodeWindow") ?? true;
+    (vscode.workspace
+        .getConfiguration()
+        .get("vsCodeGitWorktrees.move.openNewVscodeWindow") as boolean) ?? true;
 
 export const worktreesDirPath =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktrees.dir.path") ?? null;
+    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktrees.dir.path") as string) ??
+    null;
 
 export const shouldAutoPushAfterWorktreeCreation =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPush") ?? true;
+    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPush") as boolean) ?? true;
 
 export const shouldAutoPullAfterWorktreeCreation =
-    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") ?? true;
+    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") as boolean) ?? true;
 
 export const worktreeCopyIncludePatterns =
     (vscode.workspace
