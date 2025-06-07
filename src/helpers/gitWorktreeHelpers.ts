@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import {
     executeCommand,
     worktreesDirPath,
+    copyWorktreeFiles,
     getWorkspaceFilePath,
     shouldOpenNewVscodeWindow,
     shouldAutoPushAfterWorktreeCreation,
@@ -327,6 +328,8 @@ export const addNewWorktree = async (
             await pushBranch(newBranch, workspaceFolder);
         }
 
+        await copyWorktreeFiles(workspaceFolder, newWorktreePath);
+
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
         showInformationMessage(
@@ -359,6 +362,8 @@ export const addRemoteWorktree = async (
         if (shouldAutoPullAfterWorktreeCreation) {
             await pullBranch(newWorktreePath, workspaceFolder);
         }
+
+        await copyWorktreeFiles(workspaceFolder, newWorktreePath);
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 
