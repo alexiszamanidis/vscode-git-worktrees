@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.2.0...v2.3.0) (2025-06-07)
+
+
+### Features
+
+* **copy-files:** add copy-files when creating a worktree ([40ddc41](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/40ddc41a800f070594bd2f438e4ea071417dd7fc))
+
 # [2.2.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.1.4...v2.2.0) (2023-09-09)
 
 ### Features
