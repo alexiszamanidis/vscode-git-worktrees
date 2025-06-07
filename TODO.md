@@ -1,9 +1,3 @@
-## Publish-Version Script
-
--   Calculate new version
--   Check CHANGELOG.md if it contains details about new version
--   Publish new version
-
 ## Worktree Remove Redirection
 
 -   This is implemented and commented out. Let's revisit it on phase 2
@@ -19,9 +13,3 @@
 ## Add typescript path aliases
 
 ## Check the Git version and log the corresponding message
-
-## Is there a way to implement the on_worktree_change feature?
-
-Refs:
-
--   [zsh_git_fzf_on_worktree_operation](https://github.com/alexiszamanidis/zsh-git-fzf#hooks)
