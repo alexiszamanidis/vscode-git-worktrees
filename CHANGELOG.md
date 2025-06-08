@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.4.0...v2.5.0) (2025-06-08)
+
+
+### Features
+
+* **release:** release ([bec0c57](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/bec0c57cc4bda209bddbbbde0cc2da3d545aaedb))
+
 # [2.4.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.3.0...v2.4.0) (2025-06-07)
 
 ### Features
