@@ -29,8 +29,12 @@ const calculateBrowserStart = async () => {
     return start;
 };
 
+import logger from "./logger"; // adjust path as needed
+
 export const openBrowser = async (url = "") => {
+    logger.debug(`Opening browser with URL: ${url}`);
     const start = await calculateBrowserStart();
+    logger.debug(`Using browser start command: ${start}`);
     await require("child_process").exec(start + " " + url);
 };
 

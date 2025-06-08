@@ -3,9 +3,12 @@ import type { InputBoxOptions } from "vscode";
 import { executeCommand, spawnCommand } from "./helpers";
 import { removeNewLine } from "./stringHelpers";
 import { getWorktrees } from "./gitWorktreeHelpers";
+import logger from "./logger";
 import { BARE_REPOSITORY, BARE_REPOSITORY_REMOTE_ORIGIN_FETCH } from "../constants/constants";
 
 export const selectBranch = async (branches: string[]): Promise<string | undefined> => {
+    logger.debug(`Prompting user to select a branch from ${branches.length} remote branches`);
+
     const selectedBranch = await vscode.window.showQuickPick(
         branches.map((branch) => ({ label: branch })),
         {
@@ -14,18 +17,26 @@ export const selectBranch = async (branches: string[]): Promise<string | undefin
         }
     );
 
+    if (selectedBranch) {
+        logger.info(`User selected branch: ${selectedBranch.label}`);
+    } else {
+        logger.info("User cancelled branch selection or did not select any branch.");
+    }
+
     return selectedBranch?.label;
 };
 
 export const isGitRepository = async (workspaceFolder: string): Promise<boolean> => {
+    logger.debug(`Checking if folder is a Git repository: ${workspaceFolder}`);
     try {
         const isGitRepositoryCommand = "git rev-parse --is-inside-work-tree";
         await executeCommand(isGitRepositoryCommand, {
             cwd: workspaceFolder,
         });
-
+        logger.debug(`Folder ${workspaceFolder} is a Git repository.`);
         return true;
     } catch (e: any) {
+        logger.warn(`Folder ${workspaceFolder} is NOT a Git repository. Error: ${e.message}`);
         return false;
     }
 };
@@ -46,21 +57,33 @@ export const existsRemoteBranch = async (workspaceFolder: string, branch: string
 };
 
 export const getRemoteBranches = async (workspaceFolder: string): Promise<string[]> => {
+    logger.debug(`Fetching remote branches in workspace: ${workspaceFolder}`);
+
     try {
         const getRemoteBranchesCommand = `git branch -r`;
+        logger.debug(`Executing command: ${getRemoteBranchesCommand}`);
+
         const { stdout } = await executeCommand(getRemoteBranchesCommand, { cwd: workspaceFolder });
 
-        if (!stdout) return [];
+        if (!stdout) {
+            logger.info("No remote branches found.");
+            return [];
+        }
 
-        return stdout
+        const branches = stdout
             .split("\n")
             .filter((line: string) => line !== "")
-            .filter((line: string) => !line.includes("->")) // exclude "  origin/HEAD -> origin/master"
+            .filter((line: string) => !line.includes("->")) // exclude HEAD refs
             .filter((line: string) => line.startsWith("  origin/"))
             .map((line: string) => line.substring("  origin/".length))
             .map((branch: string) => branch.trim());
+
+        logger.info(`Found remote branches: ${branches.join(", ")}`);
+
+        return branches;
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Failed to get remote branches: ${e.message}`);
+        throw e;
     }
 };
 
@@ -117,25 +140,43 @@ const hasBareRepository = async (workspaceFolder: string) => {
 };
 
 export const fetch = async (workspaceFolder: string) => {
+    logger.debug(`Starting git fetch in workspace: ${workspaceFolder}`);
+
     const hasBareRepo = await hasBareRepository(workspaceFolder);
-    if (hasBareRepo) await setUpBareRepositoryFetch(workspaceFolder);
+    logger.debug(`Has bare repository: ${hasBareRepo}`);
+
+    if (hasBareRepo) {
+        logger.debug("Setting up bare repository fetch...");
+        await setUpBareRepositoryFetch(workspaceFolder);
+    }
 
     try {
         const fetchCommand = `git fetch --all --prune`;
+        logger.debug(`Executing command: ${fetchCommand}`);
         await executeCommand(fetchCommand, { cwd: workspaceFolder });
+        logger.info("Git fetch completed successfully.");
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Git fetch failed: ${e.message}`);
+        throw e;
     }
 };
 
 export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async (
     workspaceFolder: string
 ) => {
+    logger.debug(
+        `Checking for local branches in workspace '${workspaceFolder}' that do not exist on remote repository`
+    );
+
     try {
         const getBranchesCommand = `git branch -vv`;
+        logger.debug(`Executing command: ${getBranchesCommand}`);
         const { stdout } = await executeCommand(getBranchesCommand, { cwd: workspaceFolder });
 
-        if (!stdout) return;
+        if (!stdout) {
+            logger.info("No local branches found.");
+            return;
+        }
 
         const localBranchesThatDoNotExistOnRemoteRepository = stdout
             .split("\n")
@@ -144,14 +185,26 @@ export const removeLocalBranchesThatDoNotExistOnRemoteRepository = async (
             .map((line: string) => line.trim())
             .map((line: string) => line.split(" ")[0]);
 
-        if (localBranchesThatDoNotExistOnRemoteRepository.length === 0) return;
+        if (localBranchesThatDoNotExistOnRemoteRepository.length === 0) {
+            logger.info("No local branches to remove as none are gone on the remote.");
+            return;
+        }
+
+        logger.info(
+            `Removing local branches that no longer exist on remote: ${localBranchesThatDoNotExistOnRemoteRepository.join(
+                ", "
+            )}`
+        );
 
         await executeCommand(
             `git branch -D ${localBranchesThatDoNotExistOnRemoteRepository.join(" ")}`,
             { cwd: workspaceFolder }
         );
+
+        logger.info("Successfully removed local branches no longer existing on remote.");
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Failed to remove local branches that do not exist on remote: ${e.message}`);
+        throw e;
     }
 };
 

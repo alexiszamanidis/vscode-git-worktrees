@@ -10,6 +10,7 @@ import {
     shouldAutoPushAfterWorktreeCreation,
     shouldAutoPullAfterWorktreeCreation,
 } from "./helpers";
+import logger from "./logger";
 import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
@@ -59,27 +60,27 @@ export const moveIntoWorktree = async (
     workspaceFolder: string,
     worktreePath: string
 ): Promise<{ type: string; path: string }> => {
+    logger.debug(
+        `Moving into worktree. workspaceFolder: ${workspaceFolder}, worktreePath: ${worktreePath}`
+    );
+
     const workspaceFilePath = getWorkspaceFilePath();
+
     if (!workspaceFilePath) {
+        logger.debug("No workspace file path found, opening VS Code instance at worktreePath.");
         openVscodeInstance(worktreePath);
         await applyWorktreeColor(worktreePath);
         return { type: "folder", path: worktreePath };
     }
 
     const topLevelPath = await getGitTopLevel(workspaceFolder);
+    logger.debug(`Top level git path: ${topLevelPath}`);
+
     const basePath = topLevelPath.split("/");
     const workspacePath = workspaceFilePath.path.split("/");
 
-    // remove first element if it is empty
-    // eg. path = '/test/path/
-    //     pathArray = ['', 'test', 'path']
-    //     pathArray = ['test', 'path']
-    if (basePath[0] === "") {
-        basePath.shift();
-    }
-    if (workspacePath[0] === "") {
-        workspacePath.shift();
-    }
+    if (basePath[0] === "") basePath.shift();
+    if (workspacePath[0] === "") workspacePath.shift();
 
     let pathToWorkspace = "";
 
@@ -88,13 +89,18 @@ export const moveIntoWorktree = async (
     }
 
     const fullWorkspacePath = `${worktreePath}${pathToWorkspace}`;
+    logger.debug(`Calculated full workspace path: ${fullWorkspacePath}`);
 
     if (!fs.existsSync(fullWorkspacePath)) {
+        logger.warn(
+            `Full workspace path does not exist: ${fullWorkspacePath}. Opening worktreePath instead.`
+        );
         openVscodeInstance(worktreePath);
         await applyWorktreeColor(worktreePath);
         return { type: "folder", path: worktreePath };
     }
 
+    logger.debug(`Opening VS Code instance at full workspace path: ${fullWorkspacePath}`);
     openVscodeInstance(fullWorkspacePath);
     await applyWorktreeColor(fullWorkspacePath);
     return { type: "workspace", path: fullWorkspacePath };
@@ -151,9 +157,17 @@ export const getWorktrees = async ({
 };
 
 export const getWorktree = async (workspaceFolder: string) => {
+    logger.debug(`Retrieving worktrees for folder: ${workspaceFolder}`);
     const worktrees = await getWorktrees({ workspaceFolder });
 
+    logger.debug(`Found ${worktrees.length} worktree(s). Prompting user to select one...`);
     const worktree = await selectWorktree(worktrees);
+
+    if (worktree) {
+        logger.debug(`User selected worktree: ${worktree.label || worktree.detail || "unknown"}`);
+    } else {
+        logger.info("No worktree selected by user.");
+    }
 
     return worktree;
 };
@@ -208,42 +222,52 @@ export const removeWorktree = async (workspaceFolder: string, worktree: Selected
     const branch = worktree.label;
     const removeWorktreeCommand = `git worktree remove ${branch}`;
 
-    // TODO: something bad happens with paths!!!
+    logger.debug(`Attempting to remove worktree '${branch}' in folder: ${workspaceFolder}`);
+
     if (isSamePath) {
-        throw new Error(
-            "You cannot delete the same Worktree as the one you are currently working on"
-        );
+        const errorMsg =
+            "You cannot delete the same Worktree as the one you are currently working on";
+        logger.error(errorMsg);
+        throw new Error(errorMsg);
     }
 
     try {
+        logger.debug(`Running command: ${removeWorktreeCommand}`);
         await executeCommand(removeWorktreeCommand, { cwd: workspaceFolder });
+        logger.info(`Successfully removed worktree '${branch}'. Pruning worktrees...`);
         await pruneWorktrees(workspaceFolder);
     } catch (e: any) {
         const errorMessage = e.message;
+        logger.warn(`Failed to remove worktree '${branch}': ${errorMessage}`);
 
-        // TODO: add all cases that the user might want to force delete
         const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${branch}\nfatal: '${branch}' contains modified or untracked files, use --force to delete it\n`;
-
         const isUntrackedOrModifiedFilesError = errorMessage === untrackedOrModifiedFilesError;
 
-        if (!isUntrackedOrModifiedFilesError) throw Error(e);
+        if (!isUntrackedOrModifiedFilesError) {
+            logger.error(`Unexpected error when removing worktree '${branch}': ${errorMessage}`);
+            throw e;
+        }
 
         const buttonName = "Force Delete";
+        const userMessage = `fatal: '${branch}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the branch.`;
+        logger.info(`Prompting user to force delete worktree '${branch}'.`);
 
-        const answer = await showInformationMessageWithButton(
-            `fatal: '${branch}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the branch.`,
-            buttonName
-        );
+        const answer = await showInformationMessageWithButton(userMessage, buttonName);
 
-        if (answer !== buttonName) return;
+        if (answer !== buttonName) {
+            logger.info(`User declined to force delete worktree '${branch}'.`);
+            return;
+        }
 
         const forceRemoveWorktreeCommand = `git worktree remove -f ${branch}`;
         try {
+            logger.debug(`Running force delete command: ${forceRemoveWorktreeCommand}`);
             await executeCommand(forceRemoveWorktreeCommand, { cwd: workspaceFolder });
-
+            logger.info(`Successfully force removed worktree '${branch}'. Pruning worktrees...`);
             await pruneWorktrees(workspaceFolder);
         } catch (err: any) {
-            throw Error(err);
+            logger.error(`Failed to force remove worktree '${branch}': ${err.message}`);
+            throw err;
         }
     }
 };
@@ -298,14 +322,26 @@ export const calculateNewWorktreePath = async (workspaceFolder: string, branch: 
     }
 };
 
-export const existsWorktree = async (workspaceFolder: string, worktree: string) => {
+export const existsWorktree = async (
+    workspaceFolder: string,
+    worktree: string
+): Promise<boolean> => {
+    logger.debug(`Checking existence of worktree '${worktree}' in workspace '${workspaceFolder}'`);
+
     try {
         const worktrees = await getWorktrees({ workspaceFolder });
         const foundWorktree = worktrees.find((wt) => wt.worktree === worktree);
-        if (!foundWorktree) return false;
+
+        if (!foundWorktree) {
+            logger.info(`Worktree '${worktree}' does not exist in workspace '${workspaceFolder}'`);
+            return false;
+        }
+
+        logger.info(`Worktree '${worktree}' exists in workspace '${workspaceFolder}'`);
         return true;
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Error checking worktree existence: ${e.message}`);
+        throw e;
     }
 };
 
@@ -319,28 +355,45 @@ export const addNewWorktree = async (
     remoteBranch: string,
     newBranch: string
 ) => {
+    logger.debug(
+        `Starting to add new worktree '${newBranch}' tracking remote branch '${remoteBranch}' in workspace '${workspaceFolder}'`
+    );
+
     const isRemoteBranch = await existsRemoteBranch(workspaceFolder, newBranch);
-    if (isRemoteBranch) throw new Error(`Branch '${newBranch}' already exists.`);
+    if (isRemoteBranch) {
+        const errorMsg = `Branch '${newBranch}' already exists.`;
+        logger.error(errorMsg);
+        throw new Error(errorMsg);
+    }
 
     const newWorktreePath = await calculateNewWorktreePath(workspaceFolder, newBranch);
+    logger.info(`Calculated new worktree path: ${newWorktreePath}`);
 
     try {
         const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
+        logger.debug(`Executing command: ${worktreeAddCommand}`);
         await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
         if (shouldAutoPushAfterWorktreeCreation) {
+            logger.debug(
+                `Auto push enabled; pushing new branch '${newBranch}' from workspace '${workspaceFolder}'`
+            );
             await pushBranch(newBranch, workspaceFolder);
         }
 
+        logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
         await copyWorktreeFiles(workspaceFolder, newWorktreePath);
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
+
+        logger.info(`Worktree added successfully: Type=${newWtInfo.type}, Path=${newWtInfo.path}`);
 
         showInformationMessage(
             `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
         );
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Failed to add new worktree: ${e.message}`);
+        throw e;
     }
 };
 
@@ -354,27 +407,44 @@ export const addRemoteWorktree = async (
     remoteBranch: string,
     newBranch: string
 ) => {
+    logger.debug(
+        `Starting to add remote worktree '${newBranch}' from remote branch '${remoteBranch}' in workspace '${workspaceFolder}'`
+    );
+
     const isRemoteBranch = await existsRemoteBranch(workspaceFolder, remoteBranch);
-    if (!isRemoteBranch) throw new Error(`Branch '${newBranch}' does not exist.`);
+    if (!isRemoteBranch) {
+        const errorMsg = `Branch '${newBranch}' does not exist.`;
+        logger.error(errorMsg);
+        throw new Error(errorMsg);
+    }
 
     const newWorktreePath = await calculateNewWorktreePath(workspaceFolder, newBranch);
+    logger.info(`Calculated new worktree path: ${newWorktreePath}`);
 
     try {
         const worktreeAddCommand = `git worktree add ${newWorktreePath} ${newBranch}`;
+        logger.debug(`Executing command: ${worktreeAddCommand}`);
         await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
 
         if (shouldAutoPullAfterWorktreeCreation) {
+            logger.debug(
+                `Auto pull enabled; pulling branch '${newBranch}' in '${newWorktreePath}'`
+            );
             await pullBranch(newWorktreePath, workspaceFolder);
         }
 
+        logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
         await copyWorktreeFiles(workspaceFolder, newWorktreePath);
 
         const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
+
+        logger.info(`Worktree added successfully: Type=${newWtInfo.type}, Path=${newWtInfo.path}`);
 
         showInformationMessage(
             `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
         );
     } catch (e: any) {
-        throw Error(e);
+        logger.error(`Failed to add remote worktree: ${e.message}`);
+        throw e;
     }
 };
