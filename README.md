@@ -154,7 +154,7 @@ Then, open the project in Visual Studio Code, press F5, and it will launch in a 
 You can also enable detailed logging by setting the following in your user or workspace settings before running:
 
 ```json
-   "vsCodeGitWorktrees.log.level": "debug"
+"vsCodeGitWorktrees.log.level": "debug"
 ```
 
 When running locally this way, logs will appear in the Debug Console, helping you trace the extension’s behavior in real time.
