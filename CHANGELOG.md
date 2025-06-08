@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.5.0...v2.6.0) (2025-06-08)
+
+
+### Features
+
+* **logging:** add more logging ([e60a902](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/e60a9022353ec10a7a1dab99aa09b6c7bd4ec598))
+
 # [2.5.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.4.0...v2.5.0) (2025-06-08)
 
 
