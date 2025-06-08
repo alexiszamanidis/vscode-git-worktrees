@@ -1,9 +1,8 @@
 # [2.4.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.3.0...v2.4.0) (2025-06-07)
 
-
 ### Features
 
-* **color:** add worktree coloring ([a03c890](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/a03c8903e0aac39860a3953ba48f2bb316c3dd0d))
+-   **color:** add worktree coloring ([a03c890](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/a03c8903e0aac39860a3953ba48f2bb316c3dd0d))
 
 # [2.3.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.2.0...v2.3.0) (2025-06-07)
 

@@ -86,22 +86,33 @@ Please don’t hesitate to [open an issue](https://github.com/alexiszamanidis/vs
 
 Customize behavior using the following properties in your VS Code settings:
 
-| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                     |
-| ------------------------------------------------ | --------- | ---------- | ------------------------------------------------------------------ |
-| `vsCodeGitWorktrees.remove.stalledBranches`      | `boolean` | `false`    | Remove local (stalled) branches that no longer exist on the remote |
-| `vsCodeGitWorktrees.move.openNewVscodeWindow`    | `boolean` | `true`     | Open a new VS Code window when switching or creating a worktree    |
-| `vsCodeGitWorktrees.worktrees.dir.path`          | `string`  | `null`     | Define a directory for storing all your worktrees                  |
-| `vsCodeGitWorktrees.add.autoPush`                | `boolean` | `true`     | Automatically push the new worktree branch after creation          |
-| `vsCodeGitWorktrees.add.autoPull`                | `boolean` | `true`     | Automatically pull updates after creating a new worktree branch    |
-| `vsCodeGitWorktrees.worktreeCopyIncludePatterns` | `array`   | `[]`       | Files and folders to copy from the source repo to the new worktree |
-| `vsCodeGitWorktrees.worktreeCopyExcludePatterns` | `array`   | `[]`       | Files and folders to **exclude** from the worktree copy            |
-| `vsCodeGitWorktrees.worktree.coloring`           | `boolean` | `false`    | Enable color labels when creating or switching worktrees           |
+| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                                               |
+| ------------------------------------------------ | --------- | ---------- | -------------------------------------------------------------------------------------------- |
+| `vsCodeGitWorktrees.remove.stalledBranches`      | `boolean` | `false`    | Remove local (stalled) branches that no longer exist on the remote                           |
+| `vsCodeGitWorktrees.move.openNewVscodeWindow`    | `boolean` | `true`     | Open a new VS Code window when switching or creating a worktree                              |
+| `vsCodeGitWorktrees.worktrees.dir.path`          | `string`  | `null`     | Define a directory for storing all your worktrees                                            |
+| `vsCodeGitWorktrees.add.autoPush`                | `boolean` | `true`     | Automatically push the new worktree branch after creation                                    |
+| `vsCodeGitWorktrees.add.autoPull`                | `boolean` | `true`     | Automatically pull updates after creating a new worktree branch                              |
+| `vsCodeGitWorktrees.worktreeCopyIncludePatterns` | `array`   | `[]`       | Files and folders to copy from the source repo to the new worktree                           |
+| `vsCodeGitWorktrees.worktreeCopyExcludePatterns` | `array`   | `[]`       | Files and folders to **exclude** from the worktree copy                                      |
+| `vsCodeGitWorktrees.worktree.coloring`           | `boolean` | `false`    | Enable color labels when creating or switching worktrees                                     |
+| `vsCodeGitWorktrees.log.level`                   | `string`  | `silent`   | Logging level for the extension. Accepted values: `silent`, `error`, `warn`, `info`, `debug` |
 
 ## 💡 How You Can Contribute
 
 Whether it’s your first time contributing or you're a seasoned open-source developer, you're welcome here! Here are some great ways to get involved:
 
 -   🐛 **Report a Bug** – Found something odd? [Open an issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues) and let us know.
+    To help us investigate faster, you can enable debug logging before reproducing the issue:
+
+    1. Open **Settings** in VS Code and add the following to your settings:
+        ```json
+        "vsCodeGitWorktrees.log.level": "debug"
+        ```
+    2. Re-run the command or action that caused the issue.
+    3. A log file named `vsCodeGitWorktrees.log` will be created in your workspace directory.
+    4. Attach this log to your GitHub issue to help us debug more effectively.
+
 -   📚 **Improve the Documentation** – Typos, clarity, or better examples? We’d love your help!
 -   ✅ **Write Tests** – Help us make sure everything works smoothly.
 -   📢 **Share the Project** – Tell your friends or tweet about it!
@@ -139,6 +150,14 @@ yarn watch
 ```
 
 Then, open the project in Visual Studio Code, press F5, and it will launch in a new Extension Development Host window.
+
+You can also enable detailed logging by setting the following in your user or workspace settings before running:
+
+```json
+   "vsCodeGitWorktrees.log.level": "debug"
+```
+
+When running locally this way, logs will appear in the Debug Console, helping you trace the extension’s behavior in real time.
 
 ## License
 

@@ -190,36 +190,34 @@ export const applyWorktreeColor = async (worktreePath: string): Promise<void> =>
     }
 };
 
-export const shouldRemoveStalledBranches =
-    (vscode.workspace
-        .getConfiguration()
-        .get("vsCodeGitWorktrees.remove.stalledBranches") as boolean) ?? false;
+export const shouldRemoveStalledBranches = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.remove.stalledBranches", false);
 
-export const shouldColorWorktrees =
-    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktree.coloring") as boolean) ??
-    false;
+export const shouldColorWorktrees = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.worktree.coloring", false);
 
-export const shouldOpenNewVscodeWindow =
-    (vscode.workspace
-        .getConfiguration()
-        .get("vsCodeGitWorktrees.move.openNewVscodeWindow") as boolean) ?? true;
+export const shouldOpenNewVscodeWindow = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.move.openNewVscodeWindow", true);
 
-export const worktreesDirPath =
-    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.worktrees.dir.path") as string) ??
-    null;
+export const worktreesDirPath = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.worktrees.dir.path", null);
 
-export const shouldAutoPushAfterWorktreeCreation =
-    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPush") as boolean) ?? true;
+export const shouldAutoPushAfterWorktreeCreation = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.add.autoPush", true);
 
-export const shouldAutoPullAfterWorktreeCreation =
-    (vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.add.autoPull") as boolean) ?? true;
+export const shouldAutoPullAfterWorktreeCreation = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.add.autoPull", true);
 
-export const worktreeCopyIncludePatterns =
-    (vscode.workspace
-        .getConfiguration()
-        .get("vsCodeGitWorktrees.worktreeCopyIncludePatterns") as string[]) ?? [];
+export const worktreeCopyIncludePatterns = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.worktreeCopyIncludePatterns", []);
 
-export const worktreeCopyExcludePatterns =
-    (vscode.workspace
-        .getConfiguration()
-        .get("vsCodeGitWorktrees.worktreeCopyExcludePatterns") as string[]) ?? [];
+export const worktreeCopyExcludePatterns = vscode.workspace
+    .getConfiguration()
+    .get("vsCodeGitWorktrees.worktreeCopyExcludePatterns", []);
