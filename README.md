@@ -109,9 +109,10 @@ Whether it’s your first time contributing or you're a seasoned open-source dev
         ```json
         "vsCodeGitWorktrees.log.level": "debug"
         ```
-    2. Re-run the command or action that caused the issue.
-    3. A log file named `vsCodeGitWorktrees.log` will be created in your workspace directory.
-    4. Attach this log to your GitHub issue to help us debug more effectively.
+    2. Restart VS Code to apply the setting change.
+    3. Re-run the command or action that caused the issue.
+    4. A log file named `vsCodeGitWorktrees.log` will be created in your workspace directory.
+    5. Attach this log to your GitHub issue to help us debug more effectively.
 
 -   📚 **Improve the Documentation** – Typos, clarity, or better examples? We’d love your help!
 -   ✅ **Write Tests** – Help us make sure everything works smoothly.
@@ -151,13 +152,22 @@ yarn watch
 
 Then, open the project in Visual Studio Code, press F5, and it will launch in a new Extension Development Host window.
 
-You can also enable detailed logging by setting the following in your user or workspace settings before running:
+When you make changes to the extension code, you’ll need to restart the Extension Development Host window for the changes to take effect. You can do this by:
 
+- Clicking the 🔁 Restart button in the top menu bar of the main VS Code window, or
+- Pressing the keyboard shortcut Ctrl+Shift+F5 (or Cmd+Shift+F5 on macOS)
+
+**Logs**
+
+You can also enable detailed logging by following these steps before running:
+1. Add the following to your user or workspace settings:
 ```json
 "vsCodeGitWorktrees.log.level": "debug"
 ```
+2. Restart VS Code to apply the setting change.
+3. Run the extension as described above.
 
-When running locally this way, logs will appear in the Debug Console, helping you trace the extension’s behavior in real time.
+When running locally this way, logs will appear in the **Debug Console**, helping you trace the extension’s behavior in real time.
 
 ## License
 
