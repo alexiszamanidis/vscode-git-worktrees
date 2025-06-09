@@ -1,3 +1,10 @@
+# [2.8.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.7.0...v2.8.0) (2025-06-09)
+
+
+### Features
+
+* update README.md ([2d9a5e5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/2d9a5e5f28f819c729fa20066e767c80b03fe86d))
+
 # [2.7.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.6.0...v2.7.0) (2025-06-08)
 
 
