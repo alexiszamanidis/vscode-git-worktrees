@@ -1,74 +1,61 @@
-import * as winston from "winston";
+import { APP_NAME } from "../constants/constants";
 import * as vscode from "vscode";
-import * as path from "path";
-import * as os from "os";
 
-// Define accepted log levels
-const validLogLevels = ["error", "warn", "info", "debug"] as const;
-type LogLevel = typeof validLogLevels[number];
+class Logger implements vscode.Disposable {
+    private readonly output: vscode.OutputChannel;
+    private isVisible = false;
 
-// Get user-configured level
-const rawLogLevel = vscode.workspace
-    .getConfiguration()
-    .get<string>("vsCodeGitWorktrees.log.level", "silent")
-    ?.toLowerCase();
+    constructor(private channelName: string = "Extension Logger") {
+        this.output = vscode.window.createOutputChannel(this.channelName);
+    }
 
-// If invalid, treat as "silent"
-const isValidLogLevel = validLogLevels.includes(rawLogLevel as LogLevel);
-const logLevel: LogLevel | "silent" = isValidLogLevel ? (rawLogLevel as LogLevel) : "silent";
+    private write(level: string, message: string) {
+        const timestamp = new Date().toISOString();
+        this.output.appendLine(`[${timestamp}] [${level}] ${message}`);
+    }
 
-// Enable file logging only for accepted log levels
-const enableFileLogging = logLevel !== "silent";
+    info(message: string) {
+        this.write("INF", message);
+    }
 
-// Use workspace folder or fallback
-const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-const logDir = workspaceFolder || path.join(os.homedir(), ".vsCodeGitWorktrees");
-const logFile = path.join(logDir, "vsCodeGitWorktrees.log");
+    debug(message: string) {
+        this.write("DBG", message);
+    }
 
-// Setup transports
-const transports: winston.transport[] = [];
+    warn(message: string) {
+        this.write("WRN", message);
+    }
 
-if (enableFileLogging) {
-    transports.push(new winston.transports.File({ filename: logFile }));
-    transports.push(new winston.transports.Console());
+    error(message: string | Error) {
+        if (message instanceof Error) {
+            this.write("ERR", `${message.message}\n${message.stack}`);
+        } else {
+            this.write("ERR", message);
+        }
+    }
+
+    trace(message: string, ...args: any[]) {
+        this.write("TRC", `${message} ${args.map((a) => JSON.stringify(a)).join(" ")}`);
+    }
+
+    toggle(): void {
+        this.isVisible = !this.isVisible;
+        this.isVisible ? this.output.show() : this.output.hide();
+    }
+
+    show(): void {
+        this.output.show();
+        this.isVisible = true;
+    }
+
+    hide(): void {
+        this.output.hide();
+        this.isVisible = false;
+    }
+
+    dispose(): void {
+        this.output.dispose();
+    }
 }
 
-// Create the Winston logger
-const baseLogger = winston.createLogger({
-    level: enableFileLogging ? logLevel : "silent", // internally suppress log output
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.printf(({ timestamp, level, message }) => {
-            return `[${timestamp}] [${level.toUpperCase()}] ${message}`;
-        })
-    ),
-    transports,
-});
-
-// Get calling function name for log prefix
-function getCallerFunctionName(): string {
-    const err = new Error();
-    const stack = err.stack?.split("\n") || [];
-    const match = stack[3]?.match(/at (\w+)/);
-    return match?.[1] || "anonymous";
-}
-
-// Export logger with function-prefixed messages
-const logger = {
-    debug: (msg: string) => {
-        if (logLevel === "debug") baseLogger.debug(`[${getCallerFunctionName()}] ${msg}`);
-    },
-    info: (msg: string) => {
-        if (["debug", "info"].includes(logLevel))
-            baseLogger.info(`[${getCallerFunctionName()}] ${msg}`);
-    },
-    warn: (msg: string) => {
-        if (["debug", "info", "warn"].includes(logLevel))
-            baseLogger.warn(`[${getCallerFunctionName()}] ${msg}`);
-    },
-    error: (msg: string) => {
-        if (logLevel !== "silent") baseLogger.error(`[${getCallerFunctionName()}] ${msg}`);
-    },
-};
-
-export default logger;
+export default new Logger(APP_NAME);

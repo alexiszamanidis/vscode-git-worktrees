@@ -18,7 +18,8 @@
     "activationEvents": [
         "onCommand:git-worktrees.worktree.list",
         "onCommand:git-worktrees.worktree.remove",
-        "onCommand:git-worktrees.worktree.add"
+        "onCommand:git-worktrees.worktree.add",
+        "git-worktrees.worktree.toggleLogs"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -37,6 +38,11 @@
                 "category": "Git Worktree",
                 "command": "git-worktrees.worktree.add",
                 "title": "Add"
+            },
+            {
+                "category": "Git Worktree",
+                "command": "git-worktrees.worktree.toggleLogs",
+                "title": "Toggle Logger Output"
             }
         ],
         "configuration": [
@@ -127,24 +133,6 @@
                         "description": "Enable worktree coloring when creating or switching worktree"
                     }
                 }
-            },
-            {
-                "id": "log-level",
-                "title": "Enable Worktree Logging",
-                "properties": {
-                    "vsCodeGitWorktrees.log.level": {
-                        "type": "string",
-                        "default": "silent",
-                        "enum": [
-                            "error",
-                            "warn",
-                            "info",
-                            "debug",
-                            "silent"
-                        ],
-                        "description": "Logging level for the extension"
-                    }
-                }
             }
         ]
     },
@@ -190,8 +178,5 @@
         "hooks": {
             "pre-commit": "yarn lint-staged"
         }
-    },
-    "dependencies": {
-        "winston": "^3.17.0"
     }
 }

@@ -1,30 +1,26 @@
 # [2.8.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.7.0...v2.8.0) (2025-06-09)
 
-
 ### Features
 
-* update README.md ([2d9a5e5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/2d9a5e5f28f819c729fa20066e767c80b03fe86d))
+-   update README.md ([2d9a5e5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/2d9a5e5f28f819c729fa20066e767c80b03fe86d))
 
 # [2.7.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.6.0...v2.7.0) (2025-06-08)
 
-
 ### Features
 
-* update README.md ([23154e2](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/23154e26239f61377b9bf8b24355af74c43358c4))
+-   update README.md ([23154e2](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/23154e26239f61377b9bf8b24355af74c43358c4))
 
 # [2.6.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.5.0...v2.6.0) (2025-06-08)
 
-
 ### Features
 
-* **logging:** add more logging ([e60a902](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/e60a9022353ec10a7a1dab99aa09b6c7bd4ec598))
+-   **logging:** add more logging ([e60a902](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/e60a9022353ec10a7a1dab99aa09b6c7bd4ec598))
 
 # [2.5.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.4.0...v2.5.0) (2025-06-08)
 
-
 ### Features
 
-* **release:** release ([bec0c57](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/bec0c57cc4bda209bddbbbde0cc2da3d545aaedb))
+-   **release:** release ([bec0c57](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/bec0c57cc4bda209bddbbbde0cc2da3d545aaedb))
 
 # [2.4.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.3.0...v2.4.0) (2025-06-07)
 
