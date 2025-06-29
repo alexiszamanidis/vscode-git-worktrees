@@ -1,9 +1,8 @@
 # [2.9.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.8.0...v2.9.0) (2025-06-09)
 
-
 ### Features
 
-* update logging ([6f893be](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6f893be52adaca3417e44cbb5958cb5d8271bc4d))
+-   update logging ([6f893be](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6f893be52adaca3417e44cbb5958cb5d8271bc4d))
 
 # [2.8.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.7.0...v2.8.0) (2025-06-09)
 
