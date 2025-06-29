@@ -133,6 +133,17 @@
                         "description": "Enable worktree coloring when creating or switching worktree"
                     }
                 }
+            },
+            {
+                "id": "worktree-search-path",
+                "title": "Worktree Search Path",
+                "properties": {
+                    "vsCodeGitWorktrees.worktreeSearchPath": {
+                        "type": "string",
+                        "default": "",
+                        "description": "Optional subdirectory (relative or absolute) where Git repositories can be found if the root workspace is not a Git repository"
+                    }
+                }
             }
         ]
     },

@@ -225,3 +225,7 @@ export const worktreeCopyIncludePatterns = vscode.workspace
 export const worktreeCopyExcludePatterns = vscode.workspace
     .getConfiguration()
     .get("vsCodeGitWorktrees.worktreeCopyExcludePatterns", []);
+
+export const worktreeSearchPath: string | null = vscode.workspace
+    .getConfiguration()
+    .get<string | null>("vsCodeGitWorktrees.worktreeSearchPath", null);
