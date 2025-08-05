@@ -1,9 +1,8 @@
 # [2.10.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.9.0...v2.10.0) (2025-06-29)
 
-
 ### Features
 
-* **worktree-seach-path:** add worktreeSearchPath ([de4869d](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/de4869dd4cfd0dd01dce70c3d24d163209462dc4))
+-   **worktree-seach-path:** add worktreeSearchPath ([de4869d](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/de4869dd4cfd0dd01dce70c3d24d163209462dc4))
 
 # [2.9.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.8.0...v2.9.0) (2025-06-09)
 

@@ -1,4 +1,3 @@
-import type { InputBoxOptions } from "vscode";
 import {
     addNewWorktree,
     addRemoteWorktree,

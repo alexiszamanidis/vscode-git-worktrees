@@ -157,7 +157,8 @@
         "format": "yarn prettier --write .",
         "typescript": "yarn tsc --noEmit",
         "publish": "vsce publish",
-        "jest-test": "jest --watchAll"
+        "jest-test": "jest --watchAll",
+        "lint:fix": "eslint src --ext ts --fix"
     },
     "devDependencies": {
         "@semantic-release/changelog": "^6.0.3",
