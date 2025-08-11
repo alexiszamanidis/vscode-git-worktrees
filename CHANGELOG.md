@@ -1,3 +1,10 @@
+## [2.10.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.0...v2.10.1) (2025-08-11)
+
+
+### Bug Fixes
+
+* **git-worktre-remove:** remove worktree with no matching branch ([cbec8cb](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/cbec8cb531ae8baca8aacb5f909f5436eaa6bb04))
+
 # [2.10.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.9.0...v2.10.0) (2025-06-29)
 
 ### Features
