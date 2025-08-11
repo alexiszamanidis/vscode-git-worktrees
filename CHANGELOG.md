@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.1...v2.11.0) (2025-08-11)
+
+
+### Features
+
+* **git-worktree:** publish ([72bf64e](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/72bf64efab223b64b96f3ccbb6fdb57d0ee1eac8))
+
 ## [2.10.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.0...v2.10.1) (2025-08-11)
 
 
