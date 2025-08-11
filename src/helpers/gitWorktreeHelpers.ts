@@ -219,10 +219,10 @@ export const findDefaultWorktreeToMove = async (
 // TODO: refactor this function
 export const removeWorktree = async (workspaceFolder: string, worktree: SelectedWorktree) => {
     const isSamePath = workspaceFolder === worktree.detail;
-    const branch = worktree.label;
-    const removeWorktreeCommand = `git worktree remove ${branch}`;
+    const worktreePath = worktree.detail;
+    const removeWorktreeCommand = `git worktree remove ${worktreePath}`;
 
-    logger.debug(`Attempting to remove worktree '${branch}' in folder: ${workspaceFolder}`);
+    logger.debug(`Attempting to remove worktree '${worktreePath}' in folder: ${workspaceFolder}`);
 
     if (isSamePath) {
         const errorMsg =
@@ -234,39 +234,43 @@ export const removeWorktree = async (workspaceFolder: string, worktree: Selected
     try {
         logger.debug(`Running command: ${removeWorktreeCommand}`);
         await executeCommand(removeWorktreeCommand, { cwd: workspaceFolder });
-        logger.info(`Successfully removed worktree '${branch}'. Pruning worktrees...`);
+        logger.info(`Successfully removed worktree '${worktreePath}'. Pruning worktrees...`);
         await pruneWorktrees(workspaceFolder);
     } catch (e: any) {
         const errorMessage = e.message;
-        logger.warn(`Failed to remove worktree '${branch}': ${errorMessage}`);
+        logger.warn(`Failed to remove worktree '${worktreePath}': ${errorMessage}`);
 
-        const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${branch}\nfatal: '${branch}' contains modified or untracked files, use --force to delete it\n`;
+        const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${worktreePath}\nfatal: '${worktreePath}' contains modified or untracked files, use --force to delete it\n`;
         const isUntrackedOrModifiedFilesError = errorMessage === untrackedOrModifiedFilesError;
 
         if (!isUntrackedOrModifiedFilesError) {
-            logger.error(`Unexpected error when removing worktree '${branch}': ${errorMessage}`);
+            logger.error(
+                `Unexpected error when removing worktree '${worktreePath}': ${errorMessage}`
+            );
             throw e;
         }
 
         const buttonName = "Force Delete";
-        const userMessage = `fatal: '${branch}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the branch.`;
-        logger.info(`Prompting user to force delete worktree '${branch}'.`);
+        const userMessage = `fatal: '${worktreePath}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the worktree.`;
+        logger.info(`Prompting user to force delete worktree '${worktreePath}'.`);
 
         const answer = await showInformationMessageWithButton(userMessage, buttonName);
 
         if (answer !== buttonName) {
-            logger.info(`User declined to force delete worktree '${branch}'.`);
+            logger.info(`User declined to force delete worktree '${worktreePath}'.`);
             return;
         }
 
-        const forceRemoveWorktreeCommand = `git worktree remove -f ${branch}`;
+        const forceRemoveWorktreeCommand = `git worktree remove -f ${worktreePath}`;
         try {
             logger.debug(`Running force delete command: ${forceRemoveWorktreeCommand}`);
             await executeCommand(forceRemoveWorktreeCommand, { cwd: workspaceFolder });
-            logger.info(`Successfully force removed worktree '${branch}'. Pruning worktrees...`);
+            logger.info(
+                `Successfully force removed worktree '${worktreePath}'. Pruning worktrees...`
+            );
             await pruneWorktrees(workspaceFolder);
         } catch (err: any) {
-            logger.error(`Failed to force remove worktree '${branch}': ${err.message}`);
+            logger.error(`Failed to force remove worktree '${worktreePath}': ${err.message}`);
             throw err;
         }
     }
