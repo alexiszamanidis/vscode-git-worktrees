@@ -32,5 +32,10 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Publish to Open VSX Registry
+              uses: HaaLeo/publish-vscode-extension@v2
+              with:
+                  pat: ${{ secrets.OPEN_VSX_TOKEN }}
+
             - name: Publish Extension
               run: npx @vscode/vsce publish -p ${{ secrets.VSCODE_TOKEN }} --no-dependencies
