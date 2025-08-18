@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.1...v2.11.0) (2025-08-18)
+
+
+### Features
+
+* **issue-templates:** add issue templates ([6ee5ae5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6ee5ae575b46686b7f1e9b7c234928710af1a908))
+
 ## [2.10.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.0...v2.10.1) (2025-08-11)
 
 ### Bug Fixes
