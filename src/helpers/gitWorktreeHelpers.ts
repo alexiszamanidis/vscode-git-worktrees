@@ -11,7 +11,7 @@ import {
     shouldAutoPullAfterWorktreeCreation,
 } from "./helpers";
 import logger from "./logger";
-import { existsRemoteBranch, isBareRepository } from "./gitHelpers";
+import { existsRemoteBranch, isBareRepository, hasSubmodules, pullSubmodules } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
     getFileFromPath,
@@ -385,6 +385,17 @@ export const addNewWorktree = async (
             await pushBranch(newBranch, workspaceFolder);
         }
 
+        logger.debug(`Checking for submodules in '${newWorktreePath}'`);
+        const hasSubs = await hasSubmodules(newWorktreePath);
+
+        if (hasSubs) {
+            logger.debug(`Submodules detected. Pulling submodules in '${newWorktreePath}'`);
+            await pullSubmodules(newWorktreePath);
+            logger.debug(`Successfully pulled submodules in '${newWorktreePath}'`);
+        } else {
+            logger.debug(`No submodules detected in '${newWorktreePath}'`);
+        }
+
         logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
         await copyWorktreeFiles(workspaceFolder, newWorktreePath);
 
@@ -435,6 +446,17 @@ export const addRemoteWorktree = async (
                 `Auto pull enabled; pulling branch '${newBranch}' in '${newWorktreePath}'`
             );
             await pullBranch(newWorktreePath, workspaceFolder);
+        }
+
+        logger.debug(`Checking for submodules in '${newWorktreePath}'`);
+        const hasSubs = await hasSubmodules(newWorktreePath);
+
+        if (hasSubs) {
+            logger.debug(`Submodules detected. Pulling submodules in '${newWorktreePath}'`);
+            await pullSubmodules(newWorktreePath);
+            logger.debug(`Successfully pulled submodules in '${newWorktreePath}'`);
+        } else {
+            logger.debug(`No submodules detected in '${newWorktreePath}'`);
         }
 
         logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);

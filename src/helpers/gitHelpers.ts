@@ -56,6 +56,28 @@ export const existsRemoteBranch = async (workspaceFolder: string, branch: string
     }
 };
 
+export const hasSubmodules = async (worktreePath: string): Promise<boolean> => {
+    try {
+        const hasSubmodulesCommand = `git -C "${worktreePath}" submodule status`;
+        const { stdout } = await executeCommand(hasSubmodulesCommand);
+
+        if (!stdout) return false;
+
+        return true;
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
+export const pullSubmodules = async (worktreePath: string): Promise<void> => {
+    try {
+        const pullSubmodulesCommand = `git -C "${worktreePath}" submodule update --init --recursive`;
+        await executeCommand(pullSubmodulesCommand);
+    } catch (e: any) {
+        throw Error(e);
+    }
+};
+
 export const getRemoteBranches = async (workspaceFolder: string): Promise<string[]> => {
     logger.debug(`Fetching remote branches in workspace: ${workspaceFolder}`);
 
