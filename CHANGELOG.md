@@ -1,3 +1,10 @@
+# [2.12.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.2...v2.12.0) (2025-08-27)
+
+
+### Features
+
+* add automatically fetch git submodules ([127e9fb](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/127e9fbec7d20325cdabdd595a14eb5886d65c0a))
+
 ## [2.11.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.1...v2.11.2) (2025-08-27)
 
 
