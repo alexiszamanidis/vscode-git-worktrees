@@ -1,28 +1,24 @@
 ## [2.11.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.0...v2.11.1) (2025-08-27)
 
-
 ### Bug Fixes
 
-* update node version in release.yml ([0d70d51](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/0d70d51a990b02c1f81bc4f0bec56f89b64fbb4a))
+-   update node version in release.yml ([0d70d51](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/0d70d51a990b02c1f81bc4f0bec56f89b64fbb4a))
 
 # [2.11.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.1...v2.11.0) (2025-08-27)
 
-
 ### Bug Fixes
 
-* update DEMO_URL variable ([ecc12d3](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/ecc12d3835c483cff89eb60bb86a5e468684c9e6))
-
+-   update DEMO_URL variable ([ecc12d3](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/ecc12d3835c483cff89eb60bb86a5e468684c9e6))
 
 ### Features
 
-* **issue-templates:** add issue templates ([6ee5ae5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6ee5ae575b46686b7f1e9b7c234928710af1a908))
+-   **issue-templates:** add issue templates ([6ee5ae5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6ee5ae575b46686b7f1e9b7c234928710af1a908))
 
 # [2.11.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.1...v2.11.0) (2025-08-18)
 
-
 ### Features
 
-* **issue-templates:** add issue templates ([6ee5ae5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6ee5ae575b46686b7f1e9b7c234928710af1a908))
+-   **issue-templates:** add issue templates ([6ee5ae5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/6ee5ae575b46686b7f1e9b7c234928710af1a908))
 
 ## [2.10.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.0...v2.10.1) (2025-08-11)
 
