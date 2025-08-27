@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.1...v2.11.2) (2025-08-27)
+
+
+### Bug Fixes
+
+* format files ([5654ab5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/5654ab59324737541ecb997a57d34c976b6a6fda))
+
 ## [2.11.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.0...v2.11.1) (2025-08-27)
 
 ### Bug Fixes
