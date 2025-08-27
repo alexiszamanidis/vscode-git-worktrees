@@ -18,10 +18,10 @@ jobs:
               with:
                   fetch-depth: 0
 
-            - name: Set Node.js 18
+            - name: Set Node.js 20.18.1
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 20.18.1
                   cache: "yarn"
 
             - name: Install dependencies
