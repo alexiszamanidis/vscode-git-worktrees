@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.0...v2.11.1) (2025-08-27)
+
+
+### Bug Fixes
+
+* update node version in release.yml ([0d70d51](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/0d70d51a990b02c1f81bc4f0bec56f89b64fbb4a))
+
 # [2.11.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.10.1...v2.11.0) (2025-08-27)
 
 
