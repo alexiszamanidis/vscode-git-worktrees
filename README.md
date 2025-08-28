@@ -98,7 +98,7 @@ Customize behavior using the following properties in your VS Code settings:
 | `vsCodeGitWorktrees.worktree.coloring`           | `boolean` | `false`    | Enable color labels when creating or switching worktrees                                                                       |
 | `vsCodeGitWorktrees.worktreeSearchPath`          | `string`  | `null`     | Optional subdirectory (relative or absolute) where Git repositories can be found if the root workspace is not a Git repository |
 
-## Contributing 
+## Contributing
 
 We welcome all contributions, issues and feature requests, whether small or large. If you want to contribute, feel free to check out our [issues page](https://github.com/alexiszamanidis/vscode-git-worktrees/issues) and our [guidelines](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/CONTRIBUTING.md).
 
