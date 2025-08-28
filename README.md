@@ -164,6 +164,12 @@ To enable detailed logging:
 
 When running locally this way, logs will appear in the Output Console, helping you trace the extension’s behavior in real time.
 
+## Contributors
+
+<a href="https://github.com/alexiszamanidis/vscode-git-worktrees/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=alexiszamanidis/vscode-git-worktrees" />
+</a>
+
 ## License
 
 [MIT © Alexis Zamanidis](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/LICENSE)
