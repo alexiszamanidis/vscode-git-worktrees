@@ -354,6 +354,30 @@ export const pushBranch = async (branch: string, workspaceFolder: string) => {
     await executeCommand(pushCommand, { cwd: workspaceFolder });
 };
 
+export const pullBranch = async (worktreePath: string, workspaceFolder: string) => {
+    const pullCommand = `git -C ${worktreePath} pull`;
+    await executeCommand(pullCommand, { cwd: workspaceFolder });
+};
+
+export const addWorktree = async (
+    workspaceFolder: string,
+    remoteBranch: string,
+    newBranch: string
+) => {
+    showInformationMessage(`Creating new Worktree named '${newBranch}'...`);
+    logger.info(`Creating new Worktree named '${newBranch}'`);
+
+    const isSameBranch = remoteBranch === newBranch;
+
+    if (isSameBranch) {
+        logger.debug("Adding remote worktree");
+        await addRemoteWorktree(workspaceFolder, remoteBranch, newBranch);
+    } else {
+        logger.debug("Adding new worktree");
+        await addNewWorktree(workspaceFolder, remoteBranch, newBranch);
+    }
+};
+
 export const addNewWorktree = async (
     workspaceFolder: string,
     remoteBranch: string,
@@ -385,36 +409,11 @@ export const addNewWorktree = async (
             await pushBranch(newBranch, workspaceFolder);
         }
 
-        logger.debug(`Checking for submodules in '${newWorktreePath}'`);
-        const hasSubs = await hasSubmodules(newWorktreePath);
-
-        if (hasSubs) {
-            logger.debug(`Submodules detected. Pulling submodules in '${newWorktreePath}'`);
-            await pullSubmodules(newWorktreePath);
-            logger.debug(`Successfully pulled submodules in '${newWorktreePath}'`);
-        } else {
-            logger.debug(`No submodules detected in '${newWorktreePath}'`);
-        }
-
-        logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
-        await copyWorktreeFiles(workspaceFolder, newWorktreePath);
-
-        const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
-
-        logger.info(`Worktree added successfully: Type=${newWtInfo.type}, Path=${newWtInfo.path}`);
-
-        showInformationMessage(
-            `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
-        );
+        await addWorktreePostTasks(workspaceFolder, newWorktreePath, newBranch);
     } catch (e: any) {
         logger.error(`Failed to add new worktree: ${e.message}`);
         throw e;
     }
-};
-
-export const pullBranch = async (worktreePath: string, workspaceFolder: string) => {
-    const pullCommand = `git -C ${worktreePath} pull`;
-    await executeCommand(pullCommand, { cwd: workspaceFolder });
 };
 
 export const addRemoteWorktree = async (
@@ -448,29 +447,37 @@ export const addRemoteWorktree = async (
             await pullBranch(newWorktreePath, workspaceFolder);
         }
 
-        logger.debug(`Checking for submodules in '${newWorktreePath}'`);
-        const hasSubs = await hasSubmodules(newWorktreePath);
-
-        if (hasSubs) {
-            logger.debug(`Submodules detected. Pulling submodules in '${newWorktreePath}'`);
-            await pullSubmodules(newWorktreePath);
-            logger.debug(`Successfully pulled submodules in '${newWorktreePath}'`);
-        } else {
-            logger.debug(`No submodules detected in '${newWorktreePath}'`);
-        }
-
-        logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
-        await copyWorktreeFiles(workspaceFolder, newWorktreePath);
-
-        const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
-
-        logger.info(`Worktree added successfully: Type=${newWtInfo.type}, Path=${newWtInfo.path}`);
-
-        showInformationMessage(
-            `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
-        );
+        await addWorktreePostTasks(workspaceFolder, newWorktreePath, newBranch);
     } catch (e: any) {
         logger.error(`Failed to add remote worktree: ${e.message}`);
         throw e;
     }
+};
+
+export const addWorktreePostTasks = async (
+    workspaceFolder: string,
+    newWorktreePath: string,
+    newBranch: string
+) => {
+    logger.debug(`Checking for submodules in '${newWorktreePath}'`);
+    const hasSubs = await hasSubmodules(newWorktreePath);
+
+    if (hasSubs) {
+        logger.debug(`Submodules detected. Pulling submodules in '${newWorktreePath}'`);
+        await pullSubmodules(newWorktreePath);
+        logger.debug(`Successfully pulled submodules in '${newWorktreePath}'`);
+    } else {
+        logger.debug(`No submodules detected in '${newWorktreePath}'`);
+    }
+
+    logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
+    await copyWorktreeFiles(workspaceFolder, newWorktreePath);
+
+    const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
+
+    logger.info(`Worktree added successfully: Type=${newWtInfo.type}, Path=${newWtInfo.path}`);
+
+    showInformationMessage(
+        `Worktree named '${newBranch}' was added successfully. Type: ${newWtInfo.type}, Path: ${newWtInfo.path}`
+    );
 };

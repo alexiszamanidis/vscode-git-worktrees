@@ -1,8 +1,4 @@
-import {
-    addNewWorktree,
-    addRemoteWorktree,
-    existsWorktree,
-} from "../../../helpers/gitWorktreeHelpers";
+import { addWorktree, existsWorktree } from "../../../helpers/gitWorktreeHelpers";
 import { OPEN_ISSUE_URL } from "../../../constants/constants";
 import {
     fetch,
@@ -88,18 +84,7 @@ const gitWorktreeAdd = async (): Promise<void> => {
             throw new Error(`Worktree '${newBranch}' already exists.`);
         }
 
-        showInformationMessage(`Creating new Worktree named '${newBranch}'...`);
-        logger.info(`Creating new Worktree named '${newBranch}'`);
-
-        const isSameBranch = remoteBranch === newBranch;
-
-        if (isSameBranch) {
-            logger.debug("Adding remote worktree");
-            await addRemoteWorktree(workspaceFolder, remoteBranch, newBranch);
-        } else {
-            logger.debug("Adding new worktree");
-            await addNewWorktree(workspaceFolder, remoteBranch, newBranch);
-        }
+        await addWorktree(workspaceFolder, remoteBranch, newBranch);
 
         logger.info("Worktree creation process completed successfully");
     } catch (e: any) {
