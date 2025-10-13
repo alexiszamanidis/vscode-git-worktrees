@@ -41,7 +41,7 @@ Remove an existing worktree.
 
 **Behavior:**
 
--   If untracked or modified files exist, a ⚠️ **popup will appear** in the bottom left.
+-   If untracked or modified files exist, a ⚠️ **popup will appear** in the bottom right.
 -   You can **force delete** by clicking the `Force delete` button in that popup.
 
 **Restrictions:**
@@ -77,7 +77,7 @@ Safely remove a worktree. If files are untracked or modified, you’ll get a pro
 
 ### ⚠️ Error Handling
 
-If something goes wrong, a helpful popup will appear at the bottom-left corner of your screen.
+If something goes wrong, a helpful popup will appear at the bottom-right corner of your screen.
 Please don’t hesitate to [open an issue](https://github.com/alexiszamanidis/vscode-git-worktrees/issues) if you encounter a bug.
 
 ![error](https://user-images.githubusercontent.com/48658768/160239217-c915cf20-9e03-49cb-be3b-9a4b691cf189.gif)
