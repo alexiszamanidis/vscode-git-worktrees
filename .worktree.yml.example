@@ -1,0 +1,24 @@
+# .worktree.yml - Lifecycle hooks for git worktree operations
+#
+# Supported variables in commands:
+#   ${userHome}                - User home directory
+#   ${workspaceFolder}         - Full path of the worktree
+#   ${workspaceFolderBasename} - Folder name of the worktree
+#   ${repositoryName}          - Name of the origin repository
+
+add:
+  copy:
+    - .env
+    - .env.local
+  commands:
+    - yarn install
+    - yarn db:generate
+    - tmux has-session -t ${repositoryName} 2>/dev/null && tmux new-window -t ${repositoryName} -n ${workspaceFolderBasename} -c ${workspaceFolder} || tmux new-session -d -s ${repositoryName} -n ${workspaceFolderBasename} -c ${workspaceFolder}
+
+switch:
+  commands:
+    - tmux has-session -t ${repositoryName} 2>/dev/null && tmux new-window -t ${repositoryName} -n ${workspaceFolderBasename} -c ${workspaceFolder} || tmux new-session -d -s ${repositoryName} -n ${workspaceFolderBasename} -c ${workspaceFolder}
+
+remove:
+  commands:
+    - tmux kill-window -t ${repositoryName}:${workspaceFolderBasename} 2>/dev/null || true

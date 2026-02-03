@@ -16,3 +16,5 @@ export const DEMO_URL =
 // Special key to replace forward slashes in branch names for filesystem paths
 // e.g., "feat/abc" becomes "feat__abc"
 export const BRANCH_SLASH_REPLACEMENT = "__";
+
+export const WORKTREE_CONFIG_FILENAME = ".worktree.yml";

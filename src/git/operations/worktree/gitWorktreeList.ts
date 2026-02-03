@@ -3,6 +3,7 @@ import { isGitRepository } from "../../../helpers/gitHelpers";
 import { copyToClipboard, openBrowser } from "../../../helpers/helpers";
 import { getWorkspaceFolder, showErrorMessageWithButton } from "../../../helpers/vsCodeHelpers";
 import { moveIntoWorktree, getWorktree } from "../../../helpers/gitWorktreeHelpers";
+import { executeWorktreeSwitchHooks } from "../../../helpers/worktree-init-helpers";
 import logger from "../../../helpers/logger";
 
 const gitWorktreeList = async (): Promise<void> => {
@@ -30,6 +31,12 @@ const gitWorktreeList = async (): Promise<void> => {
         if (!worktree) {
             logger.warn("No worktree found.");
             return;
+        }
+
+        try {
+            await executeWorktreeSwitchHooks(workspaceFolder, worktree.detail);
+        } catch (e: any) {
+            logger.warn(`Worktree switch hooks failed, continuing: ${e.message}`);
         }
 
         logger.info("Moving into worktree...");
