@@ -1,3 +1,10 @@
+## [2.13.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.13.0...v2.13.1) (2026-03-21)
+
+
+### Bug Fixes
+
+* path spaces ([d3ee8b1](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/d3ee8b1109c783a99ea331a1f520c394511044da))
+
 # [2.13.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.12.0...v2.13.0) (2026-03-20)
 
 ### Features
