@@ -51,36 +51,59 @@ export const executeCommand = async (
     }
 };
 
+const quoteForLog = (s: string) => {
+    // wrap if spaces or quotes/backslashes likely
+    if (/[\s"]/g.test(s)) {
+        // escape quotes for readability
+        return `"${s.replace(/"/g, '\\"')}"`;
+    }
+    return s;
+};
+
 // modified from https://stackoverflow.com/a/67379845/9979122
 export const spawnCommand = async (
     command: string,
-    args?: string[],
-    options?: SpawnOptionsWithoutStdio
-) => {
+    args: string[] = [],
+    options: SpawnOptionsWithoutStdio = {}
+): Promise<{ stdout: string }> => {
+    // Build a safe log string (no influence on execution)
+    const cmdForLog = [command, ...args].map(quoteForLog).join(" ");
+
+    // Optional: include cwd in log too (super useful for git)
+    const cwdInfo = options?.cwd ? ` (cwd: ${String(options.cwd)})` : "";
+    logger.debug(`Executing command: ${cmdForLog}${cwdInfo}`);
+
     return new Promise<{ stdout: string }>((resolve, reject) => {
         const stdoutChunks: Buffer[] = [];
         const stderrChunks: Buffer[] = [];
 
-        const subprocess = spawn(command, args, options);
-
-        subprocess.stdout.on("data", (chunk) => {
-            stdoutChunks.push(chunk);
+        const subprocess = spawn(command, args, {
+            ...options,
+            shell: false, // important to avoid shell quoting issues
         });
 
-        subprocess.stderr.on("data", (chunk) => {
-            stderrChunks.push(chunk);
-        });
+        subprocess.stdout?.on("data", (chunk) => stdoutChunks.push(Buffer.from(chunk)));
+        subprocess.stderr?.on("data", (chunk) => stderrChunks.push(Buffer.from(chunk)));
 
-        subprocess.on("error", (error) => {
-            reject(error);
-        });
+        subprocess.on("error", (error) => reject(error));
 
-        subprocess.on("exit", (code) => {
+        // Prefer "close" instead of "exit" to ensure streams are flushed
+        subprocess.on("close", (code) => {
+            const stdout = Buffer.concat(stdoutChunks).toString();
+            const stderr = Buffer.concat(stderrChunks).toString();
+
             if (code !== 0) {
-                reject(Buffer.concat(stderrChunks).toString());
+                // return a rich error message
+                return reject(
+                    new Error(
+                        `Command failed (${code}): ${cmdForLog}${cwdInfo}\n` +
+                            (stderr ? `stderr:\n${stderr}` : "") +
+                            (stdout ? `\nstdout:\n${stdout}` : "")
+                    )
+                );
             }
 
-            resolve({ stdout: Buffer.concat(stdoutChunks).toString() });
+            resolve({ stdout });
         });
     });
 };

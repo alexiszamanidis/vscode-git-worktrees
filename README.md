@@ -86,7 +86,7 @@ Please don’t hesitate to [open an issue](https://github.com/alexiszamanidis/vs
 
 Customize behavior using the following properties in your VS Code settings:
 
-| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                                                                                  |
+| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                                                                                 |
 | ------------------------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `vsCodeGitWorktrees.remove.stalledBranches`      | `boolean` | `false`    | Remove local (stalled) branches that no longer exist on the remote                                                             |
 | `vsCodeGitWorktrees.move.openNewVscodeWindow`    | `boolean` | `true`     | Open a new VS Code window when switching or creating a worktree                                                                |

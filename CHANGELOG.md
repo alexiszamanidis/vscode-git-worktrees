@@ -1,23 +1,20 @@
 # [2.13.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.12.0...v2.13.0) (2026-03-20)
 
-
 ### Features
 
-* docs: add examples for config ([925f4ec](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/925f4ec0182f9242626e9a88b100b7e9b996be95))
+-   docs: add examples for config ([925f4ec](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/925f4ec0182f9242626e9a88b100b7e9b996be95))
 
 # [2.12.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.2...v2.12.0) (2025-08-27)
 
-
 ### Features
 
-* add automatically fetch git submodules ([127e9fb](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/127e9fbec7d20325cdabdd595a14eb5886d65c0a))
+-   add automatically fetch git submodules ([127e9fb](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/127e9fbec7d20325cdabdd595a14eb5886d65c0a))
 
 ## [2.11.2](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.1...v2.11.2) (2025-08-27)
 
-
 ### Bug Fixes
 
-* format files ([5654ab5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/5654ab59324737541ecb997a57d34c976b6a6fda))
+-   format files ([5654ab5](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/5654ab59324737541ecb997a57d34c976b6a6fda))
 
 ## [2.11.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.11.0...v2.11.1) (2025-08-27)
 

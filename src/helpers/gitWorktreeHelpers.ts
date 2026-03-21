@@ -9,6 +9,7 @@ import {
     shouldOpenNewVscodeWindow,
     shouldAutoPushAfterWorktreeCreation,
     shouldAutoPullAfterWorktreeCreation,
+    spawnCommand,
 } from "./helpers";
 import logger from "./logger";
 import { existsRemoteBranch, isBareRepository, hasSubmodules, pullSubmodules } from "./gitHelpers";
@@ -398,9 +399,17 @@ export const addNewWorktree = async (
     logger.info(`Calculated new worktree path: ${newWorktreePath}`);
 
     try {
-        const worktreeAddCommand = `git worktree add --track -b ${newBranch} ${newWorktreePath} origin/${remoteBranch}`;
-        logger.debug(`Executing command: ${worktreeAddCommand}`);
-        await executeCommand(worktreeAddCommand, { cwd: workspaceFolder });
+        const args = [
+            "worktree",
+            "add",
+            "--track",
+            "-b",
+            newBranch,
+            newWorktreePath,
+            `origin/${remoteBranch}`,
+        ];
+
+        await spawnCommand("git", args, { cwd: workspaceFolder });
 
         if (shouldAutoPushAfterWorktreeCreation) {
             logger.debug(
