@@ -1,3 +1,10 @@
+# [2.14.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.13.1...v2.14.0) (2026-04-25)
+
+
+### Features
+
+* add userHome variable ([47c4d0e](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/47c4d0e86960cb50472965e564b789f2d82f28d1))
+
 ## [2.13.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.13.0...v2.13.1) (2026-03-21)
 
 
