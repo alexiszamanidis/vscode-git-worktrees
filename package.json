@@ -75,7 +75,7 @@
                     "vsCodeGitWorktrees.worktrees.dir.path": {
                         "type": "string",
                         "default": null,
-                        "description": "Define a directory for all worktrees between your projects"
+                        "description": "Define a directory for all worktrees. Supports variables: ${userHome}, ${workspaceFolder}, ${workspaceFolderBasename}, ${repositoryName}. Examples: ${userHome}/worktrees/${repositoryName} or ../${workspaceFolderBasename}_worktree"
                     }
                 }
             },
@@ -166,6 +166,7 @@
         "@semantic-release/github": "^8.0.7",
         "@types/glob": "^7.2.0",
         "@types/jest": "^28.1.0",
+        "@types/js-yaml": "^4.0.9",
         "@types/mocha": "^9.1.0",
         "@types/node": "14.x",
         "@types/vscode": "^1.65.0",
@@ -190,5 +191,8 @@
         "hooks": {
             "pre-commit": "yarn lint-staged"
         }
+    },
+    "dependencies": {
+        "js-yaml": "^4.1.1"
     }
 }

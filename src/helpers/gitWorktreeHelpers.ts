@@ -10,6 +10,8 @@ import {
     shouldAutoPushAfterWorktreeCreation,
     shouldAutoPullAfterWorktreeCreation,
     spawnCommand,
+    resolvePathVariables,
+    sanitizeBranchNameForPath,
 } from "./helpers";
 import logger from "./logger";
 import { existsRemoteBranch, isBareRepository, hasSubmodules, pullSubmodules } from "./gitHelpers";
@@ -21,6 +23,7 @@ import {
     removeNewLine,
 } from "../helpers/stringHelpers";
 import { showInformationMessage, showInformationMessageWithButton } from "./vsCodeHelpers";
+import { executeWorktreeAddHooks, executeWorktreeRemoveHooks } from "./worktree-init-helpers";
 
 type FilteredWorktree = [string, string, string];
 type Worktree = { path: string; hash: string; worktree: string };
@@ -221,7 +224,7 @@ export const findDefaultWorktreeToMove = async (
 export const removeWorktree = async (workspaceFolder: string, worktree: SelectedWorktree) => {
     const isSamePath = workspaceFolder === worktree.detail;
     const worktreePath = worktree.detail;
-    const removeWorktreeCommand = `git worktree remove ${worktreePath}`;
+    const removeWorktreeCommand = `git worktree remove -f ${worktreePath}`;
 
     logger.debug(`Attempting to remove worktree '${worktreePath}' in folder: ${workspaceFolder}`);
 
@@ -233,47 +236,19 @@ export const removeWorktree = async (workspaceFolder: string, worktree: Selected
     }
 
     try {
+        try {
+            await executeWorktreeRemoveHooks(workspaceFolder, worktreePath);
+        } catch (e: any) {
+            logger.warn(`Worktree remove hooks failed, continuing: ${e.message}`);
+        }
+
         logger.debug(`Running command: ${removeWorktreeCommand}`);
         await executeCommand(removeWorktreeCommand, { cwd: workspaceFolder });
         logger.info(`Successfully removed worktree '${worktreePath}'. Pruning worktrees...`);
         await pruneWorktrees(workspaceFolder);
     } catch (e: any) {
-        const errorMessage = e.message;
-        logger.warn(`Failed to remove worktree '${worktreePath}': ${errorMessage}`);
-
-        const untrackedOrModifiedFilesError = `Command failed: git worktree remove ${worktreePath}\nfatal: '${worktreePath}' contains modified or untracked files, use --force to delete it\n`;
-        const isUntrackedOrModifiedFilesError = errorMessage === untrackedOrModifiedFilesError;
-
-        if (!isUntrackedOrModifiedFilesError) {
-            logger.error(
-                `Unexpected error when removing worktree '${worktreePath}': ${errorMessage}`
-            );
-            throw e;
-        }
-
-        const buttonName = "Force Delete";
-        const userMessage = `fatal: '${worktreePath}' contains modified or untracked files, use --force to delete it. Click '${buttonName}' to delete the worktree.`;
-        logger.info(`Prompting user to force delete worktree '${worktreePath}'.`);
-
-        const answer = await showInformationMessageWithButton(userMessage, buttonName);
-
-        if (answer !== buttonName) {
-            logger.info(`User declined to force delete worktree '${worktreePath}'.`);
-            return;
-        }
-
-        const forceRemoveWorktreeCommand = `git worktree remove -f ${worktreePath}`;
-        try {
-            logger.debug(`Running force delete command: ${forceRemoveWorktreeCommand}`);
-            await executeCommand(forceRemoveWorktreeCommand, { cwd: workspaceFolder });
-            logger.info(
-                `Successfully force removed worktree '${worktreePath}'. Pruning worktrees...`
-            );
-            await pruneWorktrees(workspaceFolder);
-        } catch (err: any) {
-            logger.error(`Failed to force remove worktree '${worktreePath}': ${err.message}`);
-            throw err;
-        }
+        logger.error(`Failed to remove worktree '${worktreePath}': ${e.message}`);
+        throw e;
     }
 };
 
@@ -289,11 +264,20 @@ const getGitCommonDirPath = async (workspaceFolder: string) => {
 
 export const calculateNewWorktreePath = async (workspaceFolder: string, branch: string) => {
     try {
+        // Sanitize branch name to avoid nested directories (e.g., feat/abc -> feat__abc)
+        const sanitizedBranch = sanitizeBranchNameForPath(branch);
+
         // If a worktrees path is defined, we need to move the new worktree there
         if (worktreesDirPath) {
             const topLevelPath = await getGitTopLevel(workspaceFolder);
             const repositoryName = await getFileFromPath(topLevelPath);
-            const path = `${worktreesDirPath}/${repositoryName}/${branch}`;
+            // Resolve variables like ${userHome}, ${workspaceFolderBasename}, ${repositoryName}, etc.
+            const resolvedWorktreesDirPath = resolvePathVariables(
+                worktreesDirPath as string,
+                topLevelPath,
+                repositoryName
+            );
+            const path = `${resolvedWorktreesDirPath}/${sanitizedBranch}`;
 
             // check if directory exists
             if (fs.existsSync(path)) {
@@ -319,7 +303,7 @@ export const calculateNewWorktreePath = async (workspaceFolder: string, branch: 
             path = removeLastDirectoryInURL(path);
         }
 
-        path = `${path}/${branch}`;
+        path = `${path}/${sanitizedBranch}`;
 
         return path;
     } catch (e: any) {
@@ -481,6 +465,15 @@ export const addWorktreePostTasks = async (
 
     logger.debug(`Copying worktree files from '${workspaceFolder}' to '${newWorktreePath}'`);
     await copyWorktreeFiles(workspaceFolder, newWorktreePath);
+
+    try {
+        await executeWorktreeAddHooks(workspaceFolder, newWorktreePath);
+    } catch (e: any) {
+        logger.warn(`Worktree add hooks failed, continuing: ${e.message}`);
+        vscode.window.showWarningMessage(
+            `Worktree add hooks failed: ${e.message}. The worktree was still created.`
+        );
+    }
 
     const newWtInfo = await moveIntoWorktree(workspaceFolder, newWorktreePath);
 

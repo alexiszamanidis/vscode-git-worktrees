@@ -6,7 +6,7 @@ import { promisify } from "util";
 import { pipeline as pipelineCallback } from "stream";
 
 import { SpawnOptionsWithoutStdio, spawn } from "child_process";
-import { EXTENSION_ID, DEMO_URL } from "../constants/constants";
+import { EXTENSION_ID, DEMO_URL, BRANCH_SLASH_REPLACEMENT } from "../constants/constants";
 import { showInformationMessageWithButton } from "./vsCodeHelpers";
 import { createReadStream, createWriteStream, promises } from "fs";
 
@@ -252,3 +252,56 @@ export const worktreeCopyExcludePatterns = vscode.workspace
 export const worktreeSearchPath: string | null = vscode.workspace
     .getConfiguration()
     .get<string | null>("vsCodeGitWorktrees.worktreeSearchPath", null);
+
+/**
+ * Resolves VS Code-style variables in a path string.
+ * Supported variables:
+ * - ${userHome} - User's home directory
+ * - ${workspaceFolder} - Full path of the workspace folder (requires workspaceFolder param)
+ * - ${workspaceFolderBasename} - Name of the workspace folder (requires workspaceFolder param)
+ * - ${repositoryName} - Name of the git repository (requires repositoryName param)
+ *
+ * Also converts relative paths to absolute paths based on workspaceFolder.
+ */
+/**
+ * Sanitizes a branch name for use in filesystem paths.
+ * Replaces forward slashes with a special delimiter to avoid nested directories.
+ * e.g., "feat/abc" becomes "feat__abc"
+ */
+export const sanitizeBranchNameForPath = (branchName: string): string => {
+    return branchName.replace(/\//g, BRANCH_SLASH_REPLACEMENT);
+};
+
+export const resolvePathVariables = (
+    pathStr: string,
+    workspaceFolder?: string,
+    repositoryName?: string
+): string => {
+    let resolved = pathStr;
+
+    // Resolve ${userHome}
+    const userHome = process.env.HOME || process.env.USERPROFILE || "";
+    resolved = resolved.replace(/\$\{userHome\}/g, userHome);
+
+    // Resolve ${repositoryName} if provided
+    if (repositoryName) {
+        resolved = resolved.replace(/\$\{repositoryName\}/g, repositoryName);
+    }
+
+    // Resolve workspace-related variables if workspaceFolder is provided
+    if (workspaceFolder) {
+        // ${workspaceFolder} - full path
+        resolved = resolved.replace(/\$\{workspaceFolder\}/g, workspaceFolder);
+
+        // ${workspaceFolderBasename} - just the folder name
+        const basename = path.basename(workspaceFolder);
+        resolved = resolved.replace(/\$\{workspaceFolderBasename\}/g, basename);
+
+        // Convert relative paths to absolute paths
+        if (!path.isAbsolute(resolved)) {
+            resolved = path.resolve(workspaceFolder, resolved);
+        }
+    }
+
+    return resolved;
+};
