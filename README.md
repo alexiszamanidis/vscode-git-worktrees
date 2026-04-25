@@ -86,17 +86,17 @@ Please don’t hesitate to [open an issue](https://github.com/alexiszamanidis/vs
 
 Customize behavior using the following properties in your VS Code settings:
 
-| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                                                                                 |
-| ------------------------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `vsCodeGitWorktrees.remove.stalledBranches`      | `boolean` | `false`    | Remove local (stalled) branches that no longer exist on the remote                                                             |
-| `vsCodeGitWorktrees.move.openNewVscodeWindow`    | `boolean` | `true`     | Open a new VS Code window when switching or creating a worktree                                                                |
-| `vsCodeGitWorktrees.worktrees.dir.path`          | `string`  | `null`     | Define a directory for storing all your worktrees, e.g. `/Users/my_user/devel/worktrees`                                       |
-| `vsCodeGitWorktrees.add.autoPush`                | `boolean` | `true`     | Automatically push the new worktree branch after creation                                                                      |
-| `vsCodeGitWorktrees.add.autoPull`                | `boolean` | `true`     | Automatically pull updates after creating a new worktree branch                                                                |
-| `vsCodeGitWorktrees.worktreeCopyIncludePatterns` | `array`   | `[]`       | Files and folders to copy from the source repo to the new worktree, e.g. `[".venv", "docs/tmp"]`                               |
-| `vsCodeGitWorktrees.worktreeCopyExcludePatterns` | `array`   | `[]`       | Files and folders to **exclude** from the worktree copy, e.g. `["tmp", "target"]`                                              |
-| `vsCodeGitWorktrees.worktree.coloring`           | `boolean` | `false`    | Enable color labels when creating or switching worktrees                                                                       |
-| `vsCodeGitWorktrees.worktreeSearchPath`          | `string`  | `null`     | Optional subdirectory (relative or absolute) where Git repositories can be found if the root workspace is not a Git repository |
+| 🏷️ Property                                      | 🧩 Type   | 🛠️ Default | 📃 Description                                                                                                                                               |
+| ------------------------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `vsCodeGitWorktrees.remove.stalledBranches`      | `boolean` | `false`    | Remove local (stalled) branches that no longer exist on the remote                                                                                           |
+| `vsCodeGitWorktrees.move.openNewVscodeWindow`    | `boolean` | `true`     | Open a new VS Code window when switching or creating a worktree                                                                                              |
+| `vsCodeGitWorktrees.worktrees.dir.path`          | `string`  | `null`     | Define a directory for storing all your worktrees, e.g. `${userHome}/worktrees` or `/home/user/worktrees`                                                    |
+| `vsCodeGitWorktrees.add.autoPush`                | `boolean` | `true`     | Automatically push the new worktree branch after creation                                                                                                    |
+| `vsCodeGitWorktrees.add.autoPull`                | `boolean` | `true`     | Automatically pull updates after creating a new worktree branch                                                                                              |
+| `vsCodeGitWorktrees.worktreeCopyIncludePatterns` | `array`   | `[]`       | Files and folders to copy from the source repo to the new worktree, e.g. `[".venv", "docs/tmp"]`                                                             |
+| `vsCodeGitWorktrees.worktreeCopyExcludePatterns` | `array`   | `[]`       | Files and folders to **exclude** from the worktree copy, e.g. `["tmp", "target"]`                                                                            |
+| `vsCodeGitWorktrees.worktree.coloring`           | `boolean` | `false`    | Enable color labels when creating or switching worktrees                                                                                                     |
+| `vsCodeGitWorktrees.worktreeSearchPath`          | `string`  | `null`     | Optional subdirectory (relative or absolute) where Git repositories can be found if the root workspace is not a Git repository, e.g. `${userHome}/worktrees` |
 
 ## Contributing
 

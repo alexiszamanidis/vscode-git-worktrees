@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as util from "util";
 import * as path from "path";
+import * as os from "os";
 import * as vscode from "vscode";
 import { promisify } from "util";
 import { pipeline as pipelineCallback } from "stream";
@@ -229,9 +230,17 @@ export const shouldOpenNewVscodeWindow = vscode.workspace
     .getConfiguration()
     .get("vsCodeGitWorktrees.move.openNewVscodeWindow", true);
 
-export const worktreesDirPath = vscode.workspace
+export const resolvePathVariables = (configuredPath: string | null): string | null => {
+    if (!configuredPath) return configuredPath;
+
+    return configuredPath.replace(/\$\{userHome\}/g, os.homedir());
+};
+
+const configuredWorktreesDirPath = vscode.workspace
     .getConfiguration()
     .get("vsCodeGitWorktrees.worktrees.dir.path", null);
+
+export const worktreesDirPath = resolvePathVariables(configuredWorktreesDirPath);
 
 export const shouldAutoPushAfterWorktreeCreation = vscode.workspace
     .getConfiguration()
@@ -249,6 +258,8 @@ export const worktreeCopyExcludePatterns = vscode.workspace
     .getConfiguration()
     .get("vsCodeGitWorktrees.worktreeCopyExcludePatterns", []);
 
-export const worktreeSearchPath: string | null = vscode.workspace
+const configuredWorktreeSearchPath = vscode.workspace
     .getConfiguration()
     .get<string | null>("vsCodeGitWorktrees.worktreeSearchPath", null);
+
+export const worktreeSearchPath: string | null = resolvePathVariables(configuredWorktreeSearchPath);
