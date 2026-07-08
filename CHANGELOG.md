@@ -1,3 +1,10 @@
+# [2.16.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.15.0...v2.16.0) (2026-07-08)
+
+
+### Features
+
+* empty commit ([eef93bf](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/eef93bf74db345ae833834d70cb58f721d6c336f))
+
 # [2.15.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.14.0...v2.15.0) (2026-07-08)
 
 
