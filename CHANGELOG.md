@@ -1,3 +1,10 @@
+# [2.15.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.14.0...v2.15.0) (2026-07-08)
+
+
+### Features
+
+* add AGENTS.md ([e607666](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/e607666472dc14da30f9d9acdb3483df33e11c8b))
+
 # [2.14.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.13.1...v2.14.0) (2026-04-25)
 
 
