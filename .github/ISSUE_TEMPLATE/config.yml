@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+    - name: Git Worktrees documentation
+      url: https://github.com/alexiszamanidis/vscode-git-worktrees#readme
+      about: Read the README for setup, commands, settings, and troubleshooting details.
