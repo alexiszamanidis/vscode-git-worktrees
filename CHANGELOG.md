@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.17.0...v2.18.0) (2026-08-28)
+
+
+### Features
+
+* delete bug-report.yml and new-feature.yml ([3a55176](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/3a55176caa9364c00e4140491df73956408458a6))
+
 # [2.17.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.16.0...v2.17.0) (2026-08-24)
 
 
