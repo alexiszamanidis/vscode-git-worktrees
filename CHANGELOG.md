@@ -1,3 +1,10 @@
+# [2.20.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.19.0...v2.20.0) (2026-08-28)
+
+
+### Features
+
+* preserve subfolder, fix bare repository selection ([22b5551](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/22b5551be08f0c74746c0331a400b0a9ddd2f741))
+
 # [2.19.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.18.0...v2.19.0) (2026-08-28)
 
 
