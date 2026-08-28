@@ -1,3 +1,10 @@
+# [2.19.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.18.0...v2.19.0) (2026-08-28)
+
+
+### Features
+
+* delete config.yml ([ff0b694](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/ff0b69488d6467930bfe322b20c358d24b58746f))
+
 # [2.18.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.17.0...v2.18.0) (2026-08-28)
 
 
