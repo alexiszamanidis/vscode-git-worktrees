@@ -1,8 +1,10 @@
 import * as fs from "fs";
+import * as path from "path";
 import * as vscode from "vscode";
 import {
     executeCommand,
-    worktreesDirPath,
+    getWorktreesDirPath,
+    shouldPreserveSubfolderOnWorktreeSwitch,
     copyWorktreeFiles,
     applyWorktreeColor,
     getWorkspaceFilePath,
@@ -15,7 +17,6 @@ import logger from "./logger";
 import { existsRemoteBranch, isBareRepository, hasSubmodules, pullSubmodules } from "./gitHelpers";
 import { MAIN_WORKTREES } from "../constants/constants";
 import {
-    getFileFromPath,
     removeFirstAndLastCharacter,
     removeLastDirectoryInURL,
     removeNewLine,
@@ -43,11 +44,26 @@ export const getGitTopLevel = async (workspaceFolder: string) => {
         const { stdout: getGitTopLevelPath } = await executeCommand(getGitTopLevelPathCommand, {
             cwd: workspaceFolder,
         });
-        let topLevelPath = removeNewLine(getGitTopLevelPath);
-
-        return topLevelPath;
+        return removeNewLine(getGitTopLevelPath);
     } catch (e: any) {
-        throw Error(e);
+        // Bare repositories have no work tree, so --show-toplevel fails.
+        // Fall back to the git common dir (the bare repo path itself).
+        try {
+            const { stdout: gitCommonDirPath } = await executeCommand(
+                "git rev-parse --path-format=absolute --git-common-dir",
+                { cwd: workspaceFolder }
+            );
+            const topLevelPath = removeNewLine(gitCommonDirPath);
+            logger.debug(
+                `show-toplevel failed (likely bare repo); using git-common-dir: ${topLevelPath}`
+            );
+            return topLevelPath;
+        } catch (fallbackError: any) {
+            logger.error(
+                `Failed to resolve git top level for '${workspaceFolder}': ${fallbackError.message}`
+            );
+            throw Error(e);
+        }
     }
 };
 
@@ -56,7 +72,31 @@ export const openVscodeInstance = async (path: string): Promise<void> =>
         forceNewWindow: shouldOpenNewVscodeWindow,
     });
 
-// TODO: refactor this function
+/**
+ * Resolve which path to open inside a worktree, preserving the relative path
+ * from the git root (e.g. a monorepo subfolder or .code-workspace file).
+ * Falls back to the worktree root if that relative path does not exist.
+ */
+export const resolvePathInsideWorktree = (
+    worktreePath: string,
+    gitTopLevel: string,
+    pathToPreserve: string
+): string => {
+    const relativePath = path.relative(gitTopLevel, pathToPreserve);
+
+    if (!relativePath || relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+        return worktreePath;
+    }
+
+    const candidatePath = path.join(worktreePath, relativePath);
+
+    if (!fs.existsSync(candidatePath)) {
+        return worktreePath;
+    }
+
+    return candidatePath;
+};
+
 export const moveIntoWorktree = async (
     workspaceFolder: string,
     worktreePath: string
@@ -65,46 +105,30 @@ export const moveIntoWorktree = async (
         `Moving into worktree. workspaceFolder: ${workspaceFolder}, worktreePath: ${worktreePath}`
     );
 
-    const workspaceFilePath = getWorkspaceFilePath();
-
-    if (!workspaceFilePath) {
-        logger.debug("No workspace file path found, opening VS Code instance at worktreePath.");
-        openVscodeInstance(worktreePath);
-        await applyWorktreeColor(worktreePath);
-        return { type: "folder", path: worktreePath };
-    }
-
     const topLevelPath = await getGitTopLevel(workspaceFolder);
     logger.debug(`Top level git path: ${topLevelPath}`);
 
-    const basePath = topLevelPath.split("/");
-    const workspacePath = workspaceFilePath.path.split("/");
+    const workspaceFilePath = getWorkspaceFilePath();
+    let openPath = worktreePath;
+    let type = "folder";
 
-    if (basePath[0] === "") basePath.shift();
-    if (workspacePath[0] === "") workspacePath.shift();
-
-    let pathToWorkspace = "";
-
-    for (let i = basePath.length; i < workspacePath.length; i++) {
-        pathToWorkspace += "/" + workspacePath[i];
+    if (workspaceFilePath) {
+        // Always preserve .code-workspace relative path (existing behavior)
+        openPath = resolvePathInsideWorktree(worktreePath, topLevelPath, workspaceFilePath.fsPath);
+        type = openPath !== worktreePath ? "workspace" : "folder";
+    } else if (shouldPreserveSubfolderOnWorktreeSwitch()) {
+        openPath = resolvePathInsideWorktree(worktreePath, topLevelPath, workspaceFolder);
+        if (openPath === worktreePath && workspaceFolder !== topLevelPath) {
+            logger.warn(
+                `Preserved subfolder does not exist inside worktree. Opening worktree root instead. workspaceFolder: ${workspaceFolder}, worktreePath: ${worktreePath}`
+            );
+        }
     }
 
-    const fullWorkspacePath = `${worktreePath}${pathToWorkspace}`;
-    logger.debug(`Calculated full workspace path: ${fullWorkspacePath}`);
-
-    if (!fs.existsSync(fullWorkspacePath)) {
-        logger.warn(
-            `Full workspace path does not exist: ${fullWorkspacePath}. Opening worktreePath instead.`
-        );
-        openVscodeInstance(worktreePath);
-        await applyWorktreeColor(worktreePath);
-        return { type: "folder", path: worktreePath };
-    }
-
-    logger.debug(`Opening VS Code instance at full workspace path: ${fullWorkspacePath}`);
-    openVscodeInstance(fullWorkspacePath);
-    await applyWorktreeColor(fullWorkspacePath);
-    return { type: "workspace", path: fullWorkspacePath };
+    logger.debug(`Opening VS Code instance at: ${openPath}`);
+    openVscodeInstance(openPath);
+    await applyWorktreeColor(openPath);
+    return { type, path: openPath };
 };
 
 const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList =>
@@ -114,21 +138,21 @@ const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList 
         worktree: removeFirstAndLastCharacter(worktree[2]),
     }));
 
-const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList => {
+export const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList => {
     let splitWorktrees: Array<FilteredWorktree> = [];
 
     stdout.split("\n").forEach((worktree: string) => {
         // worktree: path-hash-worktree
         // ignore: spaces
         const filteredWt = worktree.split(" ").filter((str: string) => str !== "");
-        // ignore: path-(bare)
+        // bare: path-(bare)
         if (filteredWt.length === 3) {
             splitWorktrees.push(filteredWt as FilteredWorktree);
         } else if (withBareRepo && filteredWt.length === 2) {
             const path = filteredWt[0];
             const hash = "";
-            const worktree = filteredWt[1];
-            splitWorktrees.push([path, hash, worktree] as FilteredWorktree);
+            const worktreeLabel = filteredWt[1];
+            splitWorktrees.push([path, hash, worktreeLabel] as FilteredWorktree);
         }
     });
 
@@ -159,7 +183,7 @@ export const getWorktrees = async ({
 
 export const getWorktree = async (workspaceFolder: string) => {
     logger.debug(`Retrieving worktrees for folder: ${workspaceFolder}`);
-    const worktrees = await getWorktrees({ workspaceFolder });
+    const worktrees = await getWorktrees({ workspaceFolder, withBareRepo: true });
 
     logger.debug(`Found ${worktrees.length} worktree(s). Prompting user to select one...`);
     const worktree = await selectWorktree(worktrees);
@@ -289,39 +313,42 @@ const getGitCommonDirPath = async (workspaceFolder: string) => {
 
 export const calculateNewWorktreePath = async (workspaceFolder: string, branch: string) => {
     try {
-        // If a worktrees path is defined, we need to move the new worktree there
-        if (worktreesDirPath) {
-            const topLevelPath = await getGitTopLevel(workspaceFolder);
-            const repositoryName = await getFileFromPath(topLevelPath);
-            const path = `${worktreesDirPath}/${repositoryName}/${branch}`;
+        const worktreesDirPath = getWorktreesDirPath();
 
-            // check if directory exists
-            if (fs.existsSync(path)) {
-                throw new Error(`Directory '${path}' already exists.`);
+        // If a worktrees path is defined, create the worktree directly under it
+        // e.g. ${userHome}/worktrees + branch → /home/user/worktrees/my-branch
+        if (worktreesDirPath) {
+            const newPath = path.join(worktreesDirPath, branch);
+
+            if (fs.existsSync(newPath)) {
+                throw new Error(`Directory '${newPath}' already exists.`);
             }
 
-            return path;
+            return newPath;
         }
 
+        // Default: place the worktree as a sibling of the main repository
+        // e.g. /home/user/projects/my-repo → /home/user/projects/my-branch
+        // Uses git-common-dir so this stays correct from linked worktrees and subfolders
         const gitCommonDirPath = await getGitCommonDirPath(workspaceFolder);
-        let path = removeNewLine(gitCommonDirPath);
+        let newPath = removeNewLine(gitCommonDirPath);
 
-        const isBareRepo = await isBareRepository(workspaceFolder, path);
+        const isBareRepo = await isBareRepository(workspaceFolder, newPath);
 
         if (!isBareRepo) {
             // remove .git
             // e.g. /absolute/path/project/.git
             //   -> /absolute/path/project
-            path = removeLastDirectoryInURL(path);
+            newPath = removeLastDirectoryInURL(newPath);
             // remove project
             // e.g. /absolute/path/project
             //   -> /absolute/path
-            path = removeLastDirectoryInURL(path);
+            newPath = removeLastDirectoryInURL(newPath);
         }
 
-        path = `${path}/${branch}`;
+        newPath = path.join(newPath, branch);
 
-        return path;
+        return newPath;
     } catch (e: any) {
         throw Error(e);
     }

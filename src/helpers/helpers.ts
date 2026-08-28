@@ -230,17 +230,22 @@ export const shouldOpenNewVscodeWindow = vscode.workspace
     .getConfiguration()
     .get("vsCodeGitWorktrees.move.openNewVscodeWindow", true);
 
+export const shouldPreserveSubfolderOnWorktreeSwitch = (): boolean =>
+    vscode.workspace.getConfiguration().get("vsCodeGitWorktrees.move.preserveSubfolder", true);
+
 export const resolvePathVariables = (configuredPath: string | null): string | null => {
     if (!configuredPath) return configuredPath;
 
     return configuredPath.replace(/\$\{userHome\}/g, os.homedir());
 };
 
-const configuredWorktreesDirPath = vscode.workspace
-    .getConfiguration()
-    .get("vsCodeGitWorktrees.worktrees.dir.path", null);
+export const getWorktreesDirPath = (): string | null => {
+    const configuredWorktreesDirPath = vscode.workspace
+        .getConfiguration()
+        .get<string | null>("vsCodeGitWorktrees.worktrees.dir.path", null);
 
-export const worktreesDirPath = resolvePathVariables(configuredWorktreesDirPath);
+    return resolvePathVariables(configuredWorktreesDirPath);
+};
 
 export const shouldAutoPushAfterWorktreeCreation = vscode.workspace
     .getConfiguration()

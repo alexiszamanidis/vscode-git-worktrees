@@ -29,16 +29,34 @@ export const selectBranch = async (branches: string[]): Promise<string | undefin
 export const isGitRepository = async (workspaceFolder: string): Promise<boolean> => {
     logger.debug(`Checking if folder is a Git repository: ${workspaceFolder}`);
     try {
-        const isGitRepositoryCommand = "git rev-parse --is-inside-work-tree";
-        await executeCommand(isGitRepositoryCommand, {
+        const { stdout } = await executeCommand("git rev-parse --is-inside-work-tree", {
             cwd: workspaceFolder,
         });
-        logger.debug(`Folder ${workspaceFolder} is a Git repository.`);
-        return true;
+
+        if (removeNewLine(stdout) === "true") {
+            logger.debug(`Folder ${workspaceFolder} is a Git work tree.`);
+            return true;
+        }
+    } catch (e: any) {
+        logger.debug(
+            `is-inside-work-tree check failed for ${workspaceFolder}: ${e.message}. Checking bare...`
+        );
+    }
+
+    try {
+        const { stdout } = await executeCommand("git rev-parse --is-bare-repository", {
+            cwd: workspaceFolder,
+        });
+
+        if (removeNewLine(stdout) === "true") {
+            logger.debug(`Folder ${workspaceFolder} is a bare Git repository.`);
+            return true;
+        }
     } catch (e: any) {
         logger.warn(`Folder ${workspaceFolder} is NOT a Git repository. Error: ${e.message}`);
-        return false;
     }
+
+    return false;
 };
 
 export const existsRemoteBranch = async (workspaceFolder: string, branch: string) => {
@@ -155,7 +173,7 @@ const setUpBareRepositoryFetch = async (workspaceFolder: string) => {
 const hasBareRepository = async (workspaceFolder: string) => {
     const worktrees = await getWorktrees({
         workspaceFolder,
-        withBareRepo: false,
+        withBareRepo: true,
     });
     const hasBareRepo = worktrees.find((wt) => wt.worktree === BARE_REPOSITORY);
     return hasBareRepo;

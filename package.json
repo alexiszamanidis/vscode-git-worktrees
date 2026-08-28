@@ -69,13 +69,24 @@
                 }
             },
             {
+                "id": "preserve-subfolder",
+                "title": "Preserve subfolder when opening worktree",
+                "properties": {
+                    "vsCodeGitWorktrees.move.preserveSubfolder": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "When switching or creating a worktree, open the same relative subfolder you were in (e.g. a monorepo package). Falls back to the worktree root if that subfolder does not exist."
+                    }
+                }
+            },
+            {
                 "id": "worktrees-directory-path",
                 "title": "Worktrees directory path",
                 "properties": {
                     "vsCodeGitWorktrees.worktrees.dir.path": {
                         "type": "string",
                         "default": null,
-                        "description": "Define a directory for all worktrees between your projects"
+                        "description": "Directory where new worktrees are created as {dir}/{branch}. If unset, worktrees are created as siblings of the main repository."
                     }
                 }
             },
