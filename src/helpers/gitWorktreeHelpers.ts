@@ -138,21 +138,30 @@ const formatWorktrees = (splitWorktrees: Array<FilteredWorktree>): WorktreeList 
         worktree: removeFirstAndLastCharacter(worktree[2]),
     }));
 
+// `git worktree list` lines are `<path> <hash> <ref>`, optionally followed by
+// trailing markers such as `locked` or `prunable`, and `<path>` may contain spaces
+const WORKTREE_LINE_REGEX = /^(.+?)\s+([0-9a-f]{7,40})\s+(\[[^\]]*\]|\(detached HEAD\))(?:\s+.*)?$/;
+// bare: `<path> (bare)`
+const BARE_WORKTREE_LINE_REGEX = /^(.+?)\s+(\(bare\))(?:\s+.*)?$/;
+
 export const getWorktreesList = (stdout: string, withBareRepo = false): WorktreeList => {
     let splitWorktrees: Array<FilteredWorktree> = [];
 
     stdout.split("\n").forEach((worktree: string) => {
-        // worktree: path-hash-worktree
-        // ignore: spaces
-        const filteredWt = worktree.split(" ").filter((str: string) => str !== "");
-        // bare: path-(bare)
-        if (filteredWt.length === 3) {
-            splitWorktrees.push(filteredWt as FilteredWorktree);
-        } else if (withBareRepo && filteredWt.length === 2) {
-            const path = filteredWt[0];
-            const hash = "";
-            const worktreeLabel = filteredWt[1];
-            splitWorktrees.push([path, hash, worktreeLabel] as FilteredWorktree);
+        const line = worktree.trim();
+        if (line === "") return;
+
+        const match = line.match(WORKTREE_LINE_REGEX);
+        if (match) {
+            splitWorktrees.push([match[1], match[2], match[3]] as FilteredWorktree);
+            return;
+        }
+
+        if (!withBareRepo) return;
+
+        const bareMatch = line.match(BARE_WORKTREE_LINE_REGEX);
+        if (bareMatch) {
+            splitWorktrees.push([bareMatch[1], "", bareMatch[2]] as FilteredWorktree);
         }
     });
 

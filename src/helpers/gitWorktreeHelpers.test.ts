@@ -183,6 +183,92 @@ describe("getWorktreesList", () => {
             },
         ]);
     });
+
+    it("includes locked worktrees", () => {
+        const stdout = [
+            "/home/user/personal-projects/feature  abc1234 [feature]",
+            "/home/user/personal-projects/locked   def5678 [locked-branch] locked",
+        ].join("\n");
+
+        const worktrees = getWorktreesList(stdout);
+
+        expect(worktrees).toEqual([
+            {
+                path: "/home/user/personal-projects/feature",
+                hash: "abc1234",
+                worktree: "feature",
+            },
+            {
+                path: "/home/user/personal-projects/locked",
+                hash: "def5678",
+                worktree: "locked-branch",
+            },
+        ]);
+    });
+
+    it("includes prunable worktrees", () => {
+        const stdout = "/home/user/personal-projects/gone  abc1234 [gone] prunable";
+
+        const worktrees = getWorktreesList(stdout);
+
+        expect(worktrees).toEqual([
+            {
+                path: "/home/user/personal-projects/gone",
+                hash: "abc1234",
+                worktree: "gone",
+            },
+        ]);
+    });
+
+    it("includes a locked bare repository when withBareRepo is true", () => {
+        const stdout = "/home/user/personal-projects/2022.git  (bare) locked";
+
+        const worktrees = getWorktreesList(stdout, true);
+
+        expect(worktrees).toEqual([
+            {
+                path: "/home/user/personal-projects/2022.git",
+                hash: "",
+                worktree: "bare",
+            },
+        ]);
+    });
+
+    it("includes worktrees with a detached HEAD", () => {
+        const stdout = "/home/user/personal-projects/detached  abc1234 (detached HEAD)";
+
+        const worktrees = getWorktreesList(stdout);
+
+        expect(worktrees).toEqual([
+            {
+                path: "/home/user/personal-projects/detached",
+                hash: "abc1234",
+                worktree: "detached HEAD",
+            },
+        ]);
+    });
+
+    it("includes worktrees whose path contains spaces", () => {
+        const stdout = "/home/user/personal projects/feature  abc1234 [feature]";
+
+        const worktrees = getWorktreesList(stdout);
+
+        expect(worktrees).toEqual([
+            {
+                path: "/home/user/personal projects/feature",
+                hash: "abc1234",
+                worktree: "feature",
+            },
+        ]);
+    });
+
+    it("ignores empty lines", () => {
+        const stdout = "/home/user/personal-projects/feature  abc1234 [feature]\n\n";
+
+        const worktrees = getWorktreesList(stdout);
+
+        expect(worktrees).toHaveLength(1);
+    });
 });
 
 describe("getGitTopLevel", () => {
