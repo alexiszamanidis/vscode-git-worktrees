@@ -1,3 +1,10 @@
+## [2.20.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.20.0...v2.20.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* list locked, prunable and detached worktrees ([2fd1157](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/2fd1157e8160a64dcac3f168721d2f3228d72fd0))
+
 # [2.20.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.19.0...v2.20.0) (2026-08-28)
 
 
