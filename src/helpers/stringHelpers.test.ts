@@ -3,6 +3,7 @@ import {
     removeLastDirectoryInURL,
     removeNewLine,
     escapeSpaces,
+    getFileFromPath,
 } from "./stringHelpers";
 
 describe("stringHelpers", () => {
@@ -103,6 +104,12 @@ describe("stringHelpers", () => {
 
             // then
             expect(escapedStr).toEqual("\\ \\ \\ \\ ");
+        });
+    });
+
+    describe("getFileFromPath", () => {
+        it("returns the file name from a posix path", async () => {
+            await expect(getFileFromPath("/folder/subfolder/file.ts")).resolves.toBe("file.ts");
         });
     });
 });

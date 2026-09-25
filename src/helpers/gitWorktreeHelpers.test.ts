@@ -23,7 +23,6 @@ jest.mock("./helpers", () => ({
     spawnCommand: jest.fn(),
 }));
 jest.mock("./logger", () => ({
-    __esModule: true,
     default: {
         debug: jest.fn(),
         info: jest.fn(),
@@ -141,6 +140,17 @@ describe("calculateNewWorktreePath", () => {
         await expect(calculateNewWorktreePath(workspaceFolder, branch)).rejects.toThrow(
             `Directory '${path.join("/home/user", branch)}' already exists.`
         );
+    });
+
+    it("places the worktree inside a bare repository path", async () => {
+        mockedExecuteCommand.mockResolvedValue({
+            stdout: "/home/user/personal-projects/2022.git\n",
+        });
+        mockedIsBareRepository.mockResolvedValue(true);
+
+        const result = await calculateNewWorktreePath(workspaceFolder, branch);
+
+        expect(result).toBe(path.join("/home/user/personal-projects/2022.git", branch));
     });
 });
 
@@ -310,6 +320,16 @@ describe("getGitTopLevel", () => {
             2,
             "git rev-parse --path-format=absolute --git-common-dir",
             { cwd: workspaceFolder }
+        );
+    });
+
+    it("throws the original error when both lookups fail", async () => {
+        mockedExecuteCommand
+            .mockRejectedValueOnce(new Error("fatal: this operation must be run in a work tree"))
+            .mockRejectedValueOnce(new Error("fatal: not a git repository"));
+
+        await expect(getGitTopLevel(workspaceFolder)).rejects.toThrow(
+            "fatal: this operation must be run in a work tree"
         );
     });
 });

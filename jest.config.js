@@ -5,4 +5,6 @@ module.exports = {
         "^vscode$": "<rootDir>/__mocks__/vscode.js",
     },
     roots: ["<rootDir>/src"],
+    testPathIgnorePatterns: ["<rootDir>/src/test/", "<rootDir>/out/"],
+    testTimeout: 15000,
 };
