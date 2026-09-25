@@ -1,3 +1,10 @@
+# [2.21.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.20.1...v2.21.0) (2026-09-25)
+
+
+### Features
+
+* add tests ([17711f8](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/17711f8b130a490d2b8603b78452f6c2d48a3296))
+
 ## [2.20.1](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.20.0...v2.20.1) (2026-09-04)
 
 
