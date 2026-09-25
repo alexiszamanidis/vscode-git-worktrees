@@ -5,7 +5,7 @@ class Logger implements vscode.Disposable {
     private readonly output: vscode.OutputChannel;
     private isVisible = false;
 
-    constructor(private channelName: string = "Extension Logger") {
+    constructor(private channelName: string) {
         this.output = vscode.window.createOutputChannel(this.channelName);
     }
 
