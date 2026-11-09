@@ -109,6 +109,16 @@ We welcome all contributions, issues and feature requests, whether small or larg
   <img src="https://contrib.rocks/image?repo=alexiszamanidis/vscode-git-worktrees" />
 </a>
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=alexiszamanidis%2Fvscode-git-worktrees&type=date&releases=&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=alexiszamanidis/vscode-git-worktrees&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=alexiszamanidis/vscode-git-worktrees&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=alexiszamanidis/vscode-git-worktrees&type=date&legend=bottom-right" />
+ </picture>
+</a>
+
 ## License
 
 [MIT © Alexis Zamanidis](https://github.com/alexiszamanidis/vscode-git-worktrees/blob/master/LICENSE)
