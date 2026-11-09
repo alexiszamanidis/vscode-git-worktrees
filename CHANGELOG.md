@@ -1,3 +1,10 @@
+# [2.22.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.21.0...v2.22.0) (2026-11-09)
+
+
+### Features
+
+* add star history ([7389c28](https://github.com/alexiszamanidis/vscode-git-worktrees/commit/7389c28cfa40c713deec91270e1343cdf03c000f))
+
 # [2.21.0](https://github.com/alexiszamanidis/vscode-git-worktrees/compare/v2.20.1...v2.21.0) (2026-09-25)
 
 
